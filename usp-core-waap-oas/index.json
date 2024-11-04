@@ -1,6 +1,6 @@
 {
-  "title": "USP Core WAAP basic demo",
-  "description": "protecting the OWASP Juice Shop demo webapp using USP Core WAAP",
+  "title": "USP Core WAAP OpenAPI validation demo",
+  "description": "protecting API against incorrect data",
   "details": {
     "intro": {
       "text": "intro/info.md",
@@ -13,7 +13,7 @@
     },
     "steps": [
       {
-        "title": "access unprotected juiceshop",
+        "title": "access unprotected petstore API",
         "text": "step1/info.md",
         "foreground": "step1/foreground.sh",
         "verify": "step1/verify.sh"

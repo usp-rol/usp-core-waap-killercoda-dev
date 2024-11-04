@@ -1,10 +1,11 @@
-### Login as juiceshop admin
+### Access plain swagger petstore (unprotected)
 
->wait until the console on the right side is ready before trying to access the webapplication (otherwise you'll get a HTTP 502 response)!
+>wait until the console on the right side is ready before trying to access the API!
 
-[Access the unprotected juiceshop]({{TRAFFIC_HOST1_80}}) web application using your browser and execute an SQL-injection by logging in with:
+[Access the petstore API]({{TRAFFIC_HOST1_8080}}) using your browser or cli using
 
-* email `' OR true;` and
-* password `fail` (or anything else except empty)
+```shell
+curl -sv http://localhost:8080/api/pet/1
+```{exec}
 
-and see if you succeed...
+
