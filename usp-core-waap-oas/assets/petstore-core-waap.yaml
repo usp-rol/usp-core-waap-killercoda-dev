@@ -1,0 +1,27 @@
+apiVersion: waap.core.u-s-p.ch/v1alpha1
+kind: CoreWaapService
+metadata:
+  name: petshop-usp-core-waap
+  namespace: swaggerapi
+spec:
+  trafficProcessing:
+    openapi:
+      - name: openapi-petstore-v3
+        config:
+          schemaSource:
+            configMap: openapi-petstore-v3
+            key: openapi-petstore-v3.json
+          scope:
+            requestBody: true
+            responseBody: false
+  routes:
+    - match:
+        path: /api
+        pathType: PREFIX
+      trafficProcessingRefs:
+        - openapi-petstore-v3
+      backend:
+        address: petshop
+        port: 8080
+        protocol:
+          selection: h1
