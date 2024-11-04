@@ -71,7 +71,7 @@ We changed the port forwarding accordingly that the traffic to the [petshop API]
 
 ```shell
 curl ...
-```{exec}
+```{{exec}}
 
 ### Inspect the actions taken by USP Core WAAP
 
@@ -113,5 +113,5 @@ then at last access the API using
 
 ```shell
 curl ...
-```{exec}
+```{{exec}}
 </details>

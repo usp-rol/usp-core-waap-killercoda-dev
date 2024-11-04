@@ -21,10 +21,10 @@ echo "$(date) : setting up petstore port forwarding..."
 while [ $RC -gt 0 ]; do
   pkill -F $PORT_FORWARD_PID || true
   echo "$(date) : ...setting up port-forwarding and testing access..."
-  nohup kubectl port-forward -n swaggerapi svc/petstore 80:8080 --address 0.0.0.0 >/dev/null &
+  nohup kubectl port-forward -n swaggerapi svc/petstore 8080:8080 --address 0.0.0.0 >/dev/null &
   echo $! > $PORT_FORWARD_PID
   sleep 3
-  curl -svo /dev/null http://localhost:80
+  curl -svo /dev/null http://localhost:8080
   RC=$?
 done
 touch $PETSTORE_SETUP_FINISH && echo "$(date) : wrote file $PETSTORE_SETUP_FINISH to indicate juicesetup setup completion to foreground process"
