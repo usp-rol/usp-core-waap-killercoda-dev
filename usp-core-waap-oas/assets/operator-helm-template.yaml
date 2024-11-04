@@ -1,6 +1,6 @@
 operator:
-  version: "${CORE_WAAP_OP_VERSION}"
   image: "${CONTAINER_REGISTRY}/usp/core/waap/demo-usp-core-waap-operator"
+  version: "0.0.0-20241104-SNAPSHOT"  # TODO: remove me after switching to an artifact release!!!
   imagePullSecretName: "devuspacr"
   namespace: "usp-core-waap-operator"
   serviceAccount: "usp-core-waap-operator"
@@ -10,8 +10,12 @@ operator:
       memory: 64Mi
   config:
     waapSpecDefaults:
-      image: "${CONTAINER_REGISTRY}/usp/core/waap/demo-usp-core-waap:${CORE_WAAP_VERSION}"
+      image: "${CONTAINER_REGISTRY}/usp/core/waap/demo-usp-core-waap"
       resources:
         requests:
           cpu: 100m
           memory: 256Mi
+    waapSpecTrafficProcessingDefaults:
+      openapi:
+        image: "${CONTAINER_REGISTRY}/usp/core/waap/demo-usp-core-waap-grpc-openapi"
+        version: "0.0.1"    # TODO: remove me after switching to an artifact release!!!

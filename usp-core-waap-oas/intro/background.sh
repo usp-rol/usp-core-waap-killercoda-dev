@@ -27,12 +27,10 @@ while [ $RC -gt 0 ]; do
   curl -svo /dev/null http://localhost:8080
   RC=$?
 done
-touch $PETSTORE_SETUP_FINISH && echo "$(date) : wrote file $PETSTORE_SETUP_FINISH to indicate juicesetup setup completion to foreground process"
+touch $PETSTORE_SETUP_FINISH && echo "$(date) : wrote file $PETSTORE_SETUP_FINISH to indicate petstore setup completion to foreground process"
 echo "$(date) : petstore setup finished"
 # Part 2: setup core waap operator
-export CORE_WAAP_VERSION=1.1.8
-export CORE_WAAP_OP_VERSION=1.0.1
-export CORE_WAAP_HELM_VERSION=1.0.2
+export CORE_WAAP_HELM_VERSION=0.0.0-main-SNAPSHOT     # TODO: change to a released artifact!!!
 export CONTAINER_REGISTRY=devuspregistry.azurecr.io
 sleep $WAIT_SEC
 echo "$(date) : login to helm registry..."

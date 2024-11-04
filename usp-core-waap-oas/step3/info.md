@@ -6,7 +6,7 @@ Having the Core WAAP operator installed and ready to go, you can configure the U
 
 ```shell
 kubectl apply -f openapi-petstore-configmap.yaml
-```{exec}
+```{{exec}}
 
 this step will setup the required openapi schema configuration (containing the openapi spec) use by Core WAAP instance, next setup an instace using
 
@@ -65,13 +65,12 @@ There is a file in your home directory with an example `corewaapservice` definit
 
 ### Access petshop API via USP Core WAAP
 
-We changed the port forwarding accordingly that the traffic to the [petshop API]({{TRAFFIC_HOST1_8080}}) is now routed **via USP Core WAAP**. 
-
-**TODO**: document the petshop API access differing to the first step...
+We changed the port forwarding accordingly that the traffic to the [petshop API]({{TRAFFIC_HOST1_8080}}) is now routed **via USP Core WAAP**. Next let's again query a pet in an incorrect format as we did already before:
 
 ```shell
-curl ...
+curl -sv http://localhost:8080/api/pet/cat1
 ```{{exec}}
+
 
 ### Inspect the actions taken by USP Core WAAP
 
@@ -109,9 +108,15 @@ kubectl logs -f \
   -n swaggerapi
 ```{{exec}}
 
-then at last access the API using
+then at last access the API using an invalid format
 
 ```shell
-curl ...
+curl -sv http://localhost:8080/api/pet/cat1
+```{{exec}}
+
+and observe the output and inspect the petshop request logs using
+
+```shell
+kubectl -n swaggerapi exec pod/petstore -- /bin/bash -c "tail /var/log/*-requests.log"
 ```{{exec}}
 </details>
