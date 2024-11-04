@@ -48,7 +48,8 @@ helm install \
   usp-core-waap-operator \
   oci://${CONTAINER_REGISTRY}/helm/usp/core/waap/usp-core-waap-operator \
   --version ${CORE_WAAP_HELM_VERSION} \
-  --values ./operator-helm-values.yaml
+  --values ./operator-helm-values.yaml \
+  --namespace usp-core-waap-operator
 echo "$(date) : copy corewaap custom resouce to user home..."
 cp ./petstore-core-waap.yaml ~
 echo "$(date) : signal foreground script completion..."
