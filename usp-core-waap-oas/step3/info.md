@@ -2,13 +2,15 @@
 
 >if you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
 
-Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the petstore API:
+Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the petstore API.
+
+First we will setup the kubernetes configmap providing the OpenAPI validation schema used by the Core WAAP to validate requests:
 
 ```shell
 kubectl apply -f openapi-petstore-configmap.yaml
 ```{{exec}}
 
-this step will setup the required openapi schema configuration (containing the openapi spec) use by Core WAAP instance, next setup an instace using
+Next we will setup an instace of Core WAAP using
 
 ```yaml
 apiVersion: waap.core.u-s-p.ch/v1alpha1
@@ -34,7 +36,7 @@ spec:
       trafficProcessingRefs:
         - openapi-petstore-v3
       backend:
-        address: petshop
+        address: petstore
         port: 8080
         protocol:
           selection: h1
@@ -65,12 +67,13 @@ There is a file in your home directory with an example `corewaapservice` definit
 
 ### Access petshop API via USP Core WAAP
 
-We changed the port forwarding accordingly that the traffic to the [petshop API]({{TRAFFIC_HOST1_8080}}) is now routed **via USP Core WAAP**. Next let's again query a pet in an incorrect format as we did already before:
+We changed the port forwarding accordingly that the traffic to the petshop API is now routed **via USP Core WAAP**. Next let's again query a pet in an incorrect format as we did already before:
 
 ```shell
-curl -sv http://localhost:8080/api/pet/cat1
+curl -sv http://localhost/api/pet/cat1
 ```{{exec}}
 
+This time you'll get an HTTP 400 response and will not see any request in the backend as this invalid call was intercepted by Core WAAP!
 
 ### Inspect the actions taken by USP Core WAAP
 
@@ -111,7 +114,7 @@ kubectl logs -f \
 then at last access the API using an invalid format
 
 ```shell
-curl -sv http://localhost:8080/api/pet/cat1
+curl -sv http://localhost/api/pet/cat1
 ```{{exec}}
 
 and observe the output and inspect the petshop request logs using
