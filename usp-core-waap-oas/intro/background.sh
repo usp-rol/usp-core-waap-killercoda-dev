@@ -39,8 +39,8 @@ echo "$(date) : change to scenario_staging dir..."
 cd ~/.scenario_staging/
 echo "$(date) : prepare core waap operator setup..."
 kubectl apply -f ./imagepullsecret.yaml
-echo "$(date) : patch default serviceaccount in petstore namespace..."
-kubectl patch serviceaccount default -n petstore -p '{"imagePullSecrets": [{"name": "devuspacr"}]}'
+echo "$(date) : patch default serviceaccount in swaggerapi namespace..."
+kubectl patch serviceaccount default -n swaggerapi -p '{"imagePullSecrets": [{"name": "devuspacr"}]}'
 echo "$(date) : apply defined variables in helm-values template..."
 envsubst < ./operator-helm-template.yaml > ./operator-helm-values.yaml
 echo "$(date) : install operator via helm chart..."
