@@ -16,7 +16,7 @@ Next we will setup an instace of Core WAAP using
 apiVersion: waap.core.u-s-p.ch/v1alpha1
 kind: CoreWaapService
 metadata:
-  name: petshop-usp-core-waap
+  name: petstore-usp-core-waap
   namespace: swaggerapi
 spec:
   trafficProcessing:
@@ -65,9 +65,9 @@ There is a file in your home directory with an example `corewaapservice` definit
 
 </details>
 
-### Access petshop API via USP Core WAAP
+### Access petstore API via USP Core WAAP
 
-We changed the port forwarding accordingly that the traffic to the petshop API is now routed **via USP Core WAAP**. Next let's again query a pet in an incorrect format as we did already before:
+We changed the port forwarding accordingly that the traffic to the petstore API is now routed **via USP Core WAAP**. Next let's again query a pet in an incorrect format as we did already before:
 
 ```shell
 curl -sv http://localhost/api/pet/cat1
@@ -91,7 +91,7 @@ kubectl logs -f \
 First create the Core WAAP instance using
 
 ```shell
-kubectl apply -f petshop-core-waap.yaml
+kubectl apply -f petstore-core-waap.yaml
 ```{{exec}}
 
 and wait for its readiness...
@@ -117,7 +117,7 @@ then at last access the API using an invalid format
 curl -sv http://localhost/api/pet/cat1
 ```{{exec}}
 
-and observe the output and inspect the petshop request logs using
+and observe the output and inspect the petstore request logs using
 
 ```shell
 kubectl -n swaggerapi exec pod/petstore -- /bin/bash -c "tail /var/log/*-requests.log"

@@ -21,7 +21,7 @@ while [ $RC -gt 0 ]; do
   clear
   pkill -F $PORT_FORWARD_PID || true
   echo "$(date) : ...setting up port-forwarding and testing access..."
-  nohup kubectl -n swaggerapi port-forward svc/petshop-usp-core-waap 80:8080 --address 0.0.0.0 >/dev/null &
+  nohup kubectl -n swaggerapi port-forward svc/petstore-usp-core-waap 80:8080 --address 0.0.0.0 >/dev/null &
   echo $! > $PORT_FORWARD_PID
   sleep 3
   curl -svo /dev/null http://localhost:80

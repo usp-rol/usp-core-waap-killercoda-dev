@@ -1,6 +1,6 @@
 ### Splendid!
 
-You just protected the swagger petshop API demo application on a basic level providing OpenAPI validation!
+You just protected the swagger petstore API demo application on a basic level providing OpenAPI validation!
 
 > While fixing vulnerabilities / writing secure application code is imminent, USP Core WAAP can help you out taking the time it takes to fix all vulnerabilities and giving you an additional layer of security!
 

@@ -1,7 +1,7 @@
 apiVersion: waap.core.u-s-p.ch/v1alpha1
 kind: CoreWaapService
 metadata:
-  name: petshop-usp-core-waap
+  name: petstore-usp-core-waap
   namespace: swaggerapi
 spec:
   trafficProcessing:
