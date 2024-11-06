@@ -4,6 +4,7 @@
   "details": {
     "intro": {
       "text": "intro/info.md",
+      "foreground": "intro/foreground.sh",
       "background": "intro/background.sh"
     },
     "assets": {
@@ -15,7 +16,6 @@
       {
         "title": "access unprotected petstore API",
         "text": "step1/info.md",
-        "foreground": "step1/foreground.sh",
         "verify": "step1/verify.sh"
       },
       {

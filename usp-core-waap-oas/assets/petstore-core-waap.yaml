@@ -21,7 +21,7 @@ spec:
       trafficProcessingRefs:
         - openapi-petstore-v3
       backend:
-        address: petshop
+        address: petstore
         port: 8080
         protocol:
           selection: h1
