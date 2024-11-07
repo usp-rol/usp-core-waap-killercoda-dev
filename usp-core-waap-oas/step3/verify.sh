@@ -1,3 +1,7 @@
 #!/bin/bash
 
-grep FIXME /var/log/containers/petstore-usp-core-waap-*.log
+kubectl logs \
+  -l app.kubernetes.io/name=usp-core-waap \
+  -n swaggerapi \
+  -c traffic-processor-openapi-petstore-v3 \
+  | grep 'is not a valid number'
