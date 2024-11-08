@@ -12,6 +12,7 @@ curl -s http://localhost:8080/api/pet/1 | jq '.'
 
 <details>
 <summary>example command output
+
 ```json
 {
   "id": 1,
@@ -50,6 +51,7 @@ curl -sv http://localhost:8080/api/pet/cat1
 
 <details>
 <summary>example command output
+
 ```shell
 *   Trying 127.0.0.1:8080...
 * TCP_NODELAY set

@@ -12,6 +12,7 @@ kubectl apply -f openapi-petstore-configmap.yaml
 
 <details>
 <summary>example command output
+
 ```shell
 configmap/openapi-petstore-v3 created
 ```
@@ -61,6 +62,7 @@ spec:
 
 <details>
 <summary>example command output
+
 ```shell
 corewaapservice.waap.core.u-s-p.ch/petstore-usp-core-waap created
 ```
@@ -82,6 +84,7 @@ kubectl get corewaapservices --all-namespaces
 
 <details>
 <summary>example command output
+
 ```shell
 NAMESPACE   NAME                     AGE
 petstore    petstore-usp-core-waap   59s
@@ -101,6 +104,7 @@ kubectl get pods \
 
 <details>
 <summary>example command output
+
 ```shell
 NAMESPACE   NAME                                      READY   STATUS    RESTARTS   AGE
 petstore    petstore-usp-core-waap-78dbbc6d8c-6w7lr   2/2     Running   0          67s
@@ -140,6 +144,7 @@ curl -sv http://localhost/api/pet/waapcat1
 
 <details>
 <summary>example command output
+
 ```shell
 *   Trying 127.0.0.1:80...
 * TCP_NODELAY set
@@ -172,6 +177,7 @@ Note that there is no `waapcat1` request seen on the petstore API backend (see e
 
 <details>
 <summary>example command output
+
 ```shell
 127.0.0.1 - - [08/Nov/2024:09:41:17 +0000] "GET / HTTP/1.1" 200 3851
 127.0.0.1 - - [08/Nov/2024:09:41:18 +0000] "GET /api/pet/1 HTTP/1.1" 200 -
@@ -188,6 +194,7 @@ curl -sv http://localhost/api/pet/1
 
 <details>
 <summary>example command output
+
 ```shell
 *   Trying 127.0.0.1:80...
 * TCP_NODELAY set
@@ -219,6 +226,7 @@ curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
 
 <details>
 <summary>example command output
+
 ```shell
 {
   "id": 1,
@@ -265,6 +273,7 @@ kubectl describe pods \
 
 <details>
 <summary>example command output
+
 ```shell
 Name:             petstore-usp-core-waap-78dbbc6d8c-6w7lr
 Namespace:        petstore
@@ -302,6 +311,7 @@ kubectl logs \
 
 <details>
 <summary>example command output
+
 ```shell
 {
   "level": "info",

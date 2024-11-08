@@ -23,6 +23,7 @@ kubectl get pods \
 
 <details>
 <summary>example command output
+
 ```shell
 NAME                                 READY   STATUS    RESTARTS        AGE
 core-waap-operator-744f7c8b8-7kfbs   1/1     Running   1 (2m21s ago)   2m34s
