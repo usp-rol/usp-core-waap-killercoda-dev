@@ -214,7 +214,7 @@ curl -sv http://localhost/api/pet/1
 Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the petstore application but is now since its configured to be included! In order to successfully query pets we need to send an `api_key` header:
 
 ```shell
-curl -sv -H 'api_key: anything' http://localhost/api/pet/1 | jq
+curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
 ```{{exec}}
 
 <details>
@@ -293,10 +293,10 @@ Note in addition to the base `envoy` container there is a `traffic-processor-ope
 
 ```shell
 kubectl logs \
-  -l app.kubernetes.io/name=usp-core-waap \
   -n petstore \
+  -l app.kubernetes.io/name=usp-core-waap \
   -c traffic-processor-openapi-petstore-v3 \
-  | grep -E '^{'
+  | grep -E '^{' \
   | jq
 ```{{exec}}
 
