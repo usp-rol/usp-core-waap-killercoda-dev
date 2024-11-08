@@ -18,6 +18,7 @@ configmap/openapi-petstore-v3 created
 ```
 
 </details>
+<br />
 
 Next, we will setup an instace of Core WAAP using:
 
@@ -75,6 +76,7 @@ corewaapservice.waap.core.u-s-p.ch/petstore-usp-core-waap created
 There is a file in your home directory with an example `corewaapservice` definition ready to be applied using `kubectl apply -f` ...
 
 </details>
+<br />
 
 Now re-check if a Core WAAP instance is active in the `petstore` namespace:
 
@@ -91,8 +93,9 @@ petstore    petstore-usp-core-waap   59s
 ```
 
 </details>
+<br />
 
-Check if also a Core WAAP Pod is running:
+Check if a Core WAAP Pod is running:
 
 ```shell
 kubectl get pods \
@@ -100,7 +103,6 @@ kubectl get pods \
   --all-namespaces
 ```{{exec}}
 
->wait until the Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
 
 <details>
 <summary>example command output
@@ -111,6 +113,11 @@ petstore    petstore-usp-core-waap-78dbbc6d8c-6w7lr   2/2     Running   0       
 ```
 
 </details>
+<br />
+
+>wait until the Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
+
+Continue accessing the petstore API now (or consider the hidden solution in case you were not successful).
 
 <details>
 <summary>solution</summary>
@@ -131,6 +138,7 @@ kubectl wait pods \
 ```{{exec}}
 
 </details>
+<br />
 
 ### Access petstore API via USP Core WAAP
 
@@ -165,8 +173,9 @@ curl -sv http://localhost/api/pet/waapcat1
 ```
 
 </details>
+<br />
 
-This time you'll get an HTTP 400 (bad client request) response from Core WAAP and you will not see any request in the backend as this invalid call was blocked by Core WAAP!
+This time you'll get an HTTP 400 (Bad Request) response from Core WAAP and you will not see any request in the backend as this invalid call was blocked by Core WAAP!
 
 ```shell
 kubectl -n petstore exec pod/petstore \
@@ -229,7 +238,7 @@ curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
 <details>
 <summary>example command output
 
-```shell
+```json
 {
   "id": 1,
   "category": {
