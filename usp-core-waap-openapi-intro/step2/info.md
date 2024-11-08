@@ -30,6 +30,7 @@ core-waap-operator-744f7c8b8-7kfbs   1/1     Running   1 (2m21s ago)   2m34s
 ```
 
 </details>
+<br />
 
 The operator listens to resources of kind `corewaapservice`. As soon as such a **CustomResource** is configured, the operator creates the further required resources to run Core WAAP.
 To check if a Core WAAP resource exists you can run:

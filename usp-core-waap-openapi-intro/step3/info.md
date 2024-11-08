@@ -185,6 +185,7 @@ Note that there is no `waapcat1` request seen on the petstore API backend (see e
 ```
 
 </details>
+<br />
 
 Now let's make sure a valid pestore API call still works:
 
@@ -215,6 +216,7 @@ curl -sv http://localhost/api/pet/1
 ```
 
 </details>
+<br />
 
 **Wait! Why is that also getting an HTTP 400 response?!**
 
@@ -254,6 +256,7 @@ curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
 ```
 
 </details>
+<br />
 
 Ahh...there it is again the familiar "furrr..."!
 
@@ -297,6 +300,7 @@ Conditions:
 ```
 
 </details>
+<br />
 
 Note in addition to the base `envoy` container there is a `traffic-processor-openapi-...` conatiner which will provide log insight into why an OpenAPI validation feature blocked a request. Looking into that container we see the details for OpenAPI request validations:
 
@@ -336,5 +340,6 @@ kubectl logs \
 ```
 
 </details>
+<br />
 
 That's it! As you see, protecting an application through a OpenAPI specification brings a lot of additional security as demonstrated here not just with incorrect API requests but also about missing security headers (specified in API but mistakenly not enforced by the application)!

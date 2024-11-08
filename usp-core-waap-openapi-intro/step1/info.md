@@ -40,6 +40,7 @@ curl -s http://localhost:8080/api/pet/1 | jq '.'
 ```
 
 </details>
+<br />
 
 This will show the pet details (something familiar making "furrr" when happy...).
 
@@ -77,6 +78,7 @@ curl -sv http://localhost:8080/api/pet/cat1
 
 Note that the petstore API responded with a HTTP 404 (Not Found) response.
 </details>
+<br />
 
 The output indicates that the API could not understand the request as shown by the message:
 
