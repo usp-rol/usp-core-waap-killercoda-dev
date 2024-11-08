@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kubectl -n petstore exec pod/petstore -- /bin/bash -c "grep -E 'GET /api/pet/cat1 .*' /var/log/*-requests.log"
+kubectl -n backend logs pod/website | grep 'GET /product_a.html'

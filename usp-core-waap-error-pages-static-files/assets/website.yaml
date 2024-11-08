@@ -13,17 +13,35 @@ data:
   index.html:
     <!DOCTYPE html>
     <html lang="en">
-
     <head>
-        <title>Sample company website</title>
+      <title>Sample company website</title>
     </head>
-
     <body>
-        <h1>Welcome to the one and only sample company website!</h1>
-        <p>Maybe you've seen other company website but be assured, this one here is the most remarkable website on the whole
-            internet!</p>
+      <h1>Welcome to the one and only sample company website!</h1>
+      <p>Maybe you've seen other company websites but be assured, this one here is the most remarkable website on the
+        whole
+        internet!</p>
+      <h2>Who we are</h2>
+        <p>Everyone working for our company is an expert in his/her own area of knowledge and besides known to be
+          <strong>the place where all the exports work</strong> we also have the following products
+        <ul>
+          <li><a href="product_a.html">product A</a></li>
+          <li><a href="product_b.html">product B</a></li>
+        </ul>
+        </p>
     </body>
-    </htlm>
+    </html>
+  product_b.html:
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <title>Sample company - Product B</title>
+    </head>
+    <body>
+      <h2>Product B - the most wanted product in the world!</h2>
+        <p>there is practically nothing this product cannot handle and yet available for purchase at a very low cost!</p>
+    </body>
+    </html>
 ---
 apiVersion: v1
 kind: Pod
@@ -42,7 +60,7 @@ spec:
       readOnly: true
     ports:
       - name: http
-        containerPort: 8080
+        containerPort: 80
         protocol: TCP
     resources:
       requests:
@@ -65,4 +83,4 @@ spec:
   ports:
   - name: http
     port: 8080
-    targetPort: 8080
+    targetPort: 80

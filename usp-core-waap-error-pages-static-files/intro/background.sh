@@ -4,9 +4,9 @@
 
 # variables
 WAIT_SEC=5
+BACKEND_NAMESPACE="backend"
 BACKEND_POD="website"
 BACKEND_SVC="$BACKEND_POD"
-BACKEND_NAMESPACE="backend"
 BACKEND_SETUP_FINISH="/tmp/.backend-finished"
 PORT_FORWARD_PID="/tmp/.backend-port-forward-pid"
 RC=99
