@@ -10,6 +10,14 @@ First we will setup the kubernetes configmap providing the [OpenAPI specificatio
 kubectl apply -f openapi-petstore-configmap.yaml
 ```{{exec}}
 
+<details>
+<summary>example command output
+```shell
+configmap/openapi-petstore-v3 created
+```
+
+</details>
+
 Next, we will setup an instace of Core WAAP using:
 
 ```yaml
@@ -52,6 +60,14 @@ spec:
 (for this demo scenario the OWASP Core Rule Set and header filtering have been disabled to focus on OpenAPI validation)
 
 <details>
+<summary>example command output
+```shell
+corewaapservice.waap.core.u-s-p.ch/petstore-usp-core-waap created
+```
+
+</details>
+
+<details>
 <summary>hint</summary>
 
 There is a file in your home directory with an example `corewaapservice` definition ready to be applied using `kubectl apply -f` ...
@@ -64,6 +80,15 @@ Now re-check if a Core WAAP instance is active in the `petstore` namespace:
 kubectl get corewaapservices --all-namespaces
 ```{{exec}}
 
+<details>
+<summary>example command output
+```shell
+NAMESPACE   NAME                     AGE
+petstore    petstore-usp-core-waap   59s
+```
+
+</details>
+
 Check if also a Core WAAP Pod is running:
 
 ```shell
@@ -73,6 +98,15 @@ kubectl get pods \
 ```{{exec}}
 
 >wait until the Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
+
+<details>
+<summary>example command output
+```shell
+NAMESPACE   NAME                                      READY   STATUS    RESTARTS   AGE
+petstore    petstore-usp-core-waap-78dbbc6d8c-6w7lr   2/2     Running   0          67s
+```
+
+</details>
 
 <details>
 <summary>solution</summary>
@@ -104,6 +138,29 @@ Next, let's again query a pet in an incorrect format as we did already before. W
 curl -sv http://localhost/api/pet/waapcat1
 ```{{exec}}
 
+<details>
+<summary>example command output
+```shell
+*   Trying 127.0.0.1:80...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 80 (#0)
+> GET /api/pet/waapcat1 HTTP/1.1
+> Host: localhost
+> User-Agent: curl/7.68.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 400 Bad Request
+< date: Fri, 08 Nov 2024 09:58:30 GMT
+< server: envoy
+< connection: close
+< content-length: 0
+<
+* Closing connection 0
+```
+
+</details>
+
 This time you'll get an HTTP 400 (bad client request) response from Core WAAP and you will not see any request in the backend as this invalid call was blocked by Core WAAP!
 
 ```shell
@@ -111,11 +168,46 @@ kubectl -n petstore exec pod/petstore \
   -- /bin/bash -c "tail /var/log/*-requests.log"
 ```{{exec}}
 
+Note that there is no `waapcat1` request seen on the petstore API backend (see example below).
+
+<details>
+<summary>example command output
+```shell
+127.0.0.1 - - [08/Nov/2024:09:41:17 +0000] "GET / HTTP/1.1" 200 3851
+127.0.0.1 - - [08/Nov/2024:09:41:18 +0000] "GET /api/pet/1 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2024:09:42:18 +0000] "GET /api/pet/cat1 HTTP/1.1" 404 -
+```
+
+</details>
+
 Now let's make sure a valid pestore API call still works:
 
 ```shell
 curl -sv http://localhost/api/pet/1
 ```{{exec}}
+
+<details>
+<summary>example command output
+```shell
+*   Trying 127.0.0.1:80...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 80 (#0)
+> GET /api/pet/1 HTTP/1.1
+> Host: localhost
+> User-Agent: curl/7.68.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 400 Bad Request
+< date: Fri, 08 Nov 2024 10:00:51 GMT
+< server: envoy
+< connection: close
+< content-length: 0
+<
+* Closing connection 0
+```
+
+</details>
 
 **Wait! Why is that also getting an HTTP 400 response?!**
 
@@ -124,6 +216,36 @@ Well, the configured OpenAPI specification includes an [API Keys](https://swagge
 ```shell
 curl -sv -H 'api_key: anything' http://localhost/api/pet/1 | jq
 ```{{exec}}
+
+<details>
+<summary>example command output
+```shell
+{
+  "id": 1,
+  "category": {
+    "id": 2,
+    "name": "Cats"
+  },
+  "name": "Cat 1",
+  "photoUrls": [
+    "url1",
+    "url2"
+  ],
+  "tags": [
+    {
+      "id": 1,
+      "name": "tag1"
+    },
+    {
+      "id": 2,
+      "name": "tag2"
+    }
+  ],
+  "status": "available"
+}
+```
+
+</details>
 
 Ahh...there it is again the familiar "furrr..."!
 
@@ -141,6 +263,32 @@ kubectl describe pods \
   -A
 ```{{exec}}
 
+<details>
+<summary>example command output
+```shell
+Name:             petstore-usp-core-waap-78dbbc6d8c-6w7lr
+Namespace:        petstore
+...
+Status:           Running
+...
+Containers:
+  envoy:
+    ...
+  traffic-processor-openapi-petstore-v3:
+    ...
+...
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       True
+  ContainersReady             True
+  PodScheduled                True
+...
+```
+
+</details>
+
 Note in addition to the base `envoy` container there is a `traffic-processor-openapi-...` conatiner which will provide log insight into why an OpenAPI validation feature blocked a request. Looking into that container we see the details for OpenAPI request validations:
 
 ```shell
@@ -152,5 +300,31 @@ kubectl logs \
   | jq
 ```{{exec}}
 
-That's it! As you see, protecting an application through a OpenAPI specification brings a lot of additional security as demonstrated here not just with incorrect API requests but also about missing security headers (specified in API but mistakenly not enforced by the application)!
+<details>
+<summary>example command output
+```shell
+{
+  "level": "info",
+  "msg": "Starting ExtProc(OpenAPI validation) on port 9000",
+  "time": "2024-11-08T09:47:52Z"
+}
+{
+  "level": "info",
+  "msg": "RequestHeaders: GET /, validation errors: [Error: GET Path '/' not found, Reason: The GET request contains a path of '/' however that path, or the GET method for that path does not exist in the specification]",
+  "time": "2024-11-08T09:47:57Z"
+}
+{
+  "level": "info",
+  "msg": "RequestHeaders: GET /api/pet/waapcat1, validation errors: [Error: API Key api_key not found in header, Reason: API Key not found in http header for security scheme 'apiKey' with type 'header', Line: 331, Column: 11 Error: Path parameter 'petId' is not a valid number, Reason: The path parameter 'petId' is defined as being a number, however the value 'aapcat1' is not a valid number, Line: 301, Column: 13]",
+  "time": "2024-11-08T09:58:30Z"
+}
+{
+  "level": "info",
+  "msg": "RequestHeaders: GET /api/pet/1, validation errors: [Error: API Key api_key not found in header, Reason: API Key not found in http header for security scheme 'apiKey' with type 'header', Line: 331, Column: 11]",
+  "time": "2024-11-08T10:00:52Z"
+}
+```
 
+</details>
+
+That's it! As you see, protecting an application through a OpenAPI specification brings a lot of additional security as demonstrated here not just with incorrect API requests but also about missing security headers (specified in API but mistakenly not enforced by the application)!

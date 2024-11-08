@@ -21,6 +21,15 @@ kubectl get pods \
   -n usp-core-waap-operator
 ```{{exec}}
 
+<details>
+<summary>example command output
+```shell
+NAME                                 READY   STATUS    RESTARTS        AGE
+core-waap-operator-744f7c8b8-7kfbs   1/1     Running   1 (2m21s ago)   2m34s
+```
+
+</details>
+
 The operator listens to resources of kind `corewaapservice`. As soon as such a **CustomResource** is configured, the operator creates the further required resources to run Core WAAP.
 To check if a Core WAAP resource exists you can run:
 
@@ -28,7 +37,7 @@ To check if a Core WAAP resource exists you can run:
 kubectl get corewaapservices --all-namespaces
 ```{{exec}}
 
-There are none yet and also there are no core-waap PODs yet (they all get the label 'app.kubernetes.io/name=usp-core-waap')
+There are none yet (`No resources found`) and also there are no core-waap PODs yet (they all get the label 'app.kubernetes.io/name=usp-core-waap'):
 
 ```shell
 kubectl get pods \
