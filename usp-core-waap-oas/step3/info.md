@@ -10,7 +10,7 @@ First we will setup the kubernetes configmap providing the [OpenAPI specificatio
 kubectl apply -f openapi-petstore-configmap.yaml
 ```{{exec}}
 
-Next we will setup an instace of Core WAAP using:
+Next, we will setup an instace of Core WAAP using:
 
 ```yaml
 apiVersion: waap.core.u-s-p.ch/v1alpha1
@@ -96,13 +96,15 @@ kubectl wait pods \
 
 ### Access petstore API via USP Core WAAP
 
-The port forwarding was changed accordingly that the traffic to the petstore API is now routed **via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80). Next let's again query a pet in an incorrect format as we did already before:
+The port forwarding was changed accordingly that the traffic to the petstore API is now routed **via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
+
+Next, let's again query a pet in an incorrect format as we did already before. We expect this request to be blocked by Core WAAP (this incorrect request does not reach the petstore API backend):
 
 ```shell
 curl -sv http://localhost/api/pet/waapcat1
 ```{{exec}}
 
-This time you'll get an HTTP 400 response and will not see any request in the backend as this invalid call was intercepted by Core WAAP!
+This time you'll get an HTTP 400 (bad client request) response from Core WAAP and you will not see any request in the backend as this invalid call was blocked by Core WAAP!
 
 ```shell
 kubectl -n petstore exec pod/petstore \
@@ -115,12 +117,12 @@ Now let's make sure a valid pestore API call still works:
 curl -sv http://localhost/api/pet/1
 ```{{exec}}
 
-**Wait! why is that also getting an HTTP 400 response?!**
+**Wait! Why is that also getting an HTTP 400 response?!**
 
-Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the petstore application but is now since its configured to be included! In order to successfully query pet's we need to send an `api_key` header:
+Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the petstore application but is now since its configured to be included! In order to successfully query pets we need to send an `api_key` header:
 
 ```shell
-curl -sv --header 'api_key: anything' http://localhost/api/pet/1 | jq
+curl -sv -H 'api_key: anything' http://localhost/api/pet/1 | jq
 ```{{exec}}
 
 Ahh...there it is again the familiar "furrr..."!
@@ -146,6 +148,7 @@ kubectl logs \
   -l app.kubernetes.io/name=usp-core-waap \
   -n petstore \
   -c traffic-processor-openapi-petstore-v3 \
+  | grep -E '^{'
   | jq
 ```{{exec}}
 
