@@ -5,8 +5,10 @@ this repository contains the scenarios published via [killercoda](https://killer
 ## list of scenarios
 
 * juiceshop                   : example [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) demo web application
-* usp-core-waap-basic-sqli    : entry-level scenario to show-case the Core WAAP Core Rule Set protection (preventing juiceshop SQL-injection)
+* usp-core-waap-basic         : entry-level scenario to show-case the Core WAAP Core Rule Set protection (preventing juiceshop SQL-injection)
 * usp-core-waap-openapi-intro : entry-level scenario to show-case the Core WAAP OpenAPI validation feature
+
+**Keep in mind when renaming directories the killercoda scenario URL will change!**
 
 ## scneario development
 
