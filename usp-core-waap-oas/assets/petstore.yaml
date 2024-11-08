@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name:  swaggerapi
+  name:  petstore
 ---
 apiVersion: v1
 kind: Pod
 metadata:
   name: petstore
-  namespace: swaggerapi
+  namespace: petstore
   labels:
     app.kubernetes.io/name: petstore
 spec:
@@ -21,7 +21,7 @@ spec:
       - name: SWAGGER_URL
         value: "http://localhost:8080"
       - name: SWAGGER_HOST
-        value: "http://petstore.swaggerapi.svc:8080"
+        value: "http://petstore.petstore.svc:8080"
     ports:
       - name: http
         containerPort: 8080
@@ -35,7 +35,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: petstore
-  namespace: swaggerapi
+  namespace: petstore
 spec:
   type: NodePort
   selector:

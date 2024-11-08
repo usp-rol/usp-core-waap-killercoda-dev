@@ -12,7 +12,7 @@ RC=99
 echo "$(date) : applying petstore web app..."
 kubectl apply -f ~/.scenario_staging/petstore.yaml
 echo "$(date) : waiting for petstore pod to be ready..."
-kubectl wait pods petstore -n swaggerapi --for='condition=Ready' --timeout=300s
+kubectl wait pods petstore -n petstore --for='condition=Ready' --timeout=300s
 echo "$(date) : copy openapi pestore configmap to user home..."
 cp ~/.scenario_staging/openapi-petstore-configmap.yaml ~
 echo "$(date) : wait ${WAIT_SEC}s..."
@@ -21,7 +21,7 @@ echo "$(date) : setting up petstore port forwarding..."
 while [ $RC -gt 0 ]; do
   pkill -F $PORT_FORWARD_PID || true
   echo "$(date) : ...setting up port-forwarding and testing access..."
-  nohup kubectl port-forward -n swaggerapi svc/petstore 8080:8080 --address 0.0.0.0 >/dev/null &
+  nohup kubectl port-forward -n petstore svc/petstore 8080:8080 --address 0.0.0.0 >/dev/null &
   echo $! > $PORT_FORWARD_PID
   sleep 3
   curl -svo /dev/null http://localhost:8080
@@ -39,8 +39,8 @@ echo "$(date) : change to scenario_staging dir..."
 cd ~/.scenario_staging/
 echo "$(date) : prepare core waap operator setup..."
 kubectl apply -f ./imagepullsecret.yaml
-echo "$(date) : patch default serviceaccount in swaggerapi namespace..."
-kubectl patch serviceaccount default -n swaggerapi -p '{"imagePullSecrets": [{"name": "devuspacr"}]}'
+echo "$(date) : patch default serviceaccount in petstore namespace..."
+kubectl patch serviceaccount default -n petstore -p '{"imagePullSecrets": [{"name": "devuspacr"}]}'
 echo "$(date) : apply defined variables in helm-values template..."
 envsubst < ./operator-helm-template.yaml > ./operator-helm-values.yaml
 echo "$(date) : install operator via helm chart..."

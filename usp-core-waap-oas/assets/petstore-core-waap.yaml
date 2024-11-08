@@ -2,7 +2,7 @@ apiVersion: waap.core.u-s-p.ch/v1alpha1
 kind: CoreWaapService
 metadata:
   name: petstore-usp-core-waap
-  namespace: swaggerapi
+  namespace: petstore
 spec:
   crs:
     mode: DISABLED

@@ -2,14 +2,14 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: openapi-petstore-v3
-  namespace: swaggerapi
+  namespace: petstore
 data:
   pet_store_v3.json: |
     {
       "openapi": "3.0.2",
       "servers": [
         {
-          "url": "http://petstore.swaggerapi.svc:8080/api"
+          "url": "http://petstore.petstore.svc:8080/api"
         }
       ],
       "info": {

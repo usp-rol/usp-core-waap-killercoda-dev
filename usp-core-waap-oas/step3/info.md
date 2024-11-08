@@ -17,7 +17,7 @@ apiVersion: waap.core.u-s-p.ch/v1alpha1
 kind: CoreWaapService
 metadata:
   name: petstore-usp-core-waap
-  namespace: swaggerapi
+  namespace: petstore
 spec:
   crs:
     mode: DISABLED
@@ -58,7 +58,7 @@ There is a file in your home directory with an example `corewaapservice` definit
 
 </details>
 
-Now re-check if a Core WAAP instance is active in the `swaggerapi` namespace:
+Now re-check if a Core WAAP instance is active in the `petstore` namespace:
 
 ```shell
 kubectl get corewaapservices --all-namespaces
@@ -85,7 +85,8 @@ curl -sv http://localhost/api/pet/waapcat1
 This time you'll get an HTTP 400 response and will not see any request in the backend as this invalid call was intercepted by Core WAAP!
 
 ```shell
-kubectl -n swaggerapi exec pod/petstore -- /bin/bash -c "tail /var/log/*-requests.log"
+kubectl -n petstore exec pod/petstore \
+  -- /bin/bash -c "tail /var/log/*-requests.log"
 ```{{exec}}
 
 Now let's make sure a valid pestore API call still works:
