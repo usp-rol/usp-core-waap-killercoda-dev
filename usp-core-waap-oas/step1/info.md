@@ -2,9 +2,9 @@
 
 >wait until the console on the right side is ready before trying to access the API!
 
->intially the petstore API will be access unprotected via localhost:8080
-
 Access the petstore API (querying for a pet with ID 1) using the console on the right side:
+
+>intially the petstore API will be access unprotected via localhost:8080
 
 ```shell
 curl -s http://localhost:8080/api/pet/1 | jq '.'

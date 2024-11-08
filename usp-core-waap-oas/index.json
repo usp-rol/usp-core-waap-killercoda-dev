@@ -22,6 +22,7 @@
         "title": "setup USP Core WAAP operator",
         "text": "step2/info.md",
         "foreground": "step2/foreground.sh",
+        "background": "step2/background.sh",
         "verify": "step2/verify.sh"
       },
       {
