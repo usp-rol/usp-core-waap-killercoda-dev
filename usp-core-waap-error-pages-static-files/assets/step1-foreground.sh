@@ -5,7 +5,7 @@ rm $0
 clear
 
 echo -n "Installing scenario..."
-while [ ! -f /tmp/.petstore-finished ]; do
+while [ ! -f /tmp/.background-finished ]; do
   echo -n '.'
   sleep 1;
 done;

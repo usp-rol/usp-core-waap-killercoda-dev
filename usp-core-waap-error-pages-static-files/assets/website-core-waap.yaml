@@ -1,9 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: core-waap-static-resources
+  namespace: backend
+data:
+  style.css: |
+    body { color: green }
+  error4xx.html: |
+    <html>
+    <head>
+    <title>Error Page 4xx</title>
+    <link rel="stylesheet" type="text/css" href="/resources/style.css"/>
+    </head>
+    <body>
+    <h1>Error Page 4xx</h1>
+    <p>backend status code: %RESPONSE_CODE%</p>
+    <img src="/resources/logo.svg">
+    </body>
+    </html>
+---
 apiVersion: waap.core.u-s-p.ch/v1alpha1
 kind: CoreWaapService
 metadata:
   name: website-usp-core-waap
   namespace: backend
 spec:
+  webResources:
+    configMap: core-waap-static-resources
+    path: /resources/
+    staticFiles:
+    - key: style.css
+    errorPages:
+    - key: error4xx.html
+      statusCode: 4xx
   crs:
     mode: DISABLED
   headerFiltering:
