@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  backend
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: website-content
+  namespace: backend
+data:
+  index.html:
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <title>Sample company website</title>
+    </head>
+
+    <body>
+        <h1>Welcome to the one and only sample company website!</h1>
+        <p>Maybe you've seen other company website but be assured, this one here is the most remarkable website on the whole
+            internet!</p>
+    </body>
+    </htlm>
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: website
+  namespace: backend
+  labels:
+    app.kubernetes.io/name: website
+spec:
+  containers:
+  - name: httpd
+    image: httpd:2.4
+    volumeMounts:
+    - name: html
+      mountPath: "/usr/local/apache2/htdocs/"
+      readOnly: true
+    ports:
+      - name: http
+        containerPort: 8080
+        protocol: TCP
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+  volumes:
+  - name: html
+    configMap:
+      name: website-content
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: website
+  namespace: backend
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: website
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
