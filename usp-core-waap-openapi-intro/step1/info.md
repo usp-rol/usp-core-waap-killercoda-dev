@@ -4,7 +4,7 @@
 
 Access the petstore API (querying for a pet with ID 1) using the console on the right side:
 
->initially the petstore API will be access unprotected via localhost:8080
+>initially the petstore API will be accessed unprotected via localhost:8080
 
 ```shell
 curl -s http://localhost:8080/api/pet/1 | jq '.'
