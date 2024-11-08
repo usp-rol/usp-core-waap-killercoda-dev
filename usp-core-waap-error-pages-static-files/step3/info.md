@@ -68,7 +68,7 @@ backend     website-usp-core-waap-78dbbc6d8c-6w7lr    2/2     Running   0       
 
 >wait until the Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
 
-Continue accessing the petstore API now (or consider the hidden solution in case you were not successful).
+Continue accessing the example company website now (or consider the hidden solution in case you were not successful).
 
 <details>
 <summary>solution</summary>
@@ -76,7 +76,7 @@ Continue accessing the petstore API now (or consider the hidden solution in case
 First create the Core WAAP instance using
 
 ```shell
-kubectl apply -f petstore-core-waap.yaml
+kubectl apply -f website-core-waap.yaml
 ```{{exec}}
 
 and wait for its readiness...
@@ -84,7 +84,7 @@ and wait for its readiness...
 ```shell
 kubectl wait pods \
   -l app.kubernetes.io/name=usp-core-waap \
-  -n petstore \
+  -n backend \
   --for='condition=Ready'
 ```{{exec}}
 

@@ -8,7 +8,7 @@ Have a look at the Kubernetes Ingress / Service / Pod architecture:
 
 ### Setup USP Core WAAP instance
 
-You will now setup a **USP Core WAAP instance** and access the petstore API via Core WAAP instead and test if you still can post invalid API calls to the backend application. The setup used will be slightly different in terms of traffic as it will be handled by USP Core WAAP which (acting as a reverse-proxy / WAF) will query the petstore API itself:
+You will now setup a **USP Core WAAP instance** and access the sample company website via Core WAAP instead. The setup used will be slightly different in terms of traffic as it will be handled by USP Core WAAP which (acting as a reverse-proxy / WAF) will query the website backend applicatoin itself:
 
 ![USP Core WAAP setup](./kubernetes_core_waap.png)
 

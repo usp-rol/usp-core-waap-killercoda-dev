@@ -5,7 +5,7 @@ rm $0
 clear
 
 echo -n "Installing scenario..."
-while [ ! -f /tmp/.background-finished ]; do
+while [ ! -f /tmp/.backend-finished ]; do
   echo -n '.'
   sleep 1;
 done;

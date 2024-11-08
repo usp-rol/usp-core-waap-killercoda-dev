@@ -1,8 +1,6 @@
 ### Splendid!
 
-You just protected the swagger petstore API demo application on a basic level providing OpenAPI validation!
-
-> While fixing vulnerabilities / writing secure application code is imminent, USP Core WAAP can help you out taking the time it takes to fix all vulnerabilities and giving you an additional layer of security!
+You just configure Core WAAP for custom error pages using static files!
 
 Now watch out for more scenarios to come highlighting detailed aspects of the USP Core WAAP protection like HTTP header filtering, cross-site-request-forgery (CSRF) protection and anti-virus scanning integrations!
 

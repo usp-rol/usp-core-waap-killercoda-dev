@@ -13,8 +13,8 @@ data:
     <link rel="stylesheet" type="text/css" href="/resources/style.css"/>
     </head>
     <body>
-    <h1>Error Page 4xx</h1>
-    <p>backend status code: %RESPONSE_CODE%</p>
+    <h1>Example Company Error Page</h1>
+    <p>example backend status code: %RESPONSE_CODE%</p>
     <img src="/resources/logo.svg">
     </body>
     </html>
