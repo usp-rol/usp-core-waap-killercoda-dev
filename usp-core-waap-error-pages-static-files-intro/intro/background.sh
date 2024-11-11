@@ -51,8 +51,9 @@ helm install \
   --version ${CORE_WAAP_HELM_VERSION} \
   --values ./operator-helm-values.yaml \
   --namespace usp-core-waap-operator
-echo "$(date) : copy corewaap custom resouce to user home..."
+echo "$(date) : copy corewaap custom resouces to user home..."
 cp ./${BACKEND_POD}-core-waap.yaml ~
+cp ./${BACKEND_POD}-configmap.yaml ~
 echo "$(date) : signal foreground script completion..."
 touch /tmp/.operator_installed
 echo "$(date) : core waap operator setup finished"

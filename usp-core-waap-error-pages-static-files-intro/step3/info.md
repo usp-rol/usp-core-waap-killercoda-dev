@@ -4,7 +4,51 @@
 
 Having the Core WAAP operator installed and ready to go, you can now configure the USP Core WAAP instance.
 
-We will setup an instace of Core WAAP using:
+At first we will configure the custom error page with static content via kubernetes  `ConfigMap`:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: core-waap-static-resources
+  namespace: backend
+data:
+  style.css: |
+    body { color: green }
+  error4xx.html: |
+    <html>
+    <head>
+    <title>Error Page 4xx</title>
+    <link rel="stylesheet" type="text/css" href="/resources/style.css"/>
+    </head>
+    <body>
+    <h1>Example Company Error Page</h1>
+    <p>example backend status code: %RESPONSE_CODE%</p>
+    <p>local logo.jpg resource: <img src="/resources/logo.jpg"></p>
+    <p>a remote referenced image: <img src="https://raw.githubusercontent.com/killercoda/scenario-examples/refs/heads/main/assets/logo.png"></p>
+    </body>
+    </html>
+binaryData:
+  logo.jpg: |
+    <base64-encoded-image>...
+```
+
+There is an example ConfigMap prepared for you ready to be applied using:
+
+```shell
+kubectl apply -f website-configmap.yaml
+```{{copy}}
+
+<details>
+<summary>example command output
+
+```shell
+configmap/core-waap-static-resources created
+```
+
+</details>
+
+Next, we will setup an instace of Core WAAP using the created ConfigMap using:
 
 ```yaml
 apiVersion: waap.core.u-s-p.ch/v1alpha1
@@ -102,13 +146,19 @@ Continue accessing the [sample company website]({{TRAFFIC_HOST1_80}}) via Core W
 <details>
 <summary>solution</summary>
 
-First create the Core WAAP instance using
+First create the configmap:
+
+```shell
+kubectl apply -f website-configmap.yaml
+```{{exec}}
+
+Next, create the Core WAAP instance using:
 
 ```shell
 kubectl apply -f website-core-waap.yaml
 ```{{exec}}
 
-and wait for its readiness...
+and wait for its readiness:
 
 ```shell
 kubectl wait pods \
