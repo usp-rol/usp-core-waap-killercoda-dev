@@ -31,7 +31,7 @@ done
 touch $BACKEND_SETUP_FINISH && echo "$(date) : wrote file $BACKEND_SETUP_FINISH to indicate backend setup completion to foreground process"
 echo "$(date) : backend setup finished"
 # Part 2: setup core waap operator
-export CORE_WAAP_HELM_VERSION=1.2.0-alpha2     # TODO: change to a released artifact!!!
+export CORE_WAAP_HELM_VERSION=0.0.0-main-SNAPSHOT     # TODO: change to a released artifact!!!
 export CONTAINER_REGISTRY=devuspregistry.azurecr.io
 sleep $WAIT_SEC
 echo "$(date) : login to helm registry..."
