@@ -1,0 +1,31 @@
+apiVersion: waap.core.u-s-p.ch/v1alpha1
+kind: CoreWaapService
+metadata:
+  name: website-usp-core-waap
+  namespace: backend
+spec:
+  webResources:
+    configMap: core-waap-static-resources
+    path: /resources/
+    staticFiles:
+    - key: style.css
+    - key: logo.jpg
+    errorPages:
+    - key: error4xx.html
+      statusCode: 4xx
+  crs:
+    mode: DISABLED
+  headerFiltering:
+    request:
+      enabled: false
+    response:
+      enabled: false
+  routes:
+    - match:
+        path: /
+        pathType: PREFIX
+      backend:
+        address: website
+        port: 8080
+        protocol:
+          selection: h1

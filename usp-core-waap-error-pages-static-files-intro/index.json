@@ -1,0 +1,42 @@
+{
+  "title": "USP Core WAAP Error Pages and Static Files",
+  "description": "using custom error pages and static files",
+  "details": {
+    "intro": {
+      "text": "intro/info.md",
+      "foreground": "intro/foreground.sh",
+      "background": "intro/background.sh"
+    },
+    "assets": {
+      "host01": [
+        {"file": "*", "target": "~/.scenario_staging/"}
+      ]
+    },
+    "steps": [
+      {
+        "title": "a sample HTTP backend",
+        "text": "step1/info.md",
+        "verify": "step1/verify.sh"
+      },
+      {
+        "title": "setup USP Core WAAP operator",
+        "text": "step2/info.md",
+        "foreground": "step2/foreground.sh",
+        "background": "step2/background.sh",
+        "verify": "step2/verify.sh"
+      },
+      {
+        "title": "configure a USP Core WAAP instance",
+        "text": "step3/info.md",
+        "background": "step3/background.sh",
+        "verify": "step3/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-1node"
+  }
+}
