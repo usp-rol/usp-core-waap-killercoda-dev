@@ -2,18 +2,14 @@
 
 >wait until the console on the right side is ready before accessing the website (otherwise you'll see a HTTP 502 Bad Gateway error)!
 
-A **sample company website** has been setup which will be used to demonstrate the custom error pages feature here.
-Please note the exceptional work done to desinging that website!
+The [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) **demo web application** has been setup and will be used to demonstrate the custom error pages feature.
 
-[access the sample website]({{TRAFFIC_HOST1_8080}})
+[access the Juice Shop]({{TRAFFIC_HOST1_8080}})
 
->initially the website will be accessed unprotected (not using Core WAAP)
+>initially the backend will be accessed unprotected (not using Core WAAP)
 
-make sure to checkout the two products advertised by the company:
+**Make sure to access the [profile page]({{TRAFFIC_HOST1_8080}}/profile) (while NOT being logged in) which seems to have an issue...**
 
-* [product A]({{TRAFFIC_HOST1_8080}}/product_a.html)
-* [product B]({{TRAFFIC_HOST1_8080}}/product_b.html)
-
-Uuuspie, someone seem to have missed to create the product page for product A! And to make it worse, that standard `HTTP 404 Not Found` page does not fit into that glorious page design...
+As you can see a lot of background information (source code filenames and component versions) is given to the user.
 
 Now let's see how we can use custom error pages and static files **provided by USP Core WAAP**!

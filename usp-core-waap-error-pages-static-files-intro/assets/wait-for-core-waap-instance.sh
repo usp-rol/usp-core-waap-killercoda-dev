@@ -5,8 +5,8 @@ exec > /var/log/killercoda/background_step3_stdout.log
 exec 2> /var/log/killercoda/background_step3_stderr.log
 
 echo "$(date) : waiting for corewaap instance to be ready..."
-BACKEND_NAMESPACE="backend"
-BACKEND_POD="website"
+BACKEND_NAMESPACE="juiceshop"
+BACKEND_POD="juiceshop"
 RC=99
 while [ $RC -gt 0 ]; do
   sleep 2

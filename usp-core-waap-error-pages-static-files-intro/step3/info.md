@@ -36,7 +36,7 @@ binaryData:
 There is an example ConfigMap prepared for you ready to be applied using:
 
 ```shell
-kubectl apply -f website-configmap.yaml
+kubectl apply -f error-configmap.yaml
 ```{{exec}}
 
 <details>
@@ -55,7 +55,7 @@ Next, we will setup an instace of Core WAAP using the created ConfigMap using:
 apiVersion: waap.core.u-s-p.ch/v1alpha1
 kind: CoreWaapService
 metadata:
-  name: website-usp-core-waap
+  name: juiceshop-usp-core-waap
   namespace: backend
 spec:
   webResources:
@@ -90,7 +90,7 @@ spec:
 <summary>example command output
 
 ```shell
-corewaapservice.waap.core.u-s-p.ch/website-usp-core-waap created
+corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap created
 ```
 
 </details>
@@ -114,7 +114,7 @@ kubectl get corewaapservices --all-namespaces
 
 ```shell
 NAMESPACE   NAME                     AGE
-backend     website-usp-core-waap    59s
+backend     juiceshop-usp-core-waap    59s
 ```
 
 </details>
@@ -134,7 +134,7 @@ kubectl get pods \
 
 ```shell
 NAMESPACE   NAME                                     READY   STATUS    RESTARTS   AGE
-backend     website-usp-core-waap-7849dbf5fd-4jt8c   1/1     Running   0          43s
+backend     juiceshop-usp-core-waap-7849dbf5fd-4jt8c   1/1     Running   0          43s
 ```
 
 </details>
@@ -150,13 +150,13 @@ Continue accessing the [sample company website]({{TRAFFIC_HOST1_80}}) via Core W
 First create the configmap:
 
 ```shell
-kubectl apply -f website-configmap.yaml
+kubectl apply -f error-configmap.yaml
 ```{{exec}}
 
 Next, create the Core WAAP instance using:
 
 ```shell
-kubectl apply -f website-core-waap.yaml
+kubectl apply -f juiceshop-core-waap.yaml
 ```{{exec}}
 
 and wait for its readiness:
@@ -220,7 +220,7 @@ kubectl logs \
   "client.address": "127.0.0.1:51646",
   "client.local_address": "127.0.0.1:8080",
   "client.direct_address": "127.0.0.1:51646",
-  "host.hostname": "website-usp-core-waap-7849dbf5fd-4jt8c",
+  "host.hostname": "juiceshop-usp-core-waap-7849dbf5fd-4jt8c",
   "http.req_headers.referer": "https://262e3c7e-6bbe-48d5-8aad-0d869b979dce-10-244-4-99-80.spch.r.killercoda.com/",
   "http.req_headers.useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0",
   "http.req_headers.authority": "website",
