@@ -11,7 +11,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: core-waap-static-resources
-  namespace: backend
+  namespace: juiceshop
 data:
   style.css: |
     body { color: green }
@@ -56,7 +56,7 @@ apiVersion: waap.core.u-s-p.ch/v1alpha1
 kind: CoreWaapService
 metadata:
   name: juiceshop-usp-core-waap
-  namespace: backend
+  namespace: juiceshop
 spec:
   webResources:
     configMap: core-waap-static-resources
