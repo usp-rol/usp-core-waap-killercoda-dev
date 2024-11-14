@@ -37,7 +37,7 @@ There is an example ConfigMap prepared for you ready to be applied using:
 
 ```shell
 kubectl apply -f website-configmap.yaml
-```{{copy}}
+```{{exec}}
 
 <details>
 <summary>example command output
@@ -47,6 +47,7 @@ configmap/core-waap-static-resources created
 ```
 
 </details>
+<br />
 
 Next, we will setup an instace of Core WAAP using the created ConfigMap using:
 
