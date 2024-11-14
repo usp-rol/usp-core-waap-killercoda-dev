@@ -19,6 +19,19 @@ data:
     <p>a remote referenced image: <img src="https://raw.githubusercontent.com/killercoda/scenario-examples/refs/heads/main/assets/logo.png"></p>
     </body>
     </html>
+  error5xx.html: |
+    <html>
+    <head>
+    <title>Error Page 4xx</title>
+    <link rel="stylesheet" type="text/css" href="/style.css"/>
+    </head>
+    <body>
+    <h1>Example Company Error Page</h1>
+    <p>backend status code: %RESPONSE_CODE%</p>
+    <p>local logo.jpg resource: <img src="/resources/logo.jpg"></p>
+    <p>a remote referenced image: <img src="https://raw.githubusercontent.com/killercoda/scenario-examples/refs/heads/main/assets/logo.png"></p>
+    </body>
+    </html>
 binaryData:
   logo.jpg: |
     /9j/4AAQSkZJRgABAQEASABIAAD/7gAOQWRvYmUAZAAAAAAC/9sAQwAGBAUGBQQGBgUGBwcGCAoQ

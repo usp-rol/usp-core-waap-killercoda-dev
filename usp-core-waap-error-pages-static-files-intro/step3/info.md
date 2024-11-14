@@ -164,7 +164,7 @@ and wait for its readiness:
 ```shell
 kubectl wait pods \
   -l app.kubernetes.io/name=usp-core-waap \
-  -n backend \
+  -n juiceshop \
   --for='condition=Ready'
 ```{{exec}}
 
@@ -189,7 +189,7 @@ How to get more insight in why a request was blocked by the Core WAAP OpenAPI va
 
 ```shell
 kubectl logs \
-  -n backend \
+  -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
   | grep '^{' | jq
 ```{{exec}}

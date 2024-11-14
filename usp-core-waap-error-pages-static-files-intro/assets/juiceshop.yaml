@@ -16,8 +16,8 @@ spec:
     image: bkimminich/juice-shop
     resources:
       limits:
-        memory: "128Mi"
-        cpu: "500m"
+        memory: 128Mi
+        cpu: 100m
     ports:
       - containerPort: 3000
 ---

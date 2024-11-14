@@ -14,7 +14,7 @@
     },
     "steps": [
       {
-        "title": "a sample HTTP backend",
+        "title": "plain backend error pages",
         "text": "step1/info.md",
         "verify": "step1/verify.sh"
       },

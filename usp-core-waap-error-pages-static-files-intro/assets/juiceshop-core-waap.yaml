@@ -13,6 +13,8 @@ spec:
     errorPages:
     - key: error4xx.html
       statusCode: 4xx
+    - key: error5xx.html
+      statusCode: 5xx
   crs:
     mode: DISABLED
   headerFiltering:
@@ -25,7 +27,7 @@ spec:
         path: /
         pathType: PREFIX
       backend:
-        address: website
+        address: juiceshop
         port: 8080
         protocol:
           selection: h1
