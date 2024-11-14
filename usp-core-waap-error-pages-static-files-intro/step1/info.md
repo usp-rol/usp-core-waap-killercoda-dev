@@ -2,9 +2,7 @@
 
 >wait until the console on the right side is ready before accessing the website (otherwise you'll see a HTTP 502 Bad Gateway error)!
 
-The [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) **demo web application** has been setup and will be used to demonstrate the custom error pages feature.
-
-[access the Juice Shop]({{TRAFFIC_HOST1_8080}})
+The [OWASP Juice Shop]({{TRAFFIC_HOST1_8080}}) **demo web application** has been setup and will be used to demonstrate the custom error pages feature.
 
 >initially the backend will be accessed unprotected (not using Core WAAP)
 

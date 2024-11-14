@@ -4,8 +4,8 @@
 
 # variables
 WAIT_SEC=5
-BACKEND_NAMESPACE="backend"
-BACKEND_POD="website"
+BACKEND_NAMESPACE="juiceshop"
+BACKEND_POD="juiceshop"
 BACKEND_SVC="$BACKEND_POD"
 BACKEND_SETUP_FINISH="/tmp/.backend-finished"
 PORT_FORWARD_PID="/tmp/.backend-port-forward-pid"
