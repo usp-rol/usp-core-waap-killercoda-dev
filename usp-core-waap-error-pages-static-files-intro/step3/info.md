@@ -148,7 +148,7 @@ backend     juiceshop-usp-core-waap-7849dbf5fd-4jt8c   1/1     Running   0      
 
 >wait until the Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
 
-Continue accessing the [OWASP Juice Shop]({{TRAFFIC_HOST1_8080}}) via Core WAAP now (or consider the hidden solution in case you were not successful).
+Continue accessing the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) via Core WAAP now (or consider the hidden solution in case you were not successful).
 
 <details>
 <summary>solution</summary>
@@ -179,9 +179,9 @@ kubectl wait pods \
 
 ### Access via USP Core WAAP
 
-The port forwarding was changed accordingly that the traffic to the [OWASP Juice Shop]({{TRAFFIC_HOST1_8080}}) is now routed **via USP Core WAAP**.
+The port forwarding was changed accordingly that the traffic to the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) is now routed **via USP Core WAAP**.
 
-**Make sure to access the [profile page]({{TRAFFIC_HOST1_8080}}/profile) (while NOT being logged in) again...**
+**Make sure to access the [profile page]({{TRAFFIC_HOST1_80}}/profile) (while NOT being logged in) again...**
 
 Did you notice the different error page?
 Not only are sensitive application information hidden but also the style can be changed to match the Juice Shop layout.

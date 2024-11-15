@@ -1,6 +1,6 @@
 ### Splendid!
 
-You just configure Core WAAP for custom error pages using static files!
+You just configured Core WAAP for custom error pages!
 
 Now watch out for more scenarios to come highlighting detailed aspects of the USP Core WAAP protection like HTTP header filtering, cross-site-request-forgery (CSRF) protection and anti-virus scanning integrations!
 
