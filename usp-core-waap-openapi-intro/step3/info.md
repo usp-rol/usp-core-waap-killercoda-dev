@@ -271,6 +271,34 @@ Ahh...there it is again the familiar "furrr..."!
 
 > The used OpenAPI specification is available for detailed analysis via [API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml) from the swagger-api project.
 
+What about our first invalid API call, this was blocked because of the missing security header so let's confirm it is also blocked when that header is sent:
+
+```shell
+curl -sv -H 'api_key: anything' http://localhost/api/pet/waapcat1
+```{{exec}}
+
+<details>
+<summary>example command output
+
+```shell
+*   Trying 127.0.0.1:80...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 80 (#0)
+> GET /api/pet/waapcat1 HTTP/1.1
+> Host: localhost
+> User-Agent: curl/7.68.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 400 Bad Request
+< date: Fri, 08 Nov 2024 09:58:30 GMT
+< server: envoy
+< connection: close
+< content-length: 0
+<
+* Closing connection 0
+```
+
 ### Inspect the actions taken by USP Core WAAP
 
 How to get more insight in why a request was blocked by the Core WAAP OpenAPI validation feature? Let's have a look at the logs!
@@ -311,7 +339,7 @@ Conditions:
 </details>
 <br />
 
-Note in addition to the base `envoy` container there is a `traffic-processor-openapi-...` conatiner which will provide log insight into why an OpenAPI validation feature blocked a request. Looking into that container we see the details for OpenAPI request validations:
+Note in addition to the base `envoy` container there is a `traffic-processor-openapi-...` container which will provide log insight into why an OpenAPI validation feature blocked a request. Looking into that container we see the details for OpenAPI request validations:
 
 ```shell
 kubectl logs \
@@ -345,6 +373,11 @@ kubectl logs \
   "level": "info",
   "msg": "RequestHeaders: GET /api/pet/1, validation errors: [Error: API Key api_key not found in header, Reason: API Key not found in http header for security scheme 'apiKey' with type 'header', Line: 331, Column: 11]",
   "time": "2024-11-08T10:00:52Z"
+}
+{
+  "level": "info",
+  "msg": "RequestHeaders: GET /api/pet/waapcat1, validation errors: [Error: Path parameter 'petId' is not a valid number, Reason: The path parameter 'petId' is defined as being a number, however the value 'aapcat1' is not a valid number, Line: 301, Column: 13]",
+  "time": "2024-11-15T13:45:15Z"
 }
 ```
 
