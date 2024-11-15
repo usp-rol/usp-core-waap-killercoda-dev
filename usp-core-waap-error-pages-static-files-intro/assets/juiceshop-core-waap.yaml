@@ -9,7 +9,7 @@ spec:
     path: /resources/
     staticFiles:
     - key: style.css
-    - key: logo.jpg
+    - key: logo.png
     errorPages:
     - key: error4xx.html
       statusCode: 4xx

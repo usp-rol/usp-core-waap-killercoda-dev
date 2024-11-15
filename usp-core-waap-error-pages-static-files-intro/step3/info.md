@@ -9,6 +9,8 @@ At first we will configure the custom error page with static content via kuberne
 ```yaml
 apiVersion: v1
 kind: ConfigMap
+apiVersion: v1
+kind: ConfigMap
 metadata:
   name: core-waap-static-resources
   namespace: juiceshop
@@ -19,17 +21,30 @@ data:
     <html>
     <head>
     <title>Error Page 4xx</title>
-    <link rel="stylesheet" type="text/css" href="/resources/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/styles.css"/>
     </head>
     <body>
     <h1>Example Company Error Page</h1>
     <p>example backend status code: %RESPONSE_CODE%</p>
-    <p>local logo.jpg resource: <img src="/resources/logo.jpg"></p>
+    <p>local logo.png resource: <img src="/resources/logo.png"></p>
+    <p>a remote referenced image: <img src="https://raw.githubusercontent.com/killercoda/scenario-examples/refs/heads/main/assets/logo.png"></p>
+    </body>
+    </html>
+  error5xx.html: |
+    <html>
+    <head>
+    <title>Error Page 4xx</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css"/>
+    </head>
+    <body>
+    <h1>Example Company Error Page</h1>
+    <p>backend status code: %RESPONSE_CODE%</p>
+    <p>local logo.png resource: <img src="/resources/logo.png"></p>
     <p>a remote referenced image: <img src="https://raw.githubusercontent.com/killercoda/scenario-examples/refs/heads/main/assets/logo.png"></p>
     </body>
     </html>
 binaryData:
-  logo.jpg: |
+  logo.png: |
     <base64-encoded-image>...
 ```
 
@@ -113,7 +128,7 @@ kubectl get corewaapservices --all-namespaces
 <summary>example command output
 
 ```shell
-NAMESPACE   NAME                     AGE
+NAMESPACE   NAME                       AGE
 backend     juiceshop-usp-core-waap    59s
 ```
 
@@ -133,7 +148,7 @@ kubectl get pods \
 <summary>example command output
 
 ```shell
-NAMESPACE   NAME                                     READY   STATUS    RESTARTS   AGE
+NAMESPACE   NAME                                       READY   STATUS    RESTARTS   AGE
 backend     juiceshop-usp-core-waap-7849dbf5fd-4jt8c   1/1     Running   0          43s
 ```
 
@@ -171,21 +186,18 @@ kubectl wait pods \
 </details>
 <br />
 
-### Access sample website via USP Core WAAP
+### Access via USP Core WAAP
 
-The port forwarding was changed accordingly that the traffic to the [sample company website]({{TRAFFIC_HOST1_80}}) is now routed **via USP Core WAAP**.
+The port forwarding was changed accordingly that the traffic to the [OWASP Juice Shop]({{TRAFFIC_HOST1_8080}}) is now routed **via USP Core WAAP**.
 
-Make sure to checkout the two products again:
-
-* [product A]({{TRAFFIC_HOST1_80}}/product_a.html)
-* [product B]({{TRAFFIC_HOST1_80}}/product_b.html)
+**Make sure to access the [profile page]({{TRAFFIC_HOST1_8080}}/profile) (while NOT being logged in) again...**
 
 Did you notice the different error page?
-Well it was not expected but somehow the design of that error page even surpasses the design of the website...
+Not only are sensitive application information hidden, but also the style can be changed to match a company layout...
 
 ### Inspect the actions taken by USP Core WAAP
 
-How to get more insight in why a request was blocked by the Core WAAP OpenAPI validation feature? Let's have a look at the logs!
+Let's have a look at the logs!
 
 ```shell
 kubectl logs \
@@ -199,31 +211,31 @@ kubectl logs \
 
 ```json
 {
-  "@timestamp": "2024-11-08T15:04:48.087Z",
-  "request.id": "4ac60bab-b986-4513-9564-eac6aacd9314",
+  "@timestamp": "2024-11-15T07:52:21.149Z",
+  "request.id": "216dfcd7-0668-4e2a-b25d-edf911dfe3e5",
   "request.protocol": "HTTP/1.1",
   "request.method": "GET",
-  "request.path": "/product_a.html",
-  "request.total_duration": "0",
+  "request.path": "/profile",
+  "request.total_duration": "198",
   "request.body_bytes_received": "0",
-  "response.status": "404",
+  "response.status": "500",
   "response.details": "",
   "response.flags": "-",
-  "response.body_bytes_sent": "232",
+  "response.body_bytes_sent": "407",
   "envoy.upstream.duration": "-",
-  "envoy.upstream.host": "10.109.93.26:8080",
+  "envoy.upstream.host": "10.110.238.103:8080",
   "envoy.upstream.route": "-",
-  "envoy.upstream.cluster": "core.waap.cluster.backend-website-8080-h1",
-  "envoy.upstream.bytes_sent": "1016",
-  "envoy.upstream.bytes_received": "355",
-  "envoy.connection.id": "22",
-  "client.address": "127.0.0.1:51646",
+  "envoy.upstream.cluster": "core.waap.cluster.backend-juiceshop-8080-h1",
+  "envoy.upstream.bytes_sent": "1034",
+  "envoy.upstream.bytes_received": "401",
+  "envoy.connection.id": "57",
+  "client.address": "127.0.0.1:57716",
   "client.local_address": "127.0.0.1:8080",
-  "client.direct_address": "127.0.0.1:51646",
-  "host.hostname": "juiceshop-usp-core-waap-7849dbf5fd-4jt8c",
-  "http.req_headers.referer": "https://262e3c7e-6bbe-48d5-8aad-0d869b979dce-10-244-4-99-80.spch.r.killercoda.com/",
+  "client.direct_address": "127.0.0.1:57716",
+  "host.hostname": "juiceshop-usp-core-waap-747b9748db-prq9r",
+  "http.req_headers.referer": "-",
   "http.req_headers.useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0",
-  "http.req_headers.authority": "website",
+  "http.req_headers.authority": "juiceshop",
   "http.req_headers.forwarded_for": "-",
   "http.req_headers.forwarded_proto": "https"
 }
