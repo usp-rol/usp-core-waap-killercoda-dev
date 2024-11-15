@@ -11,28 +11,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: core-waap-static-resources
-<<<<<<< HEAD
-  namespace: backend
-data:
-  style.css: |
-    body { color: green }
-  error4xx.html: |
-    <html>
-    <head>
-    <title>Error Page 4xx</title>
-    <link rel="stylesheet" type="text/css" href="/resources/style.css"/>
-    </head>
-    <body>
-    <h1>Example Company Error Page</h1>
-    <p>example backend status code: %RESPONSE_CODE%</p>
-    <p>local logo.jpg resource: <img src="/resources/logo.jpg"></p>
-    <p>a remote referenced image: <img src="https://raw.githubusercontent.com/killercoda/scenario-examples/refs/heads/main/assets/logo.png"></p>
-    </body>
-    </html>
-binaryData:
-  logo.jpg: |
-    <base64-encoded-image>...
-=======
   namespace: juiceshop
 data:
   error5xx.html: |
@@ -66,17 +44,12 @@ data:
     </div>
     </body>
     </html>
->>>>>>> origin/redmine-290054-error-pages-intro
 ```
 
 There is an example ConfigMap prepared for you ready to be applied using:
 
 ```shell
-<<<<<<< HEAD
-kubectl apply -f website-configmap.yaml
-=======
 kubectl apply -f error-configmap.yaml
->>>>>>> origin/redmine-290054-error-pages-intro
 ```{{exec}}
 
 <details>

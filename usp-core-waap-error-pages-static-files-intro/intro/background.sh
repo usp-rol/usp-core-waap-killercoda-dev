@@ -53,11 +53,7 @@ helm install \
   --namespace usp-core-waap-operator
 echo "$(date) : copy corewaap custom resouces to user home..."
 cp ./${BACKEND_POD}-core-waap.yaml ~
-<<<<<<< HEAD
-cp ./${BACKEND_POD}-configmap.yaml ~
-=======
 cp ./error-configmap.yaml ~
->>>>>>> origin/redmine-290054-error-pages-intro
 echo "$(date) : signal foreground script completion..."
 touch /tmp/.operator_installed
 echo "$(date) : core waap operator setup finished"
