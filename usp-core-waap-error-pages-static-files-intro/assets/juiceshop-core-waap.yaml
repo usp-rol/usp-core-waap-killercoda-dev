@@ -7,21 +7,11 @@ spec:
   webResources:
     configMap: core-waap-static-resources
     path: /resources/
-    staticFiles:
-    - key: style.css
-    - key: logo.png
     errorPages:
-    - key: error4xx.html
-      statusCode: 4xx
     - key: error5xx.html
       statusCode: 5xx
   crs:
     mode: DISABLED
-  headerFiltering:
-    request:
-      enabled: false
-    response:
-      enabled: false
   routes:
     - match:
         path: /

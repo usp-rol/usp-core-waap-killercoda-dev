@@ -9,43 +9,41 @@ At first we will configure the custom error page with static content via kuberne
 ```yaml
 apiVersion: v1
 kind: ConfigMap
-apiVersion: v1
-kind: ConfigMap
 metadata:
   name: core-waap-static-resources
   namespace: juiceshop
 data:
-  style.css: |
-    body { color: green }
-  error4xx.html: |
-    <html>
-    <head>
-    <title>Error Page 4xx</title>
-    <link rel="stylesheet" type="text/css" href="/styles.css"/>
-    </head>
-    <body>
-    <h1>Example Company Error Page</h1>
-    <p>example backend status code: %RESPONSE_CODE%</p>
-    <p>local logo.png resource: <img src="/resources/logo.png"></p>
-    <p>a remote referenced image: <img src="https://raw.githubusercontent.com/killercoda/scenario-examples/refs/heads/main/assets/logo.png"></p>
-    </body>
-    </html>
   error5xx.html: |
     <html>
     <head>
-    <title>Error Page 4xx</title>
+    <title>Error Page 5xx</title>
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
     </head>
-    <body>
-    <h1>Example Company Error Page</h1>
-    <p>backend status code: %RESPONSE_CODE%</p>
-    <p>local logo.png resource: <img src="/resources/logo.png"></p>
-    <p>a remote referenced image: <img src="https://raw.githubusercontent.com/killercoda/scenario-examples/refs/heads/main/assets/logo.png"></p>
+    <body class="mat-app-background bluegrey-lightgreen-theme">
+    <div style="position: absolute;top: 50%% ;left: 50%% ;margin-top: -50px;margin-left: -50px;width: 100px;height: 100px;">
+    <div class="cdk-overlay-container bluegrey-lightgreen-theme">
+    <div fxlayoutalign="center" style="place-content: stretch center; align-content: stretch; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex;">
+    <mat-card class="mat-card mat-focus-indicator mat-elevation-z6" style="padding: 50px;">
+      <section class="about-us">
+        <h1>The application encountered an error</h1>
+        <img src="/assets/public/images/JuiceShop_Logo.png" width="150" height="180" />
+        <p class="text-justify">
+        Please retry to access the webpage. In case the request is not successful get in touch with support@... providing the information below.
+        </p>
+        <p class="text-justify">
+        <table border="0">
+        <tr><th align="right">backend status code</th><td>: %RESPONSE_CODE%</td></tr>
+        <tr><th align="right">client request id</th><td>: %REQ(X-REQUEST-ID)%</td></tr>
+        <tr><th align="right">timestamp</th><td>: %START_TIME%</td></tr>
+        </table>
+        </p>
+      </section>
+    </mat-card>
+    </div>
+    </div>
+    </div>
     </body>
     </html>
-binaryData:
-  logo.png: |
-    <base64-encoded-image>...
 ```
 
 There is an example ConfigMap prepared for you ready to be applied using:
@@ -76,30 +74,23 @@ spec:
   webResources:
     configMap: core-waap-static-resources
     path: /resources/
-    staticFiles:
-    - key: style.css
     errorPages:
-    - key: error4xx.html
-      statusCode: 4xx
+    - key: error5xx.html
+      statusCode: 5xx
   crs:
     mode: DISABLED
-  headerFiltering:
-    request:
-      enabled: false
-    response:
-      enabled: false
   routes:
     - match:
         path: /
         pathType: PREFIX
       backend:
-        address: website
+        address: juiceshop
         port: 8080
         protocol:
           selection: h1
 ```{{copy}}
 
-(for this demo scenario the OWASP Core Rule Set and header filtering have been disabled to focus on error pages and static file configuration)
+(for this demo scenario the OWASP Core Rule Set has been disabled to focus on error pages and static file configuration)
 
 <details>
 <summary>example command output
@@ -157,7 +148,7 @@ backend     juiceshop-usp-core-waap-7849dbf5fd-4jt8c   1/1     Running   0      
 
 >wait until the Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
 
-Continue accessing the [sample company website]({{TRAFFIC_HOST1_80}}) via Core WAAP now (or consider the hidden solution in case you were not successful).
+Continue accessing the [OWASP Juice Shop]({{TRAFFIC_HOST1_8080}}) via Core WAAP now (or consider the hidden solution in case you were not successful).
 
 <details>
 <summary>solution</summary>
@@ -193,9 +184,9 @@ The port forwarding was changed accordingly that the traffic to the [OWASP Juice
 **Make sure to access the [profile page]({{TRAFFIC_HOST1_8080}}/profile) (while NOT being logged in) again...**
 
 Did you notice the different error page?
-Not only are sensitive application information hidden, but also the style can be changed to match a company layout...
+Not only are sensitive application information hidden but also the style can be changed to match the Juice Shop layout.
 
-### Inspect the actions taken by USP Core WAAP
+### Inspect USP Core WAAP logs
 
 Let's have a look at the logs!
 
@@ -244,4 +235,4 @@ kubectl logs \
 </details>
 <br />
 
-That's it! As you see, providing custom error pages including static files is a nice feature to hide specific backend http errors or streamline the error page layout!
+That's it! As you see providing custom error pages is a powerful feature to hide specific http backend errors or streamline the error page layout across multiple backends!
