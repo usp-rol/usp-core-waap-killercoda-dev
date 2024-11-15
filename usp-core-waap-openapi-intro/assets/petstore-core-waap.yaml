@@ -6,11 +6,6 @@ metadata:
 spec:
   crs:
     mode: DISABLED
-  headerFiltering:
-    request:
-      enabled: false
-    response:
-      enabled: false
   trafficProcessing:
     openapi:
       - name: petstore-v3
