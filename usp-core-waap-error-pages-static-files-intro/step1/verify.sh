@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kubectl -n backend logs pod/website | grep 'GET /product_a.html'
+kubectl -n juiceshop logs pod/juiceshop | grep 'at /juice-shop/build/routes/userProfile.js'
