@@ -59,7 +59,7 @@ spec:
           selection: h1
 ```{{copy}}
 
-(for this demo scenario the OWASP Core Rule Set and header filtering have been disabled to focus on OpenAPI validation)
+(for this demo scenario the OWASP Core Rule Set has been disabled to focus on OpenAPI validation)
 
 <details>
 <summary>example command output
