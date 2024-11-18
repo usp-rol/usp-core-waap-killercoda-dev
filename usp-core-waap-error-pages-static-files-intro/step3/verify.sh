@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kubectl logs -n juiceshop -l app.kubernetes.io/name=usp-core-waap | grep '/profile'
+grep '/profile' /var/log/containers/juiceshop-usp-core-waap-*.log
