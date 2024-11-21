@@ -33,6 +33,7 @@ Having a closer look into the logs specifically filtering for `/socket.io` we ge
 kubectl logs \
   -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
+  --tail=-1 \
   | grep "/socket.io"
 ```{{exec}}
 
@@ -54,6 +55,7 @@ Using the following command we parse the JSON output and hereby as humans have b
 kubectl logs \
   -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
+  --tail=-1 \
   | grep "coraza-vm.*/socket.io" \
   | sed -e 's/.* coraza-vm: //' \
   | jq
@@ -155,13 +157,15 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
 </details>
 <br />
 
-Now after having reconfigure the `CoreWaapService` instance wait for its reconfiguration (indicated by the log) and observe the `socket.io` request denial disappear:
+Now after having reconfigured the `CoreWaapService` instance wait for its reconfiguration (indicated by the log `add/update listener 'core.waap.listener`) and observe the `socket.io` request denial disappear:
 
 ```shell
 kubectl logs \
   -n juiceshop \
-  -l app.kubernetes.io/name=usp-core-waap
+  -l app.kubernetes.io/name=usp-core-waap \
   -f 
 ```{{exec}}
 
-That's it! ...
+>make sure to wait until the `add/update listener 'core.waap.listener` log is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
+
+That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive!
