@@ -27,27 +27,7 @@ kubectl logs \
 
 Notice the high amount of `"request.path":"/socket.io/?...` requests being blocked?
 
-Having a closer look into the logs specifically filtering for `/socket.io` we get more details:
-
-```shell
-kubectl logs \
-  -n juiceshop \
-  -l app.kubernetes.io/name=usp-core-waap \
-  --tail=-1 \
-  | grep "/socket.io"
-```{{exec}}
-
-<details>
-<summary>example command output
-
-```shell
-[2024-11-21 12:11:07.801][60][critical][wasm] [source/extensions/common/wasm/context.cc:1204] wasm log core.waap.listener.filters.http.httpFilter.wasm.coraza.config coraza-vm: {"request.path":"/socket.io/?EIO=4\u0026transport=polling\u0026t=PDEeXwM\u0026sid=s7SRPmMFt70kLpIiAAAI","crs.violated_rule":{"id":920420,"category":"REQUEST-920-PROTOCOL-ENFORCEMENT","severity":"CRITICAL","data":"|text/plain|","message":"Request content type is not allowed by policy","matched_data":"REQUEST_HEADERS","matched_data_name":"content-type","tags":["application-multi","language-multi","platform-multi","attack-protocol","paranoia-level/1","OWASP_CRS","capec/1000/255/153","PCI/12.1"]},"client.address":"172.18.0.1","transaction.id":"eLseFMkYwydsNfseZcj","crs.version":"OWASP_CRS/4.3.0","request.id":"b903d201-701d-440f-9232-c97d00ceb9ab"}
-```
-
-</details>
-<br />
-
-The log messages is split into two parts: First part prior to `coraza-vm:` containing the generic envoy log information indicating what module is taking action, which in our use-case [coraza](https://github.com/corazawaf/coraza) web application firewall module and the second parts which is the actual payload log as JSON.
+The log message is split into two parts: First part prior to `coraza-vm:` containing the generic envoy log information indicating what module is taking action, which in our use-case [coraza](https://github.com/corazawaf/coraza) web application firewall module and the second parts which is the actual payload log as JSON.
 
 Using the following command we parse the JSON output and hereby as humans have better insight into the actual action:
 
@@ -141,7 +121,7 @@ spec:
 
 >detailed information about the rule 920420 are available via [Core Rule Set github repository](https://github.com/coreruleset/coreruleset/blob/main/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf)
 
-Apply the updated `CoreWaapService` prepared for you using:
+**Apply the updated `CoreWaapService` prepared for you using:**
 
 ```shell
 kubectl apply -f juiceshop-core-waap.yaml
@@ -163,7 +143,8 @@ Now after having reconfigured the `CoreWaapService` instance wait for its reconf
 kubectl logs \
   -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
-  -f 
+  --since=5s \
+  --follow
 ```{{exec}}
 
 >make sure to wait until the `add/update listener 'core.waap.listener` log is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
