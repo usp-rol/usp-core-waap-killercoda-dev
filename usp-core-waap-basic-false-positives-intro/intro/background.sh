@@ -7,8 +7,9 @@ WAIT_SEC=5
 BACKEND_NAMESPACE="juiceshop"
 BACKEND_POD="juiceshop"
 BACKEND_SVC="$BACKEND_POD"
-BACKEND_SETUP_FINISH="/tmp/.backend-finished"
-WAAP_SETUP_FINISH="/tmp/.operator_installed"
+BACKEND_SETUP_FINISH="/tmp/.backend_installed"
+OPERATOR_SETUP_FINISHED="/tmp/.operator_installed"
+WAAP_SETUP_FINISH="/tmp/.waap_installed"
 RC=99
 
 # Part 1: setup backend web app
@@ -44,6 +45,7 @@ echo "$(date) : copy corewaap custom resouces to user home..."
 cp ./${BACKEND_POD}-core-waap.yaml ~
 echo "$(date) : signal foreground script completion..."
 echo "$(date) : core waap operator setup finished"
+touch $OPERATOR_SETUP_FINISHED && echo "$(date) : wrote file $OPERATOR_SETUP_FINISHED to indicate operator installation setup completion to foreground process"
 # Part 3: configure core waap instance
 echo "$(date) : applying corewaap instance config..."
 kubectl apply -f ./${BACKEND_POD}-core-waap-initial.yaml
@@ -69,4 +71,4 @@ while [ $RC -gt 0 ]; do
   RC=$?
 done
 # Signal work done to foreground waiting scripts
-touch $WAAP_SETUP_FINISH && echo "$(date) : wrote file $WAAP_SETUP_FINISH to indicate backend setup completion to foreground process"
+touch $WAAP_SETUP_FINISH && echo "$(date) : wrote file $WAAP_SETUP_FINISH to indicate waap setup completion to foreground process"
