@@ -4,14 +4,17 @@ metadata:
   name: juiceshop-usp-core-waap
   namespace: juiceshop
 spec:
-  webResources:
-    configMap: core-waap-static-resources
-    path: /resources/
-    errorPages:
-    - key: error5xx.html
-      statusCode: 5xx
   crs:
-    mode: DISABLED
+    requestRuleExceptions:
+    - ruleId: 920420
+      requestPartType: "REQUEST_HEADERS"
+      requestPartName: "content-type"
+      regEx: true
+      location: "socket.io/*"
+      metadata:
+        comment: "Enable socket.io requests"
+        date: "2024-11-21"
+        createdBy: killercoda-user
   routes:
     - match:
         path: /

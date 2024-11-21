@@ -42,12 +42,11 @@ helm install \
   --namespace usp-core-waap-operator
 echo "$(date) : copy corewaap custom resouces to user home..."
 cp ./${BACKEND_POD}-core-waap.yaml ~
-cp ./error-configmap.yaml ~
 echo "$(date) : signal foreground script completion..."
 echo "$(date) : core waap operator setup finished"
 # Part 3: configure core waap instance
 echo "$(date) : applying corewaap instance config..."
-kubectl apply -f ./juiceshop-core-waap.yaml
+kubectl apply -f ./${BACKEND_POD}-core-waap-initial.yaml
 echo "$(date) : waiting for corewaap instance to be ready..."
 RC=99
 while [ $RC -gt 0 ]; do

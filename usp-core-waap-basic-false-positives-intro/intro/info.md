@@ -6,4 +6,4 @@ This scenario shows how to tackle **false positives** as a next step to the init
 
 >In this scenario we will use the [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) demo web application as a backend.
 
-**Now, let's explore custom error pages!**
+**Now, let's explore false positives!**
