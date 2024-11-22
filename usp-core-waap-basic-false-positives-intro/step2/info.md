@@ -96,11 +96,11 @@ kubectl logs \
 </details>
 <br />
 
-The field `crs.violated_rule` indicates what Core Rule Set RuleId has triggered and is required to add an exception for.
+The field `crs.violated_rule` indicates what Core Rule Set Rule has triggered. The `Rule ID 920420` blocks this request because the content-type is `text/plain` which is untrusted.
 
-> the Rule IDs in the 949... range are the blocking condition rules and are not of interest, in our case the Rule ID 920420 (Protocol enforcement) is!
+>The Rule IDs in the 949... range are the blocking condition rules and are not of interest, in our case the Rule ID 920420 (Protocol enforcement) is!
 
-We want these `/socket.io` requests to succeed (in our use-case they are a `false positive`) and therefore we add an exeption rule to the core-waap CRS configuration using `requestRuleExceptions`:
+We want these `/socket.io` requests to succeed (in our use-case the block of these requests is a `false positive`) and therefore we add an exeption rule to the core-waap CRS configuration using `requestRuleExceptions`:
 
 ```yaml
 ...
@@ -119,9 +119,7 @@ spec:
 ...
 ```
 
->detailed information about the rule 920420 are available via [Core Rule Set github repository](https://github.com/coreruleset/coreruleset/blob/main/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf)
-
-**Apply the updated `CoreWaapService` prepared for you using:**
+**Apply the updated `CoreWaapService` instance configuratoin prepared for you using:**
 
 ```shell
 kubectl apply -f juiceshop-core-waap.yaml
@@ -137,7 +135,7 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
 </details>
 <br />
 
-Now after having reconfigured the `CoreWaapService` instance wait for its reconfiguration (indicated by the log `add/update listener 'core.waap.listener`) and observe the `socket.io` request denial disappear:
+Now after having reconfigured the `CoreWaapService` instance wait for its reconfiguration (indicated by the log `add/update listener 'core.waap.listener'`) and observe the `socket.io` request denials disappear:
 
 ```shell
 kubectl logs \
@@ -147,6 +145,6 @@ kubectl logs \
   --follow
 ```{{exec}}
 
->make sure to wait until the `add/update listener 'core.waap.listener` log is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
+>Make sure to wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
 
 That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive!

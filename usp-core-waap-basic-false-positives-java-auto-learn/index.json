@@ -1,6 +1,6 @@
 {
-  "title": "USP Core WAAP false positives",
-  "description": "How to identify false positives",
+  "title": "USP Core WAAP false positives auto-learning",
+  "description": "How to auto-learning for detecting false-positives",
   "details": {
     "intro": {
       "text": "intro/info.md",
@@ -19,7 +19,7 @@
         "verify": "step1/verify.sh"
       },
       {
-        "title": "Inspect Core Waap Logs",
+        "title": "Use the auto-learning tool",
         "text": "step2/info.md",
         "verify": "step2/verify.sh"
       }
