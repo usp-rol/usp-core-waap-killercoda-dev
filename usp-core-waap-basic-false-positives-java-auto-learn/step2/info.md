@@ -33,7 +33,8 @@ First, download the java cli tool using
 
 ```shell
 version=1.0.1
-curl -so /tmp/waap-lib-autolearn-cli-${version}.jar https://united-security-providers.github.io/usp-core-waap/files/waap-lib-autolearn-cli-${version}.jar
+curl -so /tmp/waap-lib-autolearn-cli-${version}.jar \
+ https://united-security-providers.github.io/usp-core-waap/files/waap-lib-autolearn-cli-${version}.jar
 ```{{exec}}
 
 then execute the cli tool showing the help page:
@@ -47,7 +48,9 @@ java -jar /tmp/waap-lib-autolearn-cli-${version}.jar --help
 Now lets use the auto-learning tool to parse our running Core Waap instance and generate rule exceptions by executing:
 
 ```shell
-java -jar /tmp/waap-lib-autolearn-cli-${version}.jar -n juiceshop -w juiceshop-usp-core-waap
+java -jar /tmp/waap-lib-autolearn-cli-${version}.jar \
+ -n juiceshop \
+ -w juiceshop-usp-core-waap
 ```{{exec}}
 
 <details>
