@@ -1,23 +1,49 @@
 # USP Core WAAP killercoda scenarios
 
-this repository contains the scenarios published via [killercoda](https://killercoda.com/)
+This repository contains the scenarios published via [killercoda](https://killercoda.com/)
 
-## list of scenarios
+## List of scenarios
 
-* juiceshop                   : example [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) demo web application
-* usp-core-waap-basic         : entry-level scenario to show-case the Core WAAP Core Rule Set protection (preventing juiceshop SQL-injection)
+* juiceshop : example [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) demo web application
+* usp-core-waap-basic : entry-level scenario to show-case the Core WAAP Core Rule Set protection (preventing juiceshop SQL-injection)
+* usp-core-waap-basic-false-positives-intro : entry-level scenario to show-case Core WAAP Core Rule Set false-positives handling
+* usp-core-waap-basic-false-positives-java-auto-learn : scenario to show-case Core WAAP Core Rule Set false-positives auto-learning
 * usp-core-waap-openapi-intro : entry-level scenario to show-case the Core WAAP OpenAPI validation feature
 
 **Keep in mind when renaming directories the killercoda scenario URL will change!**
 
-## scneario development
+## Scneario development
 
-read through the [killercoda creator documentation](https://killercoda.com/creators) and check the existing scenario examples at
+Read through the [killercoda creator documentation](https://killercoda.com/creators) and check the existing scenario examples at
 
 * [https://github.com/killercoda/scenario-examples.git](https://github.com/killercoda/scenario-examples.git)
 * [https://github.com/killercoda/scenario-examples-courses.git](https://github.com/killercoda/scenario-examples-courses.git)
 
-### known issues
+In order to modify [USP killercoda scenarios](https://killercoda.com/united-security-providers) one has to...
+
+1. [create a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) of the "live" repo https://github.com/united-security-providers/usp-core-waap-killercoda (i.e. https://github.com/usp-rol/usp-core-waap-killercoda-dev as rol did)
+1. head over to [your killercoda creator profiles](https://killercoda.com/creator/profiles) and select the profile (or create one if there is none)
+1. select **repository** option (URL being `https://killercoda.com/creator/repository/$your-profile-name`) and [configure your fork repo](https://killercoda.com/creators/get-started)
+1. Repo Name will be **everything after github.com/** from your fork created (i.e. usp-rol/usp-core-waap-killercoda-dev) and configure your branch (usually main)
+1. Add deployment key from your [creator repository](https://killercoda.com/creator/repository) to your github fork (settings => Deploy keys)
+1. Add Github webhook config from your [creator repository](https://killercoda.com/creator/repository) to your github fork (settings => Webhooks)
+
+Test your killercoda profile https://killercoda.com/$your-profile-name and modify your fork repo by pushing to github (start with a markdown modification for example)
+
+## Release development work
+
+Once you are satisfied with your modificatons (probably let them test by another team member) you then can update the "live" repo by **contributing back** via github.com to the upstream repo (consider reading through [github.com documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) if unsure of how to do that).
+
+## Debugging intro scripts
+
+For intro scripts only there are default logs available on the console in
+
+* `/var/log/killercoda/background0_stdout.log`
+* `/var/log/killercoda/background0_stderr.log`
+
+or accessible via https://killercoda.com/creator/debug/$your-profile-name
+
+## Known issues
 
 as it seems a background script outside the "intro" section will timeout after 10s and thus end in the UI showing "background script failed".
 to mitigate this execute another script not waiting for finishing (and probably use [foreground/background communication](https://github.com/killercoda/scenario-examples/tree/main/foreground-background-scripts-multi-step)):

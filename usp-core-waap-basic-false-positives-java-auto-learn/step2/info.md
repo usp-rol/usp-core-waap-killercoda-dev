@@ -1,0 +1,152 @@
+### Inspect USP Core WAAP logs
+
+Let's have a look at the logs!
+
+```shell
+kubectl logs \
+  -n juiceshop \
+  -l app.kubernetes.io/name=usp-core-waap \
+  --tail=-1 \
+  | grep "\[critical\]\[wasm\]"
+```{{exec}}
+
+<details>
+<summary>example command output
+
+```shell
+[2024-11-21 10:14:15.017][15][critical][wasm] [source/extensions/common/wasm/context.cc:1204] wasm log core.waap.listener.filters.http.httpFilter.wasm.coraza.config coraza-vm: {"request.path":"/socket.io/?EIO=4\u0026transport=polling\u0026t=PDEDm7q\u0026sid=Q_d8fQ7HSAYmjI_kAAAF","crs.violated_rule":{"id":920420,"category":"REQUEST-920-PROTOCOL-ENFORCEMENT","severity":"CRITICAL","data":"|text/plain|","message":"Request content type is not allowed by policy","matched_data":"REQUEST_HEADERS","matched_data_name":"content-type","tags":["application-multi","language-multi","platform-multi","attack-protocol","paranoia-level/1","OWASP_CRS","capec/1000/255/153","PCI/12.1"]},"client.address":"127.0.0.1","transaction.id":"xpIaKdMfdmgZPBdBZWM","crs.version":"OWASP_CRS/4.3.0","request.id":"ce104af8-283d-4c8b-a3bf-609692267f57"}
+[2024-11-21 10:14:15.026][15][critical][wasm] [source/extensions/common/wasm/context.cc:1204] wasm log core.waap.listener.filters.http.httpFilter.wasm.coraza.config coraza-vm: {"request.path":"/socket.io/?EIO=4\u0026transport=polling\u0026t=PDEDm7q\u0026sid=Q_d8fQ7HSAYmjI_kAAAF","crs.violated_rule":{"id":949111,"category":"REQUEST-949-BLOCKING-EVALUATION","severity":"EMERGENCY","data":"","message":"Inbound Anomaly Score Exceeded in phase 1 (Total Score: 5)","matched_data":"TX","matched_data_name":"blocking_inbound_anomaly_score","tags":["anomaly-evaluation","OWASP_CRS"]},"client.address":"127.0.0.1","transaction.id":"xpIaKdMfdmgZPBdBZWM","crs.version":"OWASP_CRS/4.3.0","request.id":"ce104af8-283d-4c8b-a3bf-609692267f57"}
+[2024-11-21 10:14:15.401][15][critical][wasm] [source/extensions/common/wasm/context.cc:1204] wasm log core.waap.listener.filters.http.httpFilter.wasm.coraza.config coraza-vm: {"request.path":"/rest/user/login","crs.violated_rule":{"id":942100,"category":"REQUEST-942-APPLICATION-ATTACK-SQLI","severity":"CRITICAL","data":"Matched Data: s\u00261; found within ARGS_POST:json.email: ' OR true;","message":"SQL Injection Attack Detected via libinjection","matched_data":"ARGS_POST","matched_data_name":"json.email","tags":["application-multi","language-multi","platform-multi","attack-sqli","paranoia-level/1","OWASP_CRS","capec/1000/152/248/66","PCI/6.5.2"]},"client.address":"127.0.0.1","transaction.id":"HIkttRpzYXYhzkhUyMl","crs.version":"OWASP_CRS/4.3.0","request.id":""}
+[2024-11-21 10:14:15.405][15][critical][wasm] [source/extensions/common/wasm/context.cc:1204] wasm log core.waap.listener.filters.http.httpFilter.wasm.coraza.config coraza-vm: {"request.path":"/rest/user/login","crs.violated_rule":{"id":949110,"category":"REQUEST-949-BLOCKING-EVALUATION","severity":"EMERGENCY","data":"","message":"Inbound Anomaly Score Exceeded (Total Score: 5)","matched_data":"TX","matched_data_name":"blocking_inbound_anomaly_score","tags":["anomaly-evaluation","OWASP_CRS"]},"client.address":"127.0.0.1","transaction.id":"HIkttRpzYXYhzkhUyMl","crs.version":"OWASP_CRS/4.3.0","request.id":""}
+[2024-11-21 10:14:15.485][15][critical][wasm] [source/extensions/common/wasm/context.cc:1204] wasm log core.waap.listener.filters.http.httpFilter.wasm.coraza.config coraza-vm: {"request.path":"/socket.io/?EIO=4\u0026transport=polling\u0026t=PDEDnrH\u0026sid=sK5_0cUWUSrqisfuAAAG","crs.violated_rule":{"id":920420,"category":"REQUEST-920-PROTOCOL-ENFORCEMENT","severity":"CRITICAL","data":"|text/plain|","message":"Request content type is not allowed by policy","matched_data":"REQUEST_HEADERS","matched_data_name":"content-type","tags":["application-multi","language-multi","platform-multi","attack-protocol","paranoia-level/1","OWASP_CRS","capec/1000/255/153","PCI/12.1"]},"client.address":"127.0.0.1","transaction.id":"yxVTJkWNRxjzsFWuXDV","crs.version":"OWASP_CRS/4.3.0","request.id":"98381a37-fb77-4b0a-9a7a-e527db186ccc"}
+[2024-11-21 10:14:15.503][15][critical][wasm] [source/extensions/common/wasm/context.cc:1204] wasm log core.waap.listener.filters.http.httpFilter.wasm.coraza.config coraza-vm: {"request.path":"/socket.io/?EIO=4\u0026transport=polling\u0026t=PDEDnrH\u0026sid=sK5_0cUWUSrqisfuAAAG","crs.violated_rule":{"id":949111,"category":"REQUEST-949-BLOCKING-EVALUATION","severity":"EMERGENCY","data":"","message":"Inbound Anomaly Score Exceeded in phase 1 (Total Score: 5)","matched_data":"TX","matched_data_name":"blocking_inbound_anomaly_score","tags":["anomaly-evaluation","OWASP_CRS"]},"client.address":"127.0.0.1","transaction.id":"yxVTJkWNRxjzsFWuXDV","crs.version":"OWASP_CRS/4.3.0","request.id":"98381a37-fb77-4b0a-9a7a-e527db186ccc"}
+```
+
+</details>
+<br />
+
+Notice the high amount of `"request.path":"/socket.io/?...` requests being blocked seen in the previous scenario?
+
+Now last time we analysed the Core Waap logs using out-of-the-box kubernets / linux tools and here we will use the **auto-learning** cli tool for that!
+
+First, download the java cli tool using
+
+```shell
+version=1.0.1
+curl -so /tmp/waap-lib-autolearn-cli-${version}.jar \
+ https://united-security-providers.github.io/usp-core-waap/files/waap-lib-autolearn-cli-${version}.jar
+```{{exec}}
+
+then execute the cli tool showing the help page:
+
+```shell
+java -jar /tmp/waap-lib-autolearn-cli-${version}.jar --help
+```{{exec}}
+
+>make sure this step is successful and you see the help overview prior to continue!
+
+Now lets use the auto-learning tool to parse our running Core Waap instance and generate rule exceptions by executing:
+
+```shell
+java -jar /tmp/waap-lib-autolearn-cli-${version}.jar \
+ -n juiceshop \
+ -w juiceshop-usp-core-waap
+```{{exec}}
+
+<details>
+<summary>example command output
+
+```shell
+Learned request/response rule exceptions: 2/0.
+```
+
+</details>
+<br />
+
+By default a file called `waap.yaml` is written to the current directory containing an updated instance configuration.
+
+>Do NOT just apply auto generated configurations without prior validation!
+
+Inspecting the generated config (`less waap.yaml`) or by specifically looking at rule exceptions by running:
+
+```shell
+yq e '.spec.crs.requestRuleExceptions' waap.yaml 
+```{{exec}}
+
+
+<details>
+<summary>example command output
+
+```shell
+- ruleId: 942100
+  requestPartType: "ARGS_POST"
+  requestPartName: "json.email"
+  location: "/rest/user/login"
+  metadata:
+    comment: "SQL Injection Attack Detected via libinjection"
+    date: "2024-11-21"
+    createdBy: "autolearning"
+- ruleId: 920420
+  requestPartType: "REQUEST_HEADERS"
+  requestPartName: "content-type"
+  location: "/socket.io/"
+  metadata:
+    comment: "Request content type is not allowed by policy"
+    date: "2024-11-21"
+    createdBy: "autolearning"
+```
+
+</details>
+<br />
+
+in addition to the wanted `socket.io` exception the SQL-Injection attempt is also listed as an exception (learned from the logs!). So don't just apply learned exceptions without prior validation.
+
+We want these `/socket.io` requests to succeed (in our use-case they are a `false positive`) and therefore we add an exeption rule to the core-waap CRS configuration using `requestRuleExceptions`:
+
+```yaml
+...
+spec:
+  crs:
+    requestRuleExceptions:
+    - ruleId: 920420
+      requestPartType: "REQUEST_HEADERS"
+      requestPartName: "content-type"
+      location: "/socket.io/"
+      metadata:
+        comment: "Request content type is not allowed by policy"
+        date: "2024-11-21"
+        createdBy: "autolearning"
+...
+```
+
+>detailed information about the rule 920420 are available via [Core Rule Set github repository](https://github.com/coreruleset/coreruleset/blob/main/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf)
+
+**Apply the updated `CoreWaapService` prepared for you using:**
+
+```shell
+kubectl apply -f juiceshop-core-waap.yaml
+```{{exec}}
+
+<details>
+<summary>example command output
+
+```shell
+corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
+```
+
+</details>
+<br />
+
+Now after having reconfigured the `CoreWaapService` instance wait for its reconfiguration (indicated by the log `add/update listener 'core.waap.listener`) and observe the `socket.io` request denial disappear:
+
+```shell
+kubectl logs \
+  -n juiceshop \
+  -l app.kubernetes.io/name=usp-core-waap \
+  --since=5s \
+  --follow
+```{{exec}}
+
+>make sure to wait until the `add/update listener 'core.waap.listener` log is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
+
+That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive!
