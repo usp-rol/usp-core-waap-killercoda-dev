@@ -23,3 +23,4 @@ while [ ! -f /tmp/.waap_installed ]; do
 done;
 echo " done"
 echo
+echo "*** Scenario ready ***"
