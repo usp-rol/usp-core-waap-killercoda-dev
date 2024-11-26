@@ -145,7 +145,7 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
 
 </details>
 
-> &#128226; Make sure the `CoreWaapService` is updated (the command above was executed)!
+> &#10071; Make sure the `CoreWaapService` is updated (the command above was executed)!
 
 ### Check logs to verify false positive are gone
 
@@ -159,6 +159,6 @@ kubectl logs \
   --follow
 ```{{exec}}
 
-> &#128226; Make sure to wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
+> &#10071; Make sure to wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
 
 That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive!

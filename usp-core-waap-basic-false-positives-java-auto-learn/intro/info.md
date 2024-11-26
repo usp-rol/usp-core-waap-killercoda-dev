@@ -12,7 +12,9 @@ This scenario shows how to tackle **false positives** as a next step to the [fal
 
 Throughout the scenario the following conventions are used:
 
-> &#128226; General information for you
+> &#128226; General information
+
+> &#10071; Important information
 
 > &#128270; Look out for a detail
 

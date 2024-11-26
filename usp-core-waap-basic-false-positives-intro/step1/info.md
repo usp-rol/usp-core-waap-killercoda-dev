@@ -8,6 +8,6 @@
 
 The OWASP Juice Shop demo web application has been setup and will be used. Go ahead an [access the shop]({{TRAFFIC_HOST1_80}}) generating some access logs.
 
-> &#128226; Make sure to [access the Juice Shop]({{TRAFFIC_HOST1_80}}) otherwise the validation in this step will fail...
+> &#10071; Make sure to [access the Juice Shop]({{TRAFFIC_HOST1_80}}) otherwise the validation in this step will fail...
 
 Now let's have a closer look at logs / actions taken by **USP Core WAAP** in the next step!
