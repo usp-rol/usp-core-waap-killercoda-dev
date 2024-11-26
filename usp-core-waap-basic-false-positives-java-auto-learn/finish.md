@@ -1,6 +1,6 @@
 ### Splendid!
 
-You just configured Core WAAP for custom error pages!
+> &#127937; You just identified a `false positive` and reconfigured USP Core WAAP accordingly using the auto-learning tool!
 
 Now watch out for more scenarios to come highlighting detailed aspects of the USP Core WAAP protection like HTTP header filtering, cross-site-request-forgery (CSRF) protection and anti-virus scanning integrations!
 
