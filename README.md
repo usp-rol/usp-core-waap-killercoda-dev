@@ -11,6 +11,36 @@ This repository contains the scenarios published via [killercoda](https://killer
 
 **Keep in mind when renaming directories the killercoda scenario URL will change!**
 
+## Rules and guidelines
+
+* use the term 'USP Core WAAP' (and not 'Core Waap' - note the upercase waap)
+* in addition also make sure to add an "overview" section at first for every step (not on intro/finish) which outlines what will be covered within this step.
+* make sure to include the icon-set overview on the firest `intro.text` Element (linked via `index.json`) of the scenario (see below)
+
+**intro icon-set example**
+```markdown
+Throughout the scenario the following conventions are used:
+
+> &#128226; General information
+
+> &#10071; Important information
+
+> &#128270; Look out for a detail
+
+> &#8987; Wait for a condition prior to continue
+```
+
+**step overview example**
+```markdown
+&#127919; In this step you will ...
+
+* Inspect logs of USP Core WAAP
+* Reconfigure the Core WAAP instance
+* Check logs to verify false positive are gone
+```
+
+and then use headings (level 3) for each mentioned point...
+
 ## Scneario development
 
 Read through the [killercoda creator documentation](https://killercoda.com/creators) and check the existing scenario examples at
