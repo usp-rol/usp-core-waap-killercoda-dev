@@ -5,33 +5,21 @@ metadata:
   namespace: juiceshop
 data:
   error5xx.html: |
+    <!DOCTYPE html>
     <html>
-    <head>
-    <title>Error Page 5xx</title>
-    <link rel="stylesheet" type="text/css" href="/styles.css"/>
-    </head>
-    <body class="mat-app-background bluegrey-lightgreen-theme">
-    <div style="position: absolute;top: 50%% ;left: 50%% ;margin-top: -50px;margin-left: -50px;width: 100px;height: 100px;">
-    <div class="cdk-overlay-container bluegrey-lightgreen-theme">
-    <div fxlayoutalign="center" style="place-content: stretch center; align-content: stretch; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex;">
-    <mat-card class="mat-card mat-focus-indicator mat-elevation-z6" style="padding: 50px;">
-      <section class="about-us">
-        <h1>The application encountered an error</h1>
-        <img src="/assets/public/images/JuiceShop_Logo.png" width="150" height="180" />
-        <p class="text-justify">
-        Please retry to access the webpage. In case the request is not successful get in touch with support@... providing the information below.
-        </p>
-        <p class="text-justify">
-        <table border="0">
-        <tr><th align="right">backend status code</th><td>: %RESPONSE_CODE%</td></tr>
-        <tr><th align="right">client request id</th><td>: %REQ(X-REQUEST-ID)%</td></tr>
-        <tr><th align="right">timestamp</th><td>: %START_TIME%</td></tr>
-        </table>
-        </p>
-      </section>
-    </mat-card>
-    </div>
-    </div>
-    </div>
+    <body style="background-color:#303030; font-family: Roboto, Helvetica Neue, sans-serif;">
+      <div
+        style="width: 60%; position: absolute; top: 30%%; left: 20%%; background-color:#424242;color:white;padding:20px; text-align: center;">
+        <h2>Error</h2>
+        <p>Please retry to access the webpage. In case the request is not successful get in touch with support@...
+          providing the information below.</p>
+        <div style=" text-align:left; width: 40%; margin: auto;" ;>
+          <b>Backend status code:</b> %RESPONSE_CODE% <br>
+          <b>Client request id:</b> %REQ(X-REQUEST-ID)% <br>
+          <b>Timestamp:</b> %START_TIME%
+        </div>
+        <br>
+        <img src="/assets/public/images/JuiceShop_Logo.png" width="150" height="180">
+      </div>
     </body>
     </html>
