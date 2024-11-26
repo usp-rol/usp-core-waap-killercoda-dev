@@ -19,7 +19,7 @@
         "verify": "step1/verify.sh"
       },
       {
-        "title": "Inspect Core Waap Logs",
+        "title": "Inspect USP Core WAAP logs",
         "text": "step2/info.md",
         "verify": "step2/verify.sh"
       }

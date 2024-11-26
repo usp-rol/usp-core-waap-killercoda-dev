@@ -1,10 +1,10 @@
 &#127919; In this step you will ...
 
-* Inspect logs of USP Core Waap
-* Reconfigure the Core Waap instance
+* Inspect logs of USP Core WAAP
+* Reconfigure the USP Core WAAP instance
 * Check logs to verify false positive are gone
 
-### Inspect USP Core Waap logs
+### Inspect USP Core WAAP logs
 
 Let's have a look at the logs!
 
@@ -109,7 +109,7 @@ The field `crs.violated_rule` indicates what Core Rule Set Rule has triggered. T
 
 > &#128226; The Rule IDs in the 949... range are the blocking condition rules and are not of interest. In our case the **Rule ID 920420** (Protocol enforcement) is!
 
-### Reconfigure the Core Waap instance
+### Reconfigure the USP Core WAAP instance
 
 You want these `/socket.io` requests to succeed (in this use-case the block of these requests is a `false positive`) and therefore you add an exeption rule to the core-waap `CRS` configuration using `requestRuleExceptions`:
 

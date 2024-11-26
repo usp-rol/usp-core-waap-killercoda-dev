@@ -10,7 +10,7 @@ while [ ! -f /tmp/.backend_installed ]; do
   sleep 1;
 done;
 echo " done"
-echo -n "Installing USP Core Waap Operator..."
+echo -n "Installing USP Core WAAP Operator..."
 while [ ! -f /tmp/.operator_installed ]; do
   echo -n '.'
   sleep 1;

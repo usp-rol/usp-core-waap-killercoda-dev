@@ -1,10 +1,10 @@
 &#127919; In this step you will ...
 
-* Inspect logs of USP Core Waap
-* Reconfigure the Core Waap instance
+* Inspect logs of USP Core WAAP
+* Reconfigure the USP Core WAAP instance
 * Check logs to verify false positive are gone
 
-### Inspect USP Core Waap logs
+### Inspect USP Core WAAP logs
 
 Let's have a look at the logs!
 
@@ -34,9 +34,9 @@ kubectl logs \
 
 Notice the high amount of `"request.path":"/socket.io/?...` requests being blocked seen in the previous scenario?
 
-Now last time we analysed the Core Waap logs using out-of-the-box kubernets / linux tools and here we will use the **auto-learning** cli tool for that!
+Now during the false postivies introduction scenario you analysed the USP Core WAAP logs using out-of-the-box kubernets / linux tools and now you will use the **auto-learning** cli tool for instead!
 
-Download the java cli tool using
+Go ahead and download the java cli tool using
 
 ```shell
 version=1.0.1
@@ -44,7 +44,7 @@ curl -so /tmp/waap-lib-autolearn-cli-${version}.jar \
  https://united-security-providers.github.io/usp-core-waap/files/waap-lib-autolearn-cli-${version}.jar
 ```{{exec}}
 
-then execute it showing the help page:
+then execute it showing the help page using
 
 ```shell
 java -jar /tmp/waap-lib-autolearn-cli-${version}.jar --help
@@ -52,7 +52,7 @@ java -jar /tmp/waap-lib-autolearn-cli-${version}.jar --help
 
 > &#8987; Make sure this step is successful and you see the help overview prior to continue!
 
-Now lets use the auto-learning tool to parse our **running Core Waap instance** and generate rule exceptions by executing:
+Now lets use the auto-learning tool to parse our **running USP Core WAAP instance** and generate rule exceptions by executing
 
 ```shell
 java -jar /tmp/waap-lib-autolearn-cli-${version}.jar \
@@ -70,7 +70,7 @@ Learned request/response rule exceptions: 2/0.
 </details>
 <br />
 
-By default a file called `waap.yaml` is written to the current directory containing an updated instance configuration.
+By default a file called `waap.yaml` is written to the current directory containing an updated instance configuration (use ).
 
 > &#128226; Do **NOT** just apply auto generated configurations without prior validation!
 
@@ -106,7 +106,7 @@ yq e '.spec.crs.requestRuleExceptions' waap.yaml
 </details>
 <br />
 
-### Reconfigure the Core Waap instance
+### Reconfigure the Core WAAP instance
 
 In addition to the wanted `socket.io` exception the SQL-Injection attempt is also listed here (learned from the access logs!). So **don't just apply learned exceptions without prior validation** as this would allow the SQL-injection again!
 
