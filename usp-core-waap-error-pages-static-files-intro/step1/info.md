@@ -1,3 +1,7 @@
+&#127919; In this step you will ...
+
+* Access Juice Shop profile page triggering an application error
+
 ### Access Juice Shop profile page
 
 > &#8987; Wait until the console on the right side shows `*** Scenario ready ***` before accessing the backend (otherwise you'll see a `HTTP 502 Bad Gateway` error)!
@@ -8,6 +12,8 @@ The [OWASP Juice Shop]({{TRAFFIC_HOST1_8080}}) demo web application has been set
 
 Try to access the [profile page]({{TRAFFIC_HOST1_8080}}/profile) which seems to have an issue...
 (caused by the fact you are not logged in yet)
+
+> &#10071; Make sure to have access the profile page (while not being logged in) otherwise the validation in this step will fail...
 
 As you can see, a lot of background information (source code filenames and component versions) is given to the user unintentionally.
 

@@ -11,3 +11,4 @@ while [ ! -f /tmp/.backend-finished ]; do
 done;
 echo " done"
 echo
+echo "*** Scenario ready ***"

@@ -1,3 +1,9 @@
+&#127919; In this step you will ...
+
+* Configure your CoreWaapService instance
+* Again access the profile page
+* Inspect USP Core WAAP logs
+
 ### Configure your CoreWaapService instance
 
 > &#128226; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
@@ -138,8 +144,6 @@ backend     juiceshop-usp-core-waap-7849dbf5fd-4jt8c   1/1     Running   0      
 
 > &#8987; Wait until the USP Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
 
-Try again to access the [profile page]({{TRAFFIC_HOST1_80}}/profile). The improper errorhandling should now be hidden (if not, consider to look at the solution below).
-
 <details>
 <summary>solution</summary>
 
@@ -167,11 +171,13 @@ kubectl wait pods \
 </details>
 <br />
 
-### Access via USP Core WAAP
+### Again access the profile page
 
-The port forwarding was changed accordingly that the traffic to the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) is now routed **via USP Core WAAP**.
+Try again to access the [profile page]({{TRAFFIC_HOST1_80}}/profile). The improper errorhandling should now be hidden as you access the backend via the configure USP Core WAAP instance now (if not, consider to look at the solution below).
 
-**Make sure to access the [profile page]({{TRAFFIC_HOST1_80}}/profile) (while NOT being logged in) again...**
+> &#128226; The port forwarding was changed accordingly that the **traffic** to the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) is now **routed via USP Core WAAP**.
+
+> &#10071; Make sure to have access the profile page (while not being logged in) otherwise the validation in this step will fail...
 
 Did you notice the different error page?
 Not only are sensitive application information hidden but also the style can be changed to match the Juice Shop layout.
