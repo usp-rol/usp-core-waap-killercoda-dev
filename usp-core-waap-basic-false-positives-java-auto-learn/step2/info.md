@@ -1,6 +1,6 @@
 &#127919; In this step you will ...
 
-* Inspect logs of USP Core WAAP
+* Inspect USP Core WAAP logs
 * Reconfigure the USP Core WAAP instance
 * Check logs to verify false positive are gone
 
@@ -44,7 +44,7 @@ curl -so /tmp/waap-lib-autolearn-cli-${version}.jar \
  https://united-security-providers.github.io/usp-core-waap/files/waap-lib-autolearn-cli-${version}.jar
 ```{{exec}}
 
-then execute it showing the help page using
+Next execute it showing the help page using
 
 ```shell
 java -jar /tmp/waap-lib-autolearn-cli-${version}.jar --help
@@ -70,9 +70,9 @@ Learned request/response rule exceptions: 2/0.
 </details>
 <br />
 
-By default a file called `waap.yaml` is written to the current directory containing an updated instance configuration (use ).
+By default a file called `waap.yaml` is written to the current directory containing an updated instance configuration.
 
-> &#128226; Do **NOT** just apply auto generated configurations without prior validation!
+> &#10071; Do **NOT** just apply auto generated configurations without prior validation!
 
 Inspecting the generated config (`less waap.yaml`) or by specifically looking at rule exceptions by executing the command below we get the rule exceptions:
 
@@ -106,7 +106,7 @@ yq e '.spec.crs.requestRuleExceptions' waap.yaml
 </details>
 <br />
 
-### Reconfigure the Core WAAP instance
+### Reconfigure the USP Core WAAP instance
 
 In addition to the wanted `socket.io` exception the SQL-Injection attempt is also listed here (learned from the access logs!). So **don't just apply learned exceptions without prior validation** as this would allow the SQL-injection again!
 
@@ -153,10 +153,11 @@ Now after having reconfigured the `CoreWaapService` instance wait for its reconf
 kubectl logs \
   -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
-  --since=5s \
-  --follow
+  --since=1m \
+  --follow \
+  | grep 'add/update listener'
 ```{{exec}}
 
-> &#10071; Make sure to wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
+> &#8987; Wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
 
 That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive!

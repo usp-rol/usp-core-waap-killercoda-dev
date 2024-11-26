@@ -1,12 +1,12 @@
 &#127919; In this step you will ...
 
-* access the OWASP Juice Shop demo application
+* Trigger an SQL-injection attempt
 
-### Access Juice Shop
+### Trigger an SQL-injection attempt
 
 > &#8987; Wait until the console on the right side shows `*** Scenario ready ***` before accessing the backend (otherwise you'll see a `HTTP 502 Bad Gateway` error)!
 
-The [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) **demo web application** has been setup and will be used.
+The [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) demo web application has been setup and will be used.
 
 > &#128226; The attempt to make an SQL-injection will be not be successful (prevented by USP Core WAAP)
 

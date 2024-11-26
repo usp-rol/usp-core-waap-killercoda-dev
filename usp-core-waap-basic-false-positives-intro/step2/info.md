@@ -1,6 +1,6 @@
 &#127919; In this step you will ...
 
-* Inspect logs of USP Core WAAP
+* Inspect USP Core WAAP logs
 * Reconfigure the USP Core WAAP instance
 * Check logs to verify false positive are gone
 
@@ -34,7 +34,7 @@ kubectl logs \
 
 Notice the high amount of `"request.path":"/socket.io/?...` requests being blocked?
 
-The log message is split into two parts: First part prior to `coraza-vm:` containing the generic envoy log information indicating what module is taking action, which in our use-case is the [coraza web application firewall](https://github.com/corazawaf/coraza) module and the second parts which is the actual payload log formatted as JSON.
+The log message is split into two parts: First part prior to `coraza-vm:` containing the generic envoy log information indicating what module is taking action, which in our use-case is the [coraza web application firewall](https://github.com/corazawaf/coraza) module and the second part which is the actual payload log formatted as JSON.
 
 Using the following command you can parse the JSON output and hereby as a human have better insight into the actual action:
 
@@ -101,7 +101,6 @@ kubectl logs \
 ```
 
 </details>
-<br />
 
 > &#128270; Look out for the `crs.violated_rule` field which contains the Core Rule Set rule number triggering the action!
 
@@ -155,10 +154,11 @@ Now after having reconfigured the `CoreWaapService` instance wait for its reconf
 kubectl logs \
   -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
-  --since=5s \
-  --follow
+  --since=1m \
+  --follow \
+  | grep 'add/update listener'
 ```{{exec}}
 
-> &#10071; Make sure to wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
+> &#8987; Wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
 
 That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive!
