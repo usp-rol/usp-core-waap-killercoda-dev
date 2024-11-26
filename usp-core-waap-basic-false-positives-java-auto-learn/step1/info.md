@@ -1,16 +1,20 @@
-### Access Juice Shop profile page
+&#127919; In this step you will ...
 
->Wait until the console on the right side is ready before accessing the backend (otherwise you'll see a HTTP 502 Bad Gateway error)!
+* access the OWASP Juice Shop demo application
+
+### Access Juice Shop
+
+> &#8987; Wait until the console on the right side shows `*** Scenario ready ***` before accessing the backend (otherwise you'll see a `HTTP 502 Bad Gateway` error)!
 
 The [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) **demo web application** has been setup and will be used.
 
->The attempt to make an SQL-injection will be not be successful (prevented by Core WAAP)
+> &#128226; The attempt to make an SQL-injection will be not be successful (prevented by Core WAAP)
 
 [Access the juiceshop]({{TRAFFIC_HOST1_80}}) web application using your browser and try to execute an SQL-injection by logging in with:
 
 * email `' OR true;` and
 * password `fail` (or anything else except empty)
 
->The block of this SQL-injection request is NOT a false positive because it is intended (so called true positive)!
+> &#128226; The block of this SQL-injection request is **NOT** a false positive because it is intended (so called true positive)!
 
 Now let's have a closer look at logs / actions taken by **USP Core WAAP** in the next step!

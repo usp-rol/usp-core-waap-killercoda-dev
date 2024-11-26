@@ -1,8 +1,8 @@
 &#127919; In this step you will ...
 
 * Inspect logs of USP Core Waap
-* Reconfigure Core Waap instance
-* Check logs to verify false positive is gone
+* Reconfigure the Core Waap instance
+* Check logs to verify false positive are gone
 
 ### Inspect USP Core Waap logs
 
@@ -14,6 +14,7 @@ kubectl logs \
   -l app.kubernetes.io/name=usp-core-waap \
   --tail=-1 \
   | grep "\[critical\]\[wasm\]"
+  | grep 'request.path'
 ```{{exec}}
 
 <details>
@@ -35,7 +36,7 @@ Notice the high amount of `"request.path":"/socket.io/?...` requests being block
 
 The log message is split into two parts: First part prior to `coraza-vm:` containing the generic envoy log information indicating what module is taking action, which in our use-case is the [coraza web application firewall](https://github.com/corazawaf/coraza) module and the second parts which is the actual payload log formatted as JSON.
 
-Using the following command we can parse the JSON output and hereby as humans have better insight into the actual action:
+Using the following command you can parse the JSON output and hereby as a human have better insight into the actual action:
 
 ```shell
 kubectl logs \
@@ -102,13 +103,15 @@ kubectl logs \
 </details>
 <br />
 
+> &#128270; Look out for the `crs.violated_rule` field which contains the Core Rule Set rule number triggering the action!
+
 The field `crs.violated_rule` indicates what Core Rule Set Rule has triggered. The `Rule ID 920420` blocks this request because the content-type is `text/plain` which is untrusted.
 
->The Rule IDs in the 949... range are the blocking condition rules and are not of interest, in our case the Rule ID 920420 (Protocol enforcement) is!
+> &#128226; The Rule IDs in the 949... range are the blocking condition rules and are not of interest. In our case the **Rule ID 920420** (Protocol enforcement) is!
 
-### Reconfigure Core Waap instance
+### Reconfigure the Core Waap instance
 
-We want these `/socket.io` requests to succeed (in our use-case the block of these requests is a `false positive`) and therefore we add an exeption rule to the core-waap CRS configuration using `requestRuleExceptions`:
+You want these `/socket.io` requests to succeed (in this use-case the block of these requests is a `false positive`) and therefore you add an exeption rule to the core-waap `CRS` configuration using `requestRuleExceptions`:
 
 ```yaml
 ...
@@ -141,11 +144,10 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
 ```
 
 </details>
-<br />
 
 > &#128226; Make sure the `CoreWaapService` is updated (the command above was executed)!
 
-### Check logs to verify false positive is gone
+### Check logs to verify false positive are gone
 
 Now after having reconfigured the `CoreWaapService` instance wait for its reconfiguration (indicated by the log `add/update listener 'core.waap.listener'`) and observe the `socket.io` request denials disappear:
 

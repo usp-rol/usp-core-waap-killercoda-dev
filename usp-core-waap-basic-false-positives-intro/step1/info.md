@@ -1,6 +1,6 @@
 &#127919; In this step you will ...
 
-* access the unprotected OWASP Juice Shop demo application
+* access the OWASP Juice Shop demo application
 
 ### Access Juice Shop
 

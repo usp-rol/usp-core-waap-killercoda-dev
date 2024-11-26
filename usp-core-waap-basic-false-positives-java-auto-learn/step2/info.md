@@ -1,4 +1,10 @@
-### Inspect USP Core WAAP logs
+&#127919; In this step you will ...
+
+* Inspect logs of USP Core Waap
+* Reconfigure the Core Waap instance
+* Check logs to verify false positive are gone
+
+### Inspect USP Core Waap logs
 
 Let's have a look at the logs!
 
@@ -8,6 +14,7 @@ kubectl logs \
   -l app.kubernetes.io/name=usp-core-waap \
   --tail=-1 \
   | grep "\[critical\]\[wasm\]"
+  | grep 'request.path'
 ```{{exec}}
 
 <details>
@@ -43,7 +50,7 @@ then execute it showing the help page:
 java -jar /tmp/waap-lib-autolearn-cli-${version}.jar --help
 ```{{exec}}
 
->Make sure this step is successful and you see the help overview prior to continue!
+> &#8987; Make sure this step is successful and you see the help overview prior to continue!
 
 Now lets use the auto-learning tool to parse our **running Core Waap instance** and generate rule exceptions by executing:
 
@@ -65,9 +72,9 @@ Learned request/response rule exceptions: 2/0.
 
 By default a file called `waap.yaml` is written to the current directory containing an updated instance configuration.
 
->Do NOT just apply auto generated configurations without prior validation!
+> &#128226; Do **NOT** just apply auto generated configurations without prior validation!
 
-Inspecting the generated config (`less waap.yaml`) or by specifically looking at rule exceptions by running we get the rule exceptions generated:
+Inspecting the generated config (`less waap.yaml`) or by specifically looking at rule exceptions by executing the command below we get the rule exceptions:
 
 ```shell
 yq e '.spec.crs.requestRuleExceptions' waap.yaml 
@@ -99,9 +106,11 @@ yq e '.spec.crs.requestRuleExceptions' waap.yaml
 </details>
 <br />
 
-In addition to the wanted `socket.io` exception the SQL-Injection attempt is also listed as an exception (learned from the access logs!). So don't just apply learned exceptions without prior validation as this would allow the SQL-injection again!
+### Reconfigure the Core Waap instance
 
-We want these `/socket.io` requests to succeed (in our use-case the block of these requests is a `false positive`) and therefore we add an exeption rule to the core-waap CRS configuration using `requestRuleExceptions`:
+In addition to the wanted `socket.io` exception the SQL-Injection attempt is also listed here (learned from the access logs!). So **don't just apply learned exceptions without prior validation** as this would allow the SQL-injection again!
+
+You want these `/socket.io` requests to succeed (in this use-case the block of these requests is a `false positive`) and therefore you add an exeption rule to the core-waap `CRS` configuration using `requestRuleExceptions`:
 
 ```yaml
 ...
@@ -119,7 +128,7 @@ spec:
 ...
 ```
 
-**Apply the updated `CoreWaapService` instance configuratoin prepared for you using:**
+Apply the updated `CoreWaapService` instance configuration prepared for you using:
 
 ```shell
 kubectl apply -f juiceshop-core-waap.yaml
@@ -133,7 +142,10 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
 ```
 
 </details>
-<br />
+
+> &#128226; Make sure the `CoreWaapService` is updated (the command above was executed)!
+
+### Check logs to verify false positive are gone
 
 Now after having reconfigured the `CoreWaapService` instance wait for its reconfiguration (indicated by the log `add/update listener 'core.waap.listener'`) and observe the `socket.io` request denials disappear:
 
@@ -145,6 +157,6 @@ kubectl logs \
   --follow
 ```{{exec}}
 
->Make sure to wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
+> &#128226; Make sure to wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
 
 That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive!
