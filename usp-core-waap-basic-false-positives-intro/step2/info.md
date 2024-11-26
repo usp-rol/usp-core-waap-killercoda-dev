@@ -13,7 +13,7 @@ kubectl logs \
   -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
   --tail=-1 \
-  | grep "\[critical\]\[wasm\]"
+  | grep "\[critical\]\[wasm\]" \
   | grep 'request.path'
 ```{{exec}}
 
