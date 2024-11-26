@@ -1,10 +1,16 @@
+&#127919; In this step you will ...
+
+* Configure your CoreWaapService instance
+* Again access the profile page
+* Inspect USP Core WAAP logs
+
 ### Configure your CoreWaapService instance
 
->if you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
+> &#128226; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
 
-Having the Core WAAP operator installed and ready to go, you can now configure the USP Core WAAP instance.
+Having the USP Core WAAP operator installed and ready to go, you can now configure the USP Core WAAP `instance`.
 
-At first we will configure the custom error page with static content via kubernetes  `ConfigMap`:
+At first you will configure the custom error page with static content using a kubernetes `ConfigMap`:
 
 ```yaml
 apiVersion: v1
@@ -14,34 +20,22 @@ metadata:
   namespace: juiceshop
 data:
   error5xx.html: |
+    <!DOCTYPE html>
     <html>
-    <head>
-    <title>Error Page 5xx</title>
-    <link rel="stylesheet" type="text/css" href="/styles.css"/>
-    </head>
-    <body class="mat-app-background bluegrey-lightgreen-theme">
-    <div style="position: absolute;top: 50%% ;left: 50%% ;margin-top: -50px;margin-left: -50px;width: 100px;height: 100px;">
-    <div class="cdk-overlay-container bluegrey-lightgreen-theme">
-    <div fxlayoutalign="center" style="place-content: stretch center; align-content: stretch; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex;">
-    <mat-card class="mat-card mat-focus-indicator mat-elevation-z6" style="padding: 50px;">
-      <section class="about-us">
-        <h1>The application encountered an error</h1>
-        <img src="/assets/public/images/JuiceShop_Logo.png" width="150" height="180" />
-        <p class="text-justify">
-        Please retry to access the webpage. In case the request is not successful get in touch with support@... providing the information below.
-        </p>
-        <p class="text-justify">
-        <table border="0">
-        <tr><th align="right">backend status code</th><td>: %RESPONSE_CODE%</td></tr>
-        <tr><th align="right">client request id</th><td>: %REQ(X-REQUEST-ID)%</td></tr>
-        <tr><th align="right">timestamp</th><td>: %START_TIME%</td></tr>
-        </table>
-        </p>
-      </section>
-    </mat-card>
-    </div>
-    </div>
-    </div>
+    <body style="background-color:#303030; font-family: Roboto, Helvetica Neue, sans-serif;">
+      <div
+        style="width: 60%%; position: absolute; top: 30%%; left: 20%%; background-color:#424242;color:white;padding:20px; text-align: center;">
+        <h2>Error</h2>
+        <p>Please retry to access the webpage. In case the request is not successful get in touch with support@...
+          providing the information below.</p>
+        <div style=" text-align:left; width: 40%%; margin: auto;" ;>
+          <b>Backend status code:</b> %RESPONSE_CODE% <br>
+          <b>Client request id:</b> %REQ(X-REQUEST-ID)% <br>
+          <b>Timestamp:</b> %START_TIME%
+        </div>
+        <br>
+        <img src="/assets/public/images/JuiceShop_Logo.png" width="150" height="180">
+      </div>
     </body>
     </html>
 ```
@@ -62,7 +56,7 @@ configmap/core-waap-static-resources created
 </details>
 <br />
 
-Next, we will setup an instace of Core WAAP using the created ConfigMap using:
+Next, you will setup an instace of Core WAAP using the created ConfigMap using:
 
 ```yaml
 apiVersion: waap.core.u-s-p.ch/v1alpha1
@@ -92,6 +86,8 @@ spec:
 
 (for this demo scenario the OWASP Core Rule Set has been disabled to focus on error pages and static file configuration)
 
+Using this updated configuration the HTTP Error Codes 500 - 599 are now mapped to the configured error page.
+
 <details>
 <summary>example command output
 
@@ -104,7 +100,7 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap created
 <details>
 <summary>hint</summary>
 
-There is a file in your home directory with an example `corewaapservice` definition ready to be applied using `kubectl apply -f` ...
+There is a file in your home directory with an example `CoreWaapService` definition ready to be applied using `kubectl apply -f` ...
 
 </details>
 <br />
@@ -146,9 +142,7 @@ backend     juiceshop-usp-core-waap-7849dbf5fd-4jt8c   1/1     Running   0      
 </details>
 <br />
 
->wait until the Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
-
-Continue accessing the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) via Core WAAP now (or consider the hidden solution in case you were not successful).
+> &#8987; Wait until the USP Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
 
 <details>
 <summary>solution</summary>
@@ -177,11 +171,13 @@ kubectl wait pods \
 </details>
 <br />
 
-### Access via USP Core WAAP
+### Again access the profile page
 
-The port forwarding was changed accordingly that the traffic to the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) is now routed **via USP Core WAAP**.
+Try again to access the [profile page]({{TRAFFIC_HOST1_80}}/profile). The improper errorhandling should now be hidden as you access the backend via the configure USP Core WAAP instance now (if not, consider to look at the solution below).
 
-**Make sure to access the [profile page]({{TRAFFIC_HOST1_80}}/profile) (while NOT being logged in) again...**
+> &#128226; The port forwarding was changed accordingly that the **traffic** to the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) is now **routed via USP Core WAAP**.
+
+> &#10071; Make sure to have access the profile page (while not being logged in) otherwise the validation in this step will fail...
 
 Did you notice the different error page?
 Not only are sensitive application information hidden but also the style can be changed to match the Juice Shop layout.
@@ -234,5 +230,7 @@ kubectl logs \
 
 </details>
 <br />
+
+Having the `request.id` at hand is very helpful for a user creating a support request enabling a USP Core WAAP administrator to filter out the requests matching the mentioned request and to examine the original backend error.
 
 That's it! As you see providing custom error pages is a powerful feature to hide specific http backend errors or streamline the error page layout across multiple backends!

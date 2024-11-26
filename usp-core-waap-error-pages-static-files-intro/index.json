@@ -26,7 +26,7 @@
         "verify": "step2/verify.sh"
       },
       {
-        "title": "Configure a USP Core WAAP instance",
+        "title": "Configure a custom error page",
         "text": "step3/info.md",
         "background": "step3/background.sh",
         "verify": "step3/verify.sh"
