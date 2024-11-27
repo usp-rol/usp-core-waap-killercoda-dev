@@ -1,6 +1,12 @@
+&#127919; In this step you will ...
+
+* Configure your CoreWaapService instance
+* Access petstore API via USP Core WAAP
+* Inspect USP Core WAAP logs
+
 ### Configure your CoreWaapService instance
 
->if you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
+> &#128226; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
 
 Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the petstore API.
 
@@ -73,12 +79,12 @@ corewaapservice.waap.core.u-s-p.ch/petstore-usp-core-waap created
 <details>
 <summary>hint</summary>
 
-There is a file in your home directory with an example `corewaapservice` definition ready to be applied using `kubectl apply -f` ...
+There is a file in your home directory with an example `CoreWaapService` definition ready to be applied using `kubectl apply -f` ...
 
 </details>
 <br />
 
-Now re-check if a Core WAAP instance is active in the `petstore` namespace:
+Now re-check if a USP Core WAAP instance is active in the `petstore` namespace:
 
 ```shell
 kubectl get corewaapservices --all-namespaces
@@ -142,9 +148,9 @@ kubectl wait pods \
 
 ### Access petstore API via USP Core WAAP
 
-The port forwarding was changed accordingly that the traffic to the petstore API is now routed **via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
+> &#128226; The port forwarding was changed accordingly that the traffic to the petstore API is now **routed via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
 
-Next, let's again query a pet in an incorrect format as we did already before. We expect this request to be blocked by Core WAAP (this incorrect request does not reach the petstore API backend):
+Let's again query a pet in an incorrect format as you did in the first step. We expect this request to be blocked by USP Core WAAP (this incorrect request shall not reach the swagger petstore API backend):
 
 ```shell
 curl -sv http://localhost/api/pet/waapcat1
@@ -175,7 +181,7 @@ curl -sv http://localhost/api/pet/waapcat1
 </details>
 <br />
 
-This time you'll get an HTTP 400 (Bad Request) response from Core WAAP and you will not see any request in the backend as this invalid call was blocked by Core WAAP!
+This time you'll get an `HTTP 400 (Bad Request)` response from USP Core WAAP and you will not see any request in the backend as this invalid call was intercepted!
 
 ```shell
 kubectl -n petstore exec pod/petstore \
@@ -229,7 +235,7 @@ curl -sv http://localhost/api/pet/1
 
 **Wait! Why is that also getting an HTTP 400 response?!**
 
-Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the petstore application but is now since its configured to be included! In order to successfully query pets we need to send an `api_key` header:
+Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the swagger petstore application but is via USP Core WAAP since its configured to be included in the specification! In order to successfully query pets we need to send an `api_key` header:
 
 ```shell
 curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
@@ -269,7 +275,7 @@ curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
 
 Ahh...there it is again the familiar "furrr..."!
 
-> The used OpenAPI specification is available for detailed analysis via [API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml) from the swagger-api project.
+> &#128270; The used OpenAPI specification is available for detailed analysis via [API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml) from the swagger-api project.
 
 What about our first invalid API call, this was blocked because of the missing security header so let's confirm it is also blocked when that header is sent:
 
@@ -299,9 +305,11 @@ curl -sv -H 'api_key: anything' http://localhost/api/pet/waapcat1
 * Closing connection 0
 ```
 
+As you can see even the response is the same (`HTTP 400 Bad Request`) the reasons were different as we will see inspecting the logs in the next section.
+
 ### Inspect the actions taken by USP Core WAAP
 
-How to get more insight in why a request was blocked by the Core WAAP OpenAPI validation feature? Let's have a look at the logs!
+How to get more insight in why a request was blocked by the USP Core WAAP OpenAPI validation feature? Let's have a look at the logs!
 
 First identify the additional container name once the OpenAPI validation is configured within the `CoreWaapService` kubernetes resource:
 
