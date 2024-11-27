@@ -51,7 +51,7 @@ This will show the pet details (something familiar making "furrr" when happy...)
 
 ### Make an invalid swagger petstore API request
 
-Next access the swagger petstore API using an invalid format using an alphanumeric identifier instead of a numeric one:
+Next access the swagger petstore API using an invalid format (alphanumeric identifier instead of numeric):
 
 ```shell
 curl -sv http://localhost:8080/api/pet/cat1
