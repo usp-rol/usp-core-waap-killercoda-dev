@@ -8,7 +8,7 @@
 
 > &#128226; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
 
-Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the petstore API.
+Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the swagger petstore API.
 
 First you will setup the kubernetes `Configmap` providing the [OpenAPI specification](https://swagger.io/docs/specification/v3_0/basic-structure/) for the swagger petstore API used by the USP Core WAAP instance to validate requests:
 
@@ -123,7 +123,7 @@ petstore    petstore-usp-core-waap-78dbbc6d8c-6w7lr   2/2     Running   0       
 
 > &#8987; Wait until the USP Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
 
-Continue accessing the petstore API in the next section (or consider the hidden solution in case you were not successful).
+Continue accessing the swagger petstore API in the next section (or consider the hidden solution in case you were not successful).
 
 <details>
 <summary>solution</summary>
@@ -148,7 +148,7 @@ kubectl wait pods \
 
 ### Access swagger petstore API via USP Core WAAP
 
-> &#128226; The port forwarding was changed accordingly that the traffic to the petstore API is now **routed via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
+> &#128226; The port forwarding was changed accordingly that the traffic to the swagger petstore API is now **routed via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
 
 Again query a pet in an incorrect format as you did in the first step. This request should be blocked by USP Core WAAP (this incorrect request shall not reach the swagger petstore API backend):
 
@@ -188,7 +188,7 @@ kubectl -n petstore exec pod/petstore \
   -- /bin/bash -c "tail /var/log/*-requests.log"
 ```{{exec}}
 
-Note that there is no `waapcat1` request seen on the petstore API backend (see example below).
+> &#128270; Note that there is no `waapcat1` request seen on the swagger petstore API backend (compare against example command output below).
 
 <details>
 <summary>example command output
@@ -275,7 +275,7 @@ curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
 
 Ahh...there it is again the familiar "furrr..."!
 
-> &#128270; The used OpenAPI specification is available for detailed analysis via [API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml) from the swagger-api project.
+> &#128270; The used OpenAPI specification is available for detailed analysis via the [API definition for the swagger petstore](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml) from the swagger-api project.
 
 What about our first invalid API call, this was blocked because of the missing security header so let's confirm it is also blocked when that header is sent:
 

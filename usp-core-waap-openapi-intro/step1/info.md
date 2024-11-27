@@ -7,7 +7,7 @@
 
 > &#8987; Wait until the console on the right side shows `*** Scenario ready ***` before accessing the backend
 
-Access the petstore API (querying for a pet with `ID:1`) using the console on the right side:
+Access the swagger petstore API (querying for a pet with `ID:1`) using the console on the right side:
 
 > &#128226; Initially the swagger petstore API will be accessed unprotected using `localhost:8080`
 
@@ -97,6 +97,6 @@ The output indicates that the API could not understand the request as shown by t
 }
 ```
 
-> &#10071; Note however that this request was processed by the backend and an attacker could do damage by this fact (like flooding the backend with incorrect request).
+> &#10071; Note that this request was processed by the backend and an attacker could do damage by this fact (like flooding the backend with incorrect request).
 
 Now let's see how this can be **protected by USP Core WAAP** that invalid API calls are intercepted if they are not according to the configured schema!
