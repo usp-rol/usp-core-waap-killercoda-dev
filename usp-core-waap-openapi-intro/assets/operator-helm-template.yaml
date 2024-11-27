@@ -1,6 +1,6 @@
 operator:
-  image: "${CONTAINER_REGISTRY}/usp/core/waap/demo-usp-core-waap-operator"
-  version: "0.0.0-20241104-SNAPSHOT"  # TODO: remove me after switching to an artifact release!!!
+  image: "${CONTAINER_REGISTRY}/usp/core/waap/demo/usp-core-waap-operator"
+  version: "0.0.0-20241127-SNAPSHOT"  # TODO: remove me after switching to an artifact release!!!
   imagePullSecretName: "devuspacr"
   serviceAccount: "usp-core-waap-operator"
   resources:
@@ -16,5 +16,8 @@ operator:
           memory: 256Mi
     waapSpecTrafficProcessingDefaults:
       openapi:
-        image: "${CONTAINER_REGISTRY}/usp/core/waap/demo-usp-core-waap-grpc-openapi"
-        version: "0.0.1"    # TODO: remove me after switching to an artifact release!!!
+        image: "${CONTAINER_REGISTRY}/usp/core/waap/demo/usp-core-waap-ext-proc-openapi-demo"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi

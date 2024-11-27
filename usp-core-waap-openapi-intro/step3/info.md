@@ -1,10 +1,16 @@
+&#127919; In this step you will ...
+
+* Configure your `CoreWaapService` instance
+* Access swagger petstore API via USP Core WAAP
+* Inspect USP Core WAAP logs
+
 ### Configure your CoreWaapService instance
 
->if you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
+> &#128226; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
 
-Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the petstore API.
+Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the swagger petstore API.
 
-First we will setup the kubernetes configmap providing the [OpenAPI specification](https://swagger.io/docs/specification/v3_0/basic-structure/) for the petstore used by the Core WAAP to validate requests:
+First you will setup the kubernetes `Configmap` providing the [OpenAPI specification](https://swagger.io/docs/specification/v3_0/basic-structure/) for the swagger petstore API used by the USP Core WAAP instance to validate requests:
 
 ```shell
 kubectl apply -f openapi-petstore-configmap.yaml
@@ -20,7 +26,7 @@ configmap/openapi-petstore-v3 created
 </details>
 <br />
 
-Next, we will setup an instace of Core WAAP using:
+Next, you will setup an instace of USP Core WAAP using:
 
 ```yaml
 apiVersion: waap.core.u-s-p.ch/v1alpha1
@@ -73,12 +79,12 @@ corewaapservice.waap.core.u-s-p.ch/petstore-usp-core-waap created
 <details>
 <summary>hint</summary>
 
-There is a file in your home directory with an example `corewaapservice` definition ready to be applied using `kubectl apply -f` ...
+There is a file in your home directory with an example `CoreWaapService` definition ready to be applied using `kubectl apply -f` ...
 
 </details>
 <br />
 
-Now re-check if a Core WAAP instance is active in the `petstore` namespace:
+Now re-check if a USP Core WAAP instance is active in the `petstore` namespace:
 
 ```shell
 kubectl get corewaapservices --all-namespaces
@@ -95,7 +101,7 @@ petstore    petstore-usp-core-waap   59s
 </details>
 <br />
 
-Check if a Core WAAP Pod is running:
+Check if USP Core WAAP Pod is running:
 
 ```shell
 kubectl get pods \
@@ -115,9 +121,9 @@ petstore    petstore-usp-core-waap-78dbbc6d8c-6w7lr   2/2     Running   0       
 </details>
 <br />
 
->wait until the Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
+> &#8987; Wait until the USP Core WAAP pod is running before trying to access the API in the next step (otherwise you'll get a HTTP 502 response)!
 
-Continue accessing the petstore API now (or consider the hidden solution in case you were not successful).
+Continue accessing the swagger petstore API in the next section (or consider the hidden solution in case you were not successful).
 
 <details>
 <summary>solution</summary>
@@ -140,11 +146,11 @@ kubectl wait pods \
 </details>
 <br />
 
-### Access petstore API via USP Core WAAP
+### Access swagger petstore API via USP Core WAAP
 
-The port forwarding was changed accordingly that the traffic to the petstore API is now routed **via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
+> &#128226; The port forwarding was changed accordingly that the traffic to the swagger petstore API is now **routed via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
 
-Next, let's again query a pet in an incorrect format as we did already before. We expect this request to be blocked by Core WAAP (this incorrect request does not reach the petstore API backend):
+Again query a pet in an incorrect format as you did in the first step. This request should be blocked by USP Core WAAP (this incorrect request shall not reach the swagger petstore API backend):
 
 ```shell
 curl -sv http://localhost/api/pet/waapcat1
@@ -175,14 +181,14 @@ curl -sv http://localhost/api/pet/waapcat1
 </details>
 <br />
 
-This time you'll get an HTTP 400 (Bad Request) response from Core WAAP and you will not see any request in the backend as this invalid call was blocked by Core WAAP!
+This time you'll get an `HTTP 400 (Bad Request)` response from USP Core WAAP and **you will not see any request in the backend** as this invalid call was intercepted!
 
 ```shell
 kubectl -n petstore exec pod/petstore \
   -- /bin/bash -c "tail /var/log/*-requests.log"
 ```{{exec}}
 
-Note that there is no `waapcat1` request seen on the petstore API backend (see example below).
+> &#128270; Note that there is no `waapcat1` request seen on the swagger petstore API backend (compare against example command output below).
 
 <details>
 <summary>example command output
@@ -196,7 +202,7 @@ Note that there is no `waapcat1` request seen on the petstore API backend (see e
 </details>
 <br />
 
-Now let's make sure a valid pestore API call still works:
+Now make sure a valid pestore API call still works:
 
 ```shell
 curl -sv http://localhost/api/pet/1
@@ -229,7 +235,7 @@ curl -sv http://localhost/api/pet/1
 
 **Wait! Why is that also getting an HTTP 400 response?!**
 
-Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the petstore application but is now since its configured to be included! In order to successfully query pets we need to send an `api_key` header:
+Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the swagger petstore application but is via USP Core WAAP since its configured to be included in the specification! In order to successfully query pets we need to send an `api_key` header:
 
 ```shell
 curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
@@ -269,7 +275,7 @@ curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
 
 Ahh...there it is again the familiar "furrr..."!
 
-> The used OpenAPI specification is available for detailed analysis via [API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml) from the swagger-api project.
+> &#128270; The used OpenAPI specification is available for detailed analysis via the [API definition for the swagger petstore](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml) from the swagger-api project.
 
 What about our first invalid API call, this was blocked because of the missing security header so let's confirm it is also blocked when that header is sent:
 
@@ -299,9 +305,11 @@ curl -sv -H 'api_key: anything' http://localhost/api/pet/waapcat1
 * Closing connection 0
 ```
 
+As you can see even the response is the same (`HTTP 400 Bad Request`) the reasons were different as you will see inspecting the logs in the next section.
+
 ### Inspect the actions taken by USP Core WAAP
 
-How to get more insight in why a request was blocked by the Core WAAP OpenAPI validation feature? Let's have a look at the logs!
+How to get more insight in why a request was blocked by the USP Core WAAP OpenAPI validation feature? Let's have a look at the logs!
 
 First identify the additional container name once the OpenAPI validation is configured within the `CoreWaapService` kubernetes resource:
 
@@ -384,4 +392,6 @@ kubectl logs \
 </details>
 <br />
 
-That's it! As you see, protecting an application through a OpenAPI specification brings a lot of additional security as demonstrated here not just with incorrect API requests but also about missing security headers (specified in API but mistakenly not enforced by the application)!
+> &#128226; While fixing vulnerabilities / writing secure application code is imminent USP Core WAAP can help you out taking the time it takes to fix all vulnerabilities and giving you an additional layer of security!
+
+That's it! As you see protecting an application through an OpenAPI specification brings a lot of additional security as demonstrated here not just with incorrect API requests but also about missing security headers (specified in API but mistakenly not enforced by the application)!

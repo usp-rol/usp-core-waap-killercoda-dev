@@ -1,10 +1,15 @@
-### Access plain swagger petstore (unprotected)
+&#127919; In this step you will ...
 
->wait until the console on the right side is ready before trying to access the API!
+* Access plain swagger petstore API
+* Make an invalid swagger petstore API request
 
-Access the petstore API (querying for a pet with ID 1) using the console on the right side:
+### Access plain swagger petstore API
 
->initially the petstore API will be accessed unprotected via localhost:8080
+> &#8987; Wait until the console on the right side shows `*** Scenario ready ***` before accessing the backend
+
+Access the swagger petstore API (querying for a pet with `ID:1`) using the console on the right side:
+
+> &#128226; Initially the swagger petstore API will be accessed unprotected using `localhost:8080`
 
 ```shell
 curl -s http://localhost:8080/api/pet/1 | jq '.'
@@ -44,7 +49,9 @@ curl -s http://localhost:8080/api/pet/1 | jq '.'
 
 This will show the pet details (something familiar making "furrr" when happy...).
 
-Next access the petstore API using an invalid format by an alphanumeric identifier instead of a numeric one:
+### Make an invalid swagger petstore API request
+
+Next access the swagger petstore API using an invalid format (alphanumeric identifier instead of numeric):
 
 ```shell
 curl -sv http://localhost:8080/api/pet/cat1
@@ -76,7 +83,7 @@ curl -sv http://localhost:8080/api/pet/cat1
 {"code":404,"type":"unknown","message":"java.lang.NumberFormatException: For input string: \"cat1\""}
 ```
 
-Note that the petstore API responded with a HTTP 404 (Not Found) response.
+Note that the swagger petstore API responded with a HTTP 404 (Not Found) response.
 </details>
 <br />
 
@@ -90,6 +97,6 @@ The output indicates that the API could not understand the request as shown by t
 }
 ```
 
-Note however that this request already was processed by the backend and an attacker could do damage by this fact (like flooding the backend with incorrect request).
+> &#10071; Note that this request was processed by the backend and an attacker could do damage by this fact (like flooding the backend with incorrect request).
 
 Now let's see how this can be **protected by USP Core WAAP** that invalid API calls are intercepted if they are not according to the configured schema!

@@ -14,7 +14,7 @@
     },
     "steps": [
       {
-        "title": "Access unprotected petstore API",
+        "title": "Access unprotected swagger petstore API",
         "text": "step1/info.md",
         "verify": "step1/verify.sh"
       },
