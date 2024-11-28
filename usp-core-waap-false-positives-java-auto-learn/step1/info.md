@@ -15,4 +15,4 @@ The [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) demo web application has been setup
 
 > &#128270; The block of this SQL-injection request is **NOT** a false positive because it is intended (so called true positive)!
 
-In the next step we will have a closer look at logs / actions taken by **USP Core WAAP** in the next step. After accessing the shop and triggering the SQL-injection, press `CHECK` to continue.
+In the next step we will have a closer look at logs / actions taken by **USP Core WAAP** in the next step. After accessing the shop and triggering the SQL-injection, press `CHECK`{{}} to continue.
