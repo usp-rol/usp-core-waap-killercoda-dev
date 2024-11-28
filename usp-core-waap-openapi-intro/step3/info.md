@@ -312,6 +312,9 @@ curl -sv -H 'api_key: anything' http://localhost/api/pet/waapcat1
 * Closing connection 0
 ```
 
+</details>
+<br />
+
 As you can see even the response is the same (`HTTP 400 Bad Request`) but the reasons were different as you will see inspecting the logs in the next section.
 
 ### Inspect the actions taken by USP Core WAAP
