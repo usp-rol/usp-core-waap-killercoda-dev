@@ -96,6 +96,7 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap created
 ```
 
 </details>
+<br />
 
 <details>
 <summary>hint</summary>
