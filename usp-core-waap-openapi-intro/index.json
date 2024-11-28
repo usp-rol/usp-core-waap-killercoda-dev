@@ -1,6 +1,6 @@
 {
-  "title": "USP Core WAAP OpenAPI validation demo",
-  "description": "protecting an API against incorrect data",
+  "title": "USP Core WAAP OpenAPI validation",
+  "description": "protecting an API against invalid data",
   "details": {
     "intro": {
       "text": "intro/info.md",
