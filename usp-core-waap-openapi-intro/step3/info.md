@@ -1,12 +1,12 @@
-&#127919; In this step you will ...
+&#127919; In this step you will:
 
-* Configure your `CoreWaapService` instance
-* Access swagger petstore API via USP Core WAAP
+* Configure your `CoreWaapService` instance to protect the backend
+* Access the swagger petstore API via USP Core WAAP
 * Inspect USP Core WAAP logs
 
-### Configure your CoreWaapService instance
+### Configure your CoreWaapService instance to protect the backend
 
-> &#128226; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
+> &#128270; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
 
 Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the swagger petstore API.
 
@@ -148,7 +148,7 @@ kubectl wait pods \
 
 ### Access swagger petstore API via USP Core WAAP
 
-> &#128226; The port forwarding was changed accordingly that the traffic to the swagger petstore API is now **routed via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
+> &#128270; The port forwarding was changed accordingly that the traffic to the swagger petstore API is now **routed via USP Core WAAP** (not port 8080 anymore - just use localhost with default port 80).
 
 Again query a pet in an incorrect format as you did in the first step. This request should be blocked by USP Core WAAP (this incorrect request shall not reach the swagger petstore API backend):
 
@@ -235,7 +235,7 @@ curl -sv http://localhost/api/pet/1
 
 **Wait! Why is that also getting an HTTP 400 response?!**
 
-Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the swagger petstore application but is via USP Core WAAP since its configured to be included in the specification! In order to successfully query pets we need to send an `api_key` header:
+Well, the configured OpenAPI specification includes an [API Keys](https://swagger.io/docs/specification/v3_0/authentication/api-keys/) section which is not enforced by the swagger petstore backend application but is now via USP Core WAAP! In order to successfully query pets we need to send an `api_key` header:
 
 ```shell
 curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
@@ -305,7 +305,7 @@ curl -sv -H 'api_key: anything' http://localhost/api/pet/waapcat1
 * Closing connection 0
 ```
 
-As you can see even the response is the same (`HTTP 400 Bad Request`) the reasons were different as you will see inspecting the logs in the next section.
+As you can see even the response is the same (`HTTP 400 Bad Request`) but the reasons were different as you will see inspecting the logs in the next section.
 
 ### Inspect the actions taken by USP Core WAAP
 
@@ -392,6 +392,6 @@ kubectl logs \
 </details>
 <br />
 
-> &#128226; While fixing vulnerabilities / writing secure application code is imminent USP Core WAAP can help you out taking the time it takes to fix all vulnerabilities and giving you an additional layer of security!
+> &#128270; While fixing vulnerabilities / writing secure application code is imminent USP Core WAAP can help you out taking the time it takes to fix all vulnerabilities and giving you an additional layer of security!
 
-That's it! As you see protecting an application through an OpenAPI specification brings a lot of additional security as demonstrated here not just with incorrect API requests but also about missing security headers (specified in API but mistakenly not enforced by the application)!
+That's it! Protecting an application through an OpenAPI specification brings a lot of additional security as demonstrated here not just with incorrect API requests but also about missing security headers (specified in API but mistakenly not enforced by the application).

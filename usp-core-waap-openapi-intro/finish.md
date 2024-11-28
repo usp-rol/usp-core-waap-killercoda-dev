@@ -1,6 +1,6 @@
 ### Splendid!
 
-> &#127937; You just protected the swagger petstore API demo application providing OpenAPI validation!
+> &#127937; You just protected the swagger petstore API demo application providing OpenAPI validation using USP Core WAAP!
 
 Now watch out for more scenarios to come highlighting detailed aspects of the USP Core WAAP protection like HTTP header filtering, cross-site-request-forgery (CSRF) protection and anti-virus scanning integrations!
 

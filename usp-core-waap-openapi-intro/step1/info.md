@@ -1,4 +1,4 @@
-&#127919; In this step you will ...
+&#127919; In this step you will:
 
 * Access plain swagger petstore API
 * Make an invalid swagger petstore API request
@@ -9,7 +9,7 @@
 
 Access the swagger petstore API (querying for a pet with `ID:1`) using the console on the right side:
 
-> &#128226; Initially the swagger petstore API will be accessed unprotected using `localhost:8080`
+> &#128270; Initially the swagger petstore API will be accessed unprotected using `localhost:8080` (not using USP Core WAAP)
 
 ```shell
 curl -s http://localhost:8080/api/pet/1 | jq '.'
@@ -99,4 +99,4 @@ The output indicates that the API could not understand the request as shown by t
 
 > &#10071; Note that this request was processed by the backend and an attacker could do damage by this fact (like flooding the backend with incorrect request).
 
-Now let's see how this can be **protected by USP Core WAAP** that invalid API calls are intercepted if they are not according to the configured schema!
+Now let's see how this can be **protected by USP Core WAAP** that invalid API calls are intercepted if they are not compliant to the configured schema!
