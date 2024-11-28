@@ -202,4 +202,11 @@ kubectl logs \
 
 > &#8987; Wait until the `add/update listener 'core.waap.listener'` log message is seen indicating the configuration reload, otherwise the "old" configuration is still in use! The configuration reload might take a minute or two...
 
+At last again [access the juiceshop]({{TRAFFIC_HOST1_80}}) web application using your browser and try to execute an SQL-injection by logging in with:
+
+* email `' OR true;` and
+* password `fail` (or anything else except empty)
+
+> &#10071; The attempt still must fail (if not check the added `crs.requestRuleExceptions` configuration)!
+
 That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive using the auto-learning cli tool!
