@@ -1,4 +1,4 @@
-&#127919; In this step you will ...
+&#127919; In this step you will:
 
 * Configure your CoreWaapService instance
 * Again access the profile page
@@ -6,7 +6,7 @@
 
 ### Configure your CoreWaapService instance
 
-> &#128226; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
+> &#128270; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide.
 
 Having the USP Core WAAP operator installed and ready to go, you can now configure the USP Core WAAP `instance`.
 
@@ -175,12 +175,12 @@ kubectl wait pods \
 
 Try again to access the [profile page]({{TRAFFIC_HOST1_80}}/profile). The improper errorhandling should now be hidden as you access the backend via the configure USP Core WAAP instance now (if not, consider to look at the solution below).
 
-> &#128226; The port forwarding was changed accordingly that the **traffic** to the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) is now **routed via USP Core WAAP**.
-
-> &#10071; Make sure to have access the profile page (while not being logged in) otherwise the validation in this step will fail...
+> &#128270; The port forwarding was changed accordingly that the **traffic** to the [OWASP Juice Shop]({{TRAFFIC_HOST1_80}}) is now **routed via USP Core WAAP**.
 
 Did you notice the different error page?
 Not only are sensitive application information hidden but also the style can be changed to match the Juice Shop layout.
+
+> &#10071; Make sure to have accessed the profile page (while not being logged in) otherwise the validation in this step will fail...
 
 ### Inspect USP Core WAAP logs
 
