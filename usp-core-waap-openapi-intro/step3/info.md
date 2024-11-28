@@ -17,7 +17,7 @@ kubectl apply -f openapi-petstore-configmap.yaml
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 configmap/openapi-petstore-v3 created
@@ -68,13 +68,14 @@ spec:
 (for this demo scenario the OWASP Core Rule Set has been disabled to focus on OpenAPI validation)
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 corewaapservice.waap.core.u-s-p.ch/petstore-usp-core-waap created
 ```
 
 </details>
+<br />
 
 <details>
 <summary>hint</summary>
@@ -91,7 +92,7 @@ kubectl get corewaapservices --all-namespaces
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 NAMESPACE   NAME                     AGE
@@ -111,7 +112,7 @@ kubectl get pods \
 
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 NAMESPACE   NAME                                      READY   STATUS    RESTARTS   AGE
@@ -128,13 +129,19 @@ Continue accessing the swagger petstore API in the next section (or consider the
 <details>
 <summary>solution</summary>
 
-First create the Core WAAP instance using
+First add the openapi configuration using
+
+```shell
+kubectl apply -f openapi-petstore-configmap.yaml
+```{{exec}}
+
+Next create the Core WAAP instance using
 
 ```shell
 kubectl apply -f petstore-core-waap.yaml
 ```{{exec}}
 
-and wait for its readiness...
+Then wait for its readiness...
 
 ```shell
 kubectl wait pods \
@@ -157,7 +164,7 @@ curl -sv http://localhost/api/pet/waapcat1
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 *   Trying 127.0.0.1:80...
@@ -191,7 +198,7 @@ kubectl -n petstore exec pod/petstore \
 > &#128270; Note that there is no `waapcat1` request seen on the swagger petstore API backend (compare against example command output below).
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 127.0.0.1 - - [08/Nov/2024:09:41:17 +0000] "GET / HTTP/1.1" 200 3851
@@ -209,7 +216,7 @@ curl -sv http://localhost/api/pet/1
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 *   Trying 127.0.0.1:80...
@@ -242,7 +249,7 @@ curl -s -H 'api_key: anything' http://localhost/api/pet/1 | jq
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```json
 {
@@ -284,7 +291,7 @@ curl -sv -H 'api_key: anything' http://localhost/api/pet/waapcat1
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 *   Trying 127.0.0.1:80...
@@ -320,7 +327,7 @@ kubectl describe pods \
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 Name:             petstore-usp-core-waap-78dbbc6d8c-6w7lr
@@ -359,7 +366,7 @@ kubectl logs \
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 {

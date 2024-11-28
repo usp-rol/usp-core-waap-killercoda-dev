@@ -16,7 +16,7 @@ curl -s http://localhost:8080/api/pet/1 | jq '.'
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```json
 {
@@ -58,7 +58,7 @@ curl -sv http://localhost:8080/api/pet/cat1
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 *   Trying 127.0.0.1:8080...
