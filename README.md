@@ -22,22 +22,20 @@ This repository contains the scenarios published via [killercoda](https://killer
 ```markdown
 Throughout the scenario the following conventions are used:
 
-> &#128226; General information
-
 > &#10071; Important information
 
-> &#128270; Look out for a detail
+> &#128270; Additional details
 
 > &#8987; Wait for a condition prior to continue
 ```
 
 **step overview example**
 ```markdown
-&#127919; In this step you will ...
+&#127919; In this step you will:
 
-* Inspect logs of USP Core WAAP
-* Reconfigure the Core WAAP instance
-* Check logs to verify false positive are gone
+* Inspect the logs of USP Core WAAP
+* Reconfigure the USP Core WAAP instance to ...
+* Check the logs to verify false positives are gone
 ```
 
 and then use headings (level 3) for each mentioned point...

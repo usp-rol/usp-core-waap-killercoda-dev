@@ -1,10 +1,10 @@
-&#127919; In this step you will ...
+&#127919; In this step you will:
 
-* Inspect USP Core WAAP logs
-* Reconfigure the USP Core WAAP instance
-* Check logs to verify false positive are gone
+* Inspect the USP Core WAAP logs
+* Reconfigure the USP Core WAAP instance to eliminate (or mitigate) false positives
+* Check the logs to verify false positive are gone
 
-### Inspect USP Core WAAP logs
+### Inspect the USP Core WAAP logs
 
 Let's have a look at the logs!
 
@@ -14,7 +14,7 @@ kubectl logs \
   -l app.kubernetes.io/name=usp-core-waap \
   --tail=-1 \
   | grep "\[critical\]\[wasm\]" \
-  | grep 'request.path'
+  | grep -E '"request.path":"[^"]*"'
 ```{{exec}}
 
 <details>
@@ -102,13 +102,13 @@ kubectl logs \
 
 </details>
 
-> &#128270; Look out for the `crs.violated_rule` field which contains the Core Rule Set rule number triggering the action!
+> &#128270; Look out for the `crs.violated_rule` field which contains the Core Rule Set rule number triggering the action.
 
 The field `crs.violated_rule` indicates what Core Rule Set Rule has triggered. The `Rule ID 920420` blocks this request because the content-type is `text/plain` which is untrusted.
 
-> &#128226; The Rule IDs in the 949... range are the blocking condition rules and are not of interest. In our case the **Rule ID 920420** (Protocol enforcement) is!
+> &#128270; The Rule IDs in the 949... range are the blocking condition rules and are not of interest. In our case the **Rule ID 920420** (Protocol enforcement) is.
 
-### Reconfigure the USP Core WAAP instance
+### Reconfigure the USP Core WAAP instance to eliminate (or mitigate) false positives
 
 You want these `/socket.io` requests to succeed (in this use-case the block of these requests is a `false positive`) and therefore you add an exeption rule to the core-waap `CRS` configuration using `requestRuleExceptions`:
 
@@ -144,17 +144,17 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
 
 </details>
 
-> &#10071; Make sure the `CoreWaapService` is updated (the command above was executed)!
+> &#10071; Make sure the `CoreWaapService` is updated (the command above was executed)
 
-### Check logs to verify false positive are gone
+### Check the logs to verify false positive are gone
 
-Now after having reconfigured the `CoreWaapService` instance wait for its reconfiguration (indicated by the log `add/update listener 'core.waap.listener'`) and observe the `socket.io` request denials disappear:
+Now after having reconfigured the `CoreWaapService` instance **wait for its configuration reload** (indicated by the log `add/update listener 'core.waap.listener'`) and observe the `socket.io` request denials disappear:
 
 ```shell
 kubectl logs \
   -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
-  --since=1m \
+  --since=3m \
   --follow \
   | grep 'add/update listener'
 ```{{exec}}
