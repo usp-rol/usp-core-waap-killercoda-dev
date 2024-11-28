@@ -47,7 +47,7 @@ kubectl apply -f error-configmap.yaml
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 configmap/core-waap-static-resources created
@@ -89,7 +89,7 @@ spec:
 Using this updated configuration the HTTP Error Codes 500 - 599 are now mapped to the configured error page.
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap created
@@ -113,7 +113,7 @@ kubectl get corewaapservices --all-namespaces
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 NAMESPACE   NAME                       AGE
@@ -133,7 +133,7 @@ kubectl get pods \
 
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 NAMESPACE   NAME                                       READY   STATUS    RESTARTS   AGE
@@ -195,7 +195,7 @@ kubectl logs \
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```json
 {
