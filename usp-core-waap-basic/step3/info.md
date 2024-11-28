@@ -1,8 +1,14 @@
-### Configure your CoreWaapService instance
+&#127919; In this step you will:
 
->if you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
+* Configure your `CoreWaapService` instance to protect the Juice Shop
+* Access the Juice Shop via USP Core WAAP
+* Inspect the actions taken by USP Core WAAP
 
-Having the Core WAAP operator installed and ready to go, you can configure the USP Core WAAP instance to protect the Juiceshop web app:
+### Configure your CoreWaapService instance to protect the Juice Shop
+
+> &#128270; If you are inexperienced with kubernetes scroll down to the solution section where you'll find a step-by-step guide
+
+Having the USP Core WAAP operator installed and ready to go, you can configure the `CoreWaapService` instance to protect the Juiceshop web app:
 
 ```yaml
 apiVersion: waap.core.u-s-p.ch/v1alpha1
@@ -18,7 +24,7 @@ spec:
         pathType: "PREFIX"
       backend:
         address: juiceshop
-        port: 8000
+        port: 8080
         protocol:
           selection: h1
 ```{{copy}}
@@ -37,7 +43,7 @@ kubectl get pods \
   --all-namespaces
 ```{{exec}}
 
->wait until the Core WAAP pod is running before trying to access the webapplication in the next step (otherwise you'll get a HTTP 502 response)!
+> &#8987; Wait until the Core WAAP pod is running before trying to access the webapplication in the next step (otherwise you'll get a HTTP 502 response)!
 
 <details>
 <summary>hint</summary>
@@ -45,25 +51,7 @@ kubectl get pods \
 There is a file in your home directory with an example `corewaapservice` definition ready to be applied using `kubectl apply -f` ...
 
 </details>
-
-### Access juiceshop web application via USP Core WAAP
-
-We changed the port forwarding accordingly that the traffic to the [juiceshop webapplication]({{TRAFFIC_HOST1_8080}}) is now routed **via USP Core WAAP**. Try if you still can exploit the vulnerability in the login dialog using the previous SQL-injection (remember email `' OR true;` and any password except empty)...
-
-The described exploit is now blocked by the Core WAAP. If you open the browser developer tool, you can see that the login request is answered with the response status 403.
-
->Note there are other rejections blocked by the default Core WAAP configuration seen in the browser developer tools like `socket.io` outbound connections thus you might want to filter your query using the `login` keyword.
-
-### Inspect the actions taken by USP Core WAAP
-
-To see the actual block you can filter the USP Core WAAP Pod logs for 'APPLICATION-ATTACK-SQLI' (refer to the [OWASP Core Ruleset documentation](https://coreruleset.org/docs/rules/rules/)) while you are trying to login using the mentioned SQL-injection
-
-```shell
-kubectl logs -f \
-  -l app.kubernetes.io/name=usp-core-waap \
-  -n juiceshop \
-  |grep APPLICATION-ATTACK-SQLI
-```{{exec}}
+<br />
 
 <details>
 <summary>solution</summary>
@@ -92,5 +80,30 @@ kubectl logs -f \
   |grep APPLICATION-ATTACK-SQLI
 ```{{exec}}
 
-then at last access the [juiceshop webapplication]({{TRAFFIC_HOST1_8080}}) and try to exploit the SQL-injection vulnerability again
 </details>
+<br />
+
+### Access the Juice Shop via USP Core WAAP
+
+> &#128270; The port forwarding was changed accordingly that the traffic to the Juice Shop webapplication is now routed **via USP Core WAAP**.
+
+Try if you still can [exploit the vulnerability]({{TRAFFIC_HOST1_80}}) in the login dialog using the previous SQL-injection (remember email `' OR true;` and any password except empty)...
+
+The described exploit is now blocked by the USP Core WAAP. If you open the browser developer tools (hit `F12` on most common browsers), you can see that the login request is answered with the `response status 403`.
+
+> &#128270; Note there are other rejections blocked by the default USP Core WAAP configuration seen in the browser developer tools like `socket.io` outbound connections thus you might want to filter your query using the `login` keyword.
+
+### Inspect the actions taken by USP Core WAAP
+
+To see the actual block you can filter the USP Core WAAP Pod logs for 'APPLICATION-ATTACK-SQLI' (refer to the [OWASP Core Ruleset documentation](https://coreruleset.org/docs/rules/rules/)) while you are trying to login using the mentioned SQL-injection
+
+```shell
+kubectl logs -f \
+  -l app.kubernetes.io/name=usp-core-waap \
+  -n juiceshop \
+  |grep APPLICATION-ATTACK-SQLI
+```{{exec}}
+
+> &#128270; While fixing vulnerabilities / writing secure application code is imminent, USP Core WAAP can help you out taking the time it takes to fix all vulnerabilities and giving you an additional layer of security!
+
+That's it! You just protected the vulnerable Juice Shop backend application using USP Core WAAP.
