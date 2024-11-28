@@ -18,7 +18,7 @@ kubectl logs \
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 [2024-11-21 10:14:15.017][15][critical][wasm] [source/extensions/common/wasm/context.cc:1204] wasm log core.waap.listener.filters.http.httpFilter.wasm.coraza.config coraza-vm: {"request.path":"/socket.io/?EIO=4\u0026transport=polling\u0026t=PDEDm7q\u0026sid=Q_d8fQ7HSAYmjI_kAAAF","crs.violated_rule":{"id":920420,"category":"REQUEST-920-PROTOCOL-ENFORCEMENT","severity":"CRITICAL","data":"|text/plain|","message":"Request content type is not allowed by policy","matched_data":"REQUEST_HEADERS","matched_data_name":"content-type","tags":["application-multi","language-multi","platform-multi","attack-protocol","paranoia-level/1","OWASP_CRS","capec/1000/255/153","PCI/12.1"]},"client.address":"127.0.0.1","transaction.id":"xpIaKdMfdmgZPBdBZWM","crs.version":"OWASP_CRS/4.3.0","request.id":"ce104af8-283d-4c8b-a3bf-609692267f57"}
@@ -104,7 +104,7 @@ java -jar /tmp/waap-lib-autolearn-cli-${version}.jar \
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 Learned request/response rule exceptions: 2/0.
@@ -125,7 +125,7 @@ yq e '.spec.crs.requestRuleExceptions' waap.yaml
 
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 - ruleId: 942100
@@ -177,7 +177,7 @@ kubectl apply -f juiceshop-core-waap.yaml
 ```{{exec}}
 
 <details>
-<summary>example command output
+<summary>example command output</summary>
 
 ```shell
 corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
