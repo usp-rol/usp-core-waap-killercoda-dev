@@ -14,7 +14,7 @@ kubectl logs \
   -l app.kubernetes.io/name=usp-core-waap \
   --tail=-1 \
   | grep "\[critical\]\[wasm\]" \
-  | grep 'request.path'
+  | grep -E '"request.path":"[^"]*"'
 ```{{exec}}
 
 <details>
@@ -148,13 +148,13 @@ corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap configured
 
 ### Check the logs to verify false positive are gone
 
-Now after having reconfigured the `CoreWaapService` instance wait for its reconfiguration (indicated by the log `add/update listener 'core.waap.listener'`) and observe the `socket.io` request denials disappear:
+Now after having reconfigured the `CoreWaapService` instance **wait for its configuration reload** (indicated by the log `add/update listener 'core.waap.listener'`) and observe the `socket.io` request denials disappear:
 
 ```shell
 kubectl logs \
   -n juiceshop \
   -l app.kubernetes.io/name=usp-core-waap \
-  --since=1m \
+  --since=3m \
   --follow \
   | grep 'add/update listener'
 ```{{exec}}
