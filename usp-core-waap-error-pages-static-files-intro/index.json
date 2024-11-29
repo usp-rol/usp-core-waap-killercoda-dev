@@ -1,6 +1,6 @@
 {
-  "title": "USP Core WAAP custom error pages",
-  "description": "How to protect against backend information leakage",
+  "title": "USP Core WAAP information leakage prevention",
+  "description": "Improve error handling with custom error pages",
   "details": {
     "intro": {
       "text": "intro/info.md",

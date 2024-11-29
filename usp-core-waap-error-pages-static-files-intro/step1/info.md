@@ -6,7 +6,7 @@
 
 The [OWASP Juice Shop]({{TRAFFIC_HOST1_8080}}) demo web application has been setup and will be used to demonstrate the custom error pages feature.
 
-> &#128270; Initially the backend will be accessed unprotected (not using Core WAAP)
+> &#128270; Initially the backend will be accessed unprotected (not using USP Core WAAP)
 
 Try to access the [profile page]({{TRAFFIC_HOST1_8080}}/profile) which seems to have an issue...
 (caused by the fact you are not logged in yet)
