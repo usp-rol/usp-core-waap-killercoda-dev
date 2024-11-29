@@ -12,6 +12,8 @@ This repository contains the scenarios published via [killercoda](https://killer
 
 **Keep in mind when renaming directories the killercoda scenario URL will change!**
 
+The order of the scenarios without a `structure.json` will be according the scenario title alphabetically sorted!
+
 ## Rules and guidelines
 
 * use the term 'USP Core WAAP' (and not 'Core Waap' - note the upercase waap)
