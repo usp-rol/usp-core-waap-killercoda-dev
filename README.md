@@ -4,7 +4,7 @@ This repository contains the scenarios published via [killercoda](https://killer
 
 ## List of scenarios
 
-* usp-core-waap-basic : entry-level scenario to show-case the Core WAAP Core Rule Set protection (preventing juiceshop SQL-injection)
+* usp-core-waap-100 : entry-level scenario to show-case the Core WAAP using Core Rule Set protection (preventing OWASP Juice Shop SQL-injection)
 * usp-core-waap-error-pages-static-files-intro : entry-level scenario to show-case the Core WAAP error pages feature
 * usp-core-waap-false-positives-intro : entry-level scenario to show-case Core WAAP Core Rule Set false-positives handling
 * usp-core-waap-false-positives-java-auto-learn : scenario to show-case Core WAAP Core Rule Set false-positives auto-learning
