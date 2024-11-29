@@ -4,7 +4,7 @@
 
 > &#128270; To learn more about false positives in context of Core Rule Set have a look at the [documentation](https://coreruleset.org/docs/concepts/false_positives_tuning/)
 
-This scenario shows how to tackle **false positives** as a next step to the initial [USP Core WAAP demo scenario](../usp-core-waap-basic).
+This scenario shows how to tackle **false positives** as a next step to the initial [USP Core WAAP demo scenario](../usp-core-waap-100).
 
 > &#128270; In this scenario the [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/) demo web application is used as a backend.
 
