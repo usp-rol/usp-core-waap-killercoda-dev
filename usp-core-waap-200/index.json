@@ -1,6 +1,6 @@
 {
-  "title": "USP Core WAAP false positives",
-  "description": "Identifying and eliminating false positives in Core WAAP",
+  "title": "USP Core WAAP manual configuration tuning",
+  "description": "Manually identifying and eliminating false positives in USP Core WAAP",
   "details": {
     "intro": {
       "text": "intro/info.md",

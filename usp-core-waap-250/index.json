@@ -1,6 +1,6 @@
 {
-  "title": "USP Core WAAP false positives auto-learning",
-  "description": "How to auto-learning for detecting false-positives",
+  "title": "USP Core WAAP automatic configuration tuning",
+  "description": "Automatically identifying and eliminating false positives in USP Core WAAP",
   "details": {
     "intro": {
       "text": "intro/info.md",
