@@ -4,11 +4,11 @@ This repository contains the scenarios published via [killercoda](https://killer
 
 ## List of scenarios
 
-* usp-core-waap-intro : entry-level scenario to show-case the Core WAAP using Core Rule Set protection (preventing OWASP Juice Shop SQL-injection)
-* usp-core-waap-200   : scenario to show-case Core WAAP Core Rule Set false-positives manual handling
-* usp-core-waap-250   : scenario to show-case Core WAAP Core Rule Set false-positives auto-learning
-* usp-core-waap-300   : scenario to show-case the Core WAAP error pages feature
-* usp-core-waap-400   : scenario to show-case the Core WAAP OpenAPI validation feature
+* usp-core-waap-intro         : entry-level scenario to show-case the Core WAAP using Core Rule Set protection (preventing OWASP Juice Shop SQL-injection)
+* usp-core-waap-error-mapping : scenario to show-case the Core WAAP error pages feature
+* usp-core-waap-200           : scenario to show-case Core WAAP Core Rule Set false-positives manual handling
+* usp-core-waap-250           : scenario to show-case Core WAAP Core Rule Set false-positives auto-learning
+* usp-core-waap-400           : scenario to show-case the Core WAAP OpenAPI validation feature
 
 **Keep in mind when renaming directories the killercoda scenario URL will change!**
 
