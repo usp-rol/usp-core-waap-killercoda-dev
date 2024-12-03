@@ -5,7 +5,7 @@ this repository contains the scenarios published via [killercoda](https://killer
 ## list of scenarios
 
 * usp-core-waap-basic : entry-level scenario to show-case the Core WAAP CRS protection (preventing juiceshop SQL-injection)
-* usp-core-waap-error-pages-static-files-intro : entry-level scenario to show-case the Core WAAP error pages feature
+* usp-core-waap-error-mapping : entry-level scenario to show-case the Core WAAP error pages feature
 
 ## scneario development
 
