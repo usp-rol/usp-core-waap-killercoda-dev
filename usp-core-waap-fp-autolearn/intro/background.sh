@@ -6,7 +6,6 @@
 WAIT_SEC=5
 BACKEND_NAMESPACE="juiceshop"
 BACKEND_POD="juiceshop"
-BACKEND_SVC="$BACKEND_POD"
 BACKEND_SETUP_FINISH="/tmp/.backend_installed"
 OPERATOR_SETUP_FINISHED="/tmp/.operator_installed"
 WAAP_SETUP_FINISH="/tmp/.waap_installed"
@@ -18,16 +17,17 @@ kubectl apply -f ~/.scenario_staging/${BACKEND_POD}.yaml
 echo "$(date) : waiting for ${BACKEND_NAMESPACE}/${BACKEND_POD} to be ready..."
 kubectl wait pods ${BACKEND_POD} -n ${BACKEND_NAMESPACE} --for='condition=Ready' --timeout=300s
 echo "$(date) : wait ${WAIT_SEC}s..."
+sleep $WAIT_SEC
 touch $BACKEND_SETUP_FINISH && echo "$(date) : wrote file $BACKEND_SETUP_FINISH to indicate backend setup completion to foreground process"
 echo "$(date) : backend setup finished"
 # Part 2: setup core waap operator
-export CORE_WAAP_HELM_VERSION=0.0.0-main-SNAPSHOT     # TODO: change to a released artifact!!!
+export CORE_WAAP_HELM_VERSION=1.1.1
 export CONTAINER_REGISTRY=devuspregistry.azurecr.io
 sleep $WAIT_SEC
 echo "$(date) : login to helm registry..."
 echo "RVkvOFNDMzdWWlo5VWsvSlZFcjRZK2pOSVAraGZiZ29pMmtaSE9DS3k1K0FDUkIrV015Yg==" | base64 -d | helm registry login ${CONTAINER_REGISTRY} --username killercoda --password-stdin
 echo "$(date) : change to scenario_staging dir..."
-cd ~/.scenario_staging/
+cd ~/.scenario_staging/ || exit 1
 echo "$(date) : prepare core waap operator setup..."
 kubectl apply -f ./imagepullsecret.yaml
 echo "$(date) : patch default serviceaccount in ${BACKEND_NAMESPACE} namespace..."
@@ -43,7 +43,6 @@ helm install \
   --namespace usp-core-waap-operator
 echo "$(date) : copy corewaap custom resouces to user home..."
 cp ./${BACKEND_POD}-core-waap.yaml ~
-echo "$(date) : signal foreground script completion..."
 echo "$(date) : core waap operator setup finished"
 touch $OPERATOR_SETUP_FINISHED && echo "$(date) : wrote file $OPERATOR_SETUP_FINISHED to indicate operator installation setup completion to foreground process"
 # Part 3: configure core waap instance

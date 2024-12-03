@@ -1,7 +1,6 @@
 operator:
   image: "${CONTAINER_REGISTRY}/usp/core/waap/demo-usp-core-waap-operator"
   imagePullSecretName: "devuspacr"
-  namespace: "usp-core-waap-operator"
   serviceAccount: "usp-core-waap-operator"
   resources:
     requests:

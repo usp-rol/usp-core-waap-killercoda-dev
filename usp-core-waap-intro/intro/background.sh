@@ -8,8 +8,8 @@ BACKEND_NAMESPACE="juiceshop"
 BACKEND_POD="juiceshop"
 BACKEND_SVC="$BACKEND_POD"
 BACKEND_SETUP_FINISH="/tmp/.backend_installed"
-PORT_FORWARD_PID="/tmp/.backend-port-forward-pid"
 OPERATOR_SETUP_FINISHED="/tmp/.operator_installed"
+PORT_FORWARD_PID="/tmp/.backend-port-forward-pid"
 RC=99
 
 # Part 1: setup backend web app
@@ -38,7 +38,7 @@ sleep $WAIT_SEC
 echo "$(date) : login to helm registry..."
 echo "RVkvOFNDMzdWWlo5VWsvSlZFcjRZK2pOSVAraGZiZ29pMmtaSE9DS3k1K0FDUkIrV015Yg==" | base64 -d | helm registry login ${CONTAINER_REGISTRY} --username killercoda --password-stdin
 echo "$(date) : change to scenario_staging dir..."
-cd ~/.scenario_staging/
+cd ~/.scenario_staging/ || exit 1
 echo "$(date) : prepare core waap operator setup..."
 kubectl apply -f ./imagepullsecret.yaml
 echo "$(date) : patch default serviceaccount in ${BACKEND_NAMESPACE} namespace..."
@@ -55,5 +55,5 @@ helm install \
 echo "$(date) : copy corewaap custom resouces to user home..."
 cp ./${BACKEND_POD}-core-waap.yaml ~
 echo "$(date) : signal foreground script completion..."
-touch /tmp/.operator_installed
+touch $OPERATOR_SETUP_FINISHED
 echo "$(date) : core waap operator setup finished"
