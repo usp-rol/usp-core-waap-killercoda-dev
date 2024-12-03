@@ -12,7 +12,11 @@ This repository contains the scenarios published via [killercoda](https://killer
 
 **Keep in mind when renaming directories the killercoda scenario URL will change!**
 
-The order of the scenarios without a `structure.json` will be according the scenario title alphabetically sorted!
+The order of the scenarios without a `structure.json` will be according the scenario title alphabetically sorted! Use the following command to identify wrong top-level paths inside your `structure.json` file:
+
+```shell
+for d in $(jq -r '.items[].path' structure.json);do ls -d $d;done
+```
 
 ## Rules and guidelines
 
