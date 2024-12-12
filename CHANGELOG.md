@@ -2,6 +2,11 @@
 
 changes to the USP Killercoda scenarios using [common-changelog.org](https://common-changelog.org/) format.
 
+## [20xx-yy]
+
+### Added
+- Added scenario `USP Core WAAP OpenAPI validation`
+
 ## [2024-49]
 
 ### Changed
