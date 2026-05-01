@@ -46,7 +46,7 @@ wait_for_url() {
 # Initialization
 ##################################################
 log_info "initializing variables..."
-_KILLERCODA_NODE_IP="172.30.1.2"
+_KILLERCODA_NODE_IP="172.30.2.2"
 BACKEND_SETUP_FINISH="/tmp/.backend_installed"
 BACKEND_SETUP_KYVERNO="/tmp/.backend_kyverno_installed"
 BACKEND_SETUP_WAAP_OPERATOR="/tmp/.backend_corewaap_operator_installed"
