@@ -9,7 +9,7 @@ SPDX-License-Identifier: GPL-3.0-only
 * Verify Kyverno setup
 * Inspect the initial Kyverno policy
 
-> &#8987; Wait until the console on the right side shows `*** Scenario ready ***` before accessing the backend (otherwise you'll see an `HTTP 502 Bad Gateway` error)!
+> &#8987; Wait until the console on the right side shows `*** Scenario ready ***`!
 
 ### Verify Kyverno setup
 
