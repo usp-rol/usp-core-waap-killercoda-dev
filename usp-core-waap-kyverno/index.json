@@ -20,7 +20,8 @@
       },
       {
         "title": "Step 2: Create a new WAAP instance and verify policy enforcement",
-        "text": "step2/info.md"
+        "text": "step2/info.md",
+        "foreground": "step2/foreground.sh"
       }
     ],
     "finish": {

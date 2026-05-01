@@ -57,12 +57,13 @@ COREWAAP_OPERATOR_NAMESPACE="usp-core-waap-operator"
 COREWAAP_PROXY_IMAGE_PATH="usp/core/waap/demo/usp-core-waap-proxy-demo"
 COREWAAP_REGISTRY_SERVER="devuspregistry.azurecr.io"
 COREWAAP_REGISTRY_USER="killercoda"
-KYVERNO_NAMESPACE="kyverno"
-KYVERNO_POLICY_FILE="kyverno_policy.yaml"
-JUICESHOP_NAMESPACE="juiceshop"
-JUICESHOP_NODEPORT=30080
 HTTPBIN_NAMESPACE="httpbin"
 HTTPBIN_NODEPORT=30081
+JUICESHOP_NAMESPACE="juiceshop"
+JUICESHOP_NODEPORT=30080
+KYVERNO_NAMESPACE="kyverno"
+KYVERNO_POLICY_FILE="kyverno_policy.yaml"
+
 
 log_info "change to scenario_staging dir..."
 cd ~/.scenario_staging/ || exit 1
@@ -103,7 +104,7 @@ echo "RVkvOFNDMzdWWlo5VWsvSlZFcjRZK2pOSVAraGZiZ29pMmtaSE9DS3k1K0FDUkIrV015Yg==" 
 log_info "prepare core waap operator setup..."
 kubectl create namespace ${COREWAAP_OPERATOR_NAMESPACE} \
   || log_error "failed to create namespace ${COREWAAP_OPERATOR_NAMESPACE} for core waap operator"
-kubectl apply -f ./imagepullsecret.yaml \
+kubectl apply -f ./imagepullsecret.yaml -n ${COREWAAP_OPERATOR_NAMESPACE} \
   || log_error "failed to apply imagepullsecret for core waap operator"
 
 log_info "patch default serviceaccount in ${COREWAAP_OPERATOR_NAMESPACE} namespace..."
@@ -111,6 +112,9 @@ kubectl patch serviceaccount default -n ${COREWAAP_OPERATOR_NAMESPACE} -p '{"ima
   || log_error "failed to patch default serviceaccount in ${COREWAAP_OPERATOR_NAMESPACE} namespace"
 
 log_info "apply defined variables in helm-values template..."
+export COREWAAP_OPERATOR_IMAGE_PATH
+export COREWAAP_PROXY_IMAGE_PATH
+export COREWAAP_REGISTRY_SERVER
 envsubst < ./operator-helm-template.yaml > ./operator-helm-values.yaml || log_error "failed to apply defined variables in helm-values template"
 
 log_info "install operator via helm chart..."
