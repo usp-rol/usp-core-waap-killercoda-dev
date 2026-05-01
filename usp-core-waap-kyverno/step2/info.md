@@ -35,6 +35,17 @@ spec:
 ```{{copy}}
 
 <details>
+<summary>example command output</summary>
+
+```shell
+corewaapservice.waap.core.u-s-p.ch/juiceshop-usp-core-waap created
+```
+
+</details>
+
+Since this Core WAAP instance configures `paranoiaLevel:2` we expect no complications...
+
+<details>
 <summary>hint</summary>
 
 Use `kubectl apply -f -` on the command-line on the right-hand side and paste the resource configuration ...

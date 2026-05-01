@@ -64,7 +64,58 @@ kubectl get clusterpolicy/check-coraza-paranoia-level -o yaml
 <summary>example command output</summary>
 
 ```shell
-kubectl get clusterpolicy/check-coraza-paranoia-level -o yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"kyverno.io/v1","kind":"ClusterPolicy","metadata":{"annotations":{"policies.kyverno.io/description":"Ensures that CoreWaapService resources are only applied if the Coraza paranoia level is set to at least 2.","policies.kyverno.io/title":"Require Paranoia Level 2 or Higher"},"name":"check-coraza-paranoia-level"},"spec":{"background":true,"rules":[{"match":{"any":[{"resources":{"kinds":["CoreWaapService"]}}]},"name":"check-paranoia-level","validate":{"deny":{"conditions":{"all":[{"key":"{{ request.object.spec.coraza.crs.paranoiaLevel || `0` }}","operator":"LessThan","value":2}]}},"message":"The paranoia level (spec.coraza.crs.paranoiaLevel) must be 2 or higher."}}],"validationFailureAction":"Enforce"}}
+    policies.kyverno.io/description: Ensures that CoreWaapService resources are only
+      applied if the Coraza paranoia level is set to at least 2.
+    policies.kyverno.io/title: Require Paranoia Level 2 or Higher
+  creationTimestamp: "2026-05-01T14:06:57Z"
+  generation: 1
+  name: check-coraza-paranoia-level
+  resourceVersion: "5371"
+  uid: 743875c2-5128-433f-a2e0-ed53fc4fb0d4
+spec:
+  admission: true
+  background: true
+  emitWarning: false
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - CoreWaapService
+    name: check-paranoia-level
+    skipBackgroundRequests: true
+    validate:
+      allowExistingViolations: true
+      deny:
+        conditions:
+          all:
+          - key: '{{ request.object.spec.coraza.crs.paranoiaLevel || `0` }}'
+            operator: LessThan
+            value: 2
+      message: The paranoia level (spec.coraza.crs.paranoiaLevel) must be 2 or higher.
+  validationFailureAction: Enforce
+status:
+  autogen: {}
+  conditions:
+  - lastTransitionTime: "2026-05-01T14:06:58Z"
+    message: Ready
+    reason: Succeeded
+    status: "True"
+    type: Ready
+  rulecount:
+    generate: 0
+    mutate: 0
+    validate: 1
+    verifyimages: 0
+  validatingadmissionpolicy:
+    generated: false
+    message: ""
 ```
 
 </details>

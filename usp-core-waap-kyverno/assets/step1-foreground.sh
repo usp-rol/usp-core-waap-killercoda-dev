@@ -6,9 +6,7 @@
 
 rm $0
 
-BACKEND_SETUP_FINISH="/tmp/.backend_installed"
 BACKEND_SETUP_KYVERNO="/tmp/.backend_kyverno_installed"
-BACKEND_SETUP_WAAP_OPERATOR="/tmp/.backend_corewaap_operator_installed"
 
 log_install() {
   echo
@@ -23,16 +21,6 @@ clear
 
 log_install "Installing Kyverno"
 while [ ! -f ${BACKEND_SETUP_KYVERNO} ]; do
-  echo -n '.'
-  sleep 1;
-done;
-log_install "Installing Core WAAP Operator"
-while [ ! -f ${BACKEND_SETUP_WAAP_OPERATOR} ]; do
-  echo -n '.'
-  sleep 1;
-done;
-log_install "Installing Backend Applications"
-while [ ! -f ${BACKEND_SETUP_FINISH} ]; do
   echo -n '.'
   sleep 1;
 done;
