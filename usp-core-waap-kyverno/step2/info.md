@@ -157,6 +157,7 @@ spec:
           selection: h1
 EOF
 ```{{exec}}
+</details>
 
 Resource creation will fail because the default `spec.coraza.crs.paranoiaLevel` is 1 (see [documentation](https://docs.united-security-providers.ch/usp-core-waap/latest/crd-doc/#corewaapservicespeccorazacrs))
 
@@ -185,4 +186,4 @@ spec:
 EOF
 ```{{exec}}
 
-</details>
+This is a very basic example of how a Kubernetes Infrastructure Administrator (or Team) can limit resource creations and using this technique security base-line settings can be enforced across multiple USP Core WAAP instances.
