@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
+image:
+  pullSecrets:
+    - name: "devuspacr"
 operator:
   image: "${COREWAAP_REGISTRY_SERVER}/${COREWAAP_OPERATOR_IMAGE_PATH}"
   imagePullSecretName: "devuspacr"
