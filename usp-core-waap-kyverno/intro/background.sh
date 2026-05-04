@@ -137,10 +137,10 @@ kubectl create namespace ${JUICESHOP_NAMESPACE} \
   || log_error "failed to create namespace ${JUICESHOP_NAMESPACE} for backend web app"
 kubectl apply -f ./imagepullsecret.yaml -n ${JUICESHOP_NAMESPACE} \
   || log_error "failed to apply imagepullsecret for backend web app in namespace ${JUICESHOP_NAMESPACE}"
-kubectl patch serviceaccount default -n ${JUICESHOP_NAMESPACE} -p '{"imagePullSecrets": [{"name": "devuspacr"}]}'
-  || log_error "failed to patch default serviceaccount in ${JUICESHOP_NAMESPACE} namespace"
 kubectl apply -f ./backend_juiceshop.yaml -n ${JUICESHOP_NAMESPACE} \
   || log_error "failed to apply backend web app manifest for juiceshop in namespace ${JUICESHOP_NAMESPACE}"
+kubectl patch serviceaccount default -n ${JUICESHOP_NAMESPACE} -p '{"imagePullSecrets": [{"name": "devuspacr"}]}' \
+  || log_error "failed to patch default serviceaccount in ${JUICESHOP_NAMESPACE} namespace"
 wait_for_url "http://${_KILLERCODA_NODE_IP}:${JUICESHOP_NODEPORT}" \
   || log_error "backend web app is not accessible at http://${_KILLERCODA_NODE_IP}:${JUICESHOP_NODEPORT} after waiting for 30 attempts"
 
@@ -151,6 +151,8 @@ kubectl apply -f ./imagepullsecret.yaml -n ${HTTPBIN_NAMESPACE} \
   || log_error "failed to apply imagepullsecret for backend web app in namespace ${HTTPBIN_NAMESPACE}"
 kubectl apply -f ./backend_httpbin.yaml -n ${HTTPBIN_NAMESPACE} \
   || log_error "failed to apply backend web app manifest for httpbin in namespace ${HTTPBIN_NAMESPACE}"
+kubectl patch serviceaccount default -n ${HTTPBIN_NAMESPACE} -p '{"imagePullSecrets": [{"name": "devuspacr"}]}' \
+  || log_error "failed to patch default serviceaccount in ${HTTPBIN_NAMESPACE} namespace"
 wait_for_url "http://${_KILLERCODA_NODE_IP}:${HTTPBIN_NODEPORT}" \
   || log_error "backend web app is not accessible at http://${_KILLERCODA_NODE_IP}:${HTTPBIN_NODEPORT} after waiting for 30 attempts"
 
