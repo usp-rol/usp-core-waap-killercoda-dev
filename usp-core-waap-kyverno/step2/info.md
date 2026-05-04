@@ -9,6 +9,8 @@ SPDX-License-Identifier: GPL-3.0-only
 * Create a Core WAAP resource passing the policy
 * Create a Core WAAP resource failing the policy
 
+> &#8987; Wait until the console on the right side shows `*** Scenario ready ***`!
+
 ### Create a Core WAAP resource passing the policy
 
 Now let's create a Core WAAP resource to protect the OWASP Juiceshop backend installed in the cluster by applying the following resource configuration:
@@ -109,6 +111,23 @@ spec:
         protocol:
           selection: h1
 ```{{copy}}
+
+<details>
+<summary>example command output</summary>
+
+```shell
+Error from server: error when creating "STDIN": admission webhook "validate.kyverno.svc-fail" denied the request:
+
+resource CoreWaapService/httpbin/httpbin-usp-core-waap was blocked due to the following policies
+
+check-coraza-paranoia-level:
+  check-paranoia-level: The paranoia level (spec.coraza.crs.paranoiaLevel) must be
+    2 or higher.
+```
+
+</details>
+
+Since this Core WAAP instance does not configure `paranoiaLevel` (using the default value of 1) the Kyverno policy blocks creation of this resource...
 
 <details>
 <summary>hint</summary>

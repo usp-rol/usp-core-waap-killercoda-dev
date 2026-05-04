@@ -137,6 +137,8 @@ kubectl create namespace ${JUICESHOP_NAMESPACE} \
   || log_error "failed to create namespace ${JUICESHOP_NAMESPACE} for backend web app"
 kubectl apply -f ./imagepullsecret.yaml -n ${JUICESHOP_NAMESPACE} \
   || log_error "failed to apply imagepullsecret for backend web app in namespace ${JUICESHOP_NAMESPACE}"
+kubectl patch serviceaccount default -n ${JUICESHOP_NAMESPACE} -p '{"imagePullSecrets": [{"name": "devuspacr"}]}'
+  || log_error "failed to patch default serviceaccount in ${JUICESHOP_NAMESPACE} namespace"
 kubectl apply -f ./backend_juiceshop.yaml -n ${JUICESHOP_NAMESPACE} \
   || log_error "failed to apply backend web app manifest for juiceshop in namespace ${JUICESHOP_NAMESPACE}"
 wait_for_url "http://${_KILLERCODA_NODE_IP}:${JUICESHOP_NODEPORT}" \

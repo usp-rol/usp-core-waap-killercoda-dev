@@ -6,7 +6,7 @@ SPDX-License-Identifier: GPL-3.0-only
 
 ### Splendid!
 
-> &#127937; You have successfully managed a USP Core WAAP instance using a git repository and Argo CD.
+> &#127937; You have successfully added a Kyverno policy restricting USP Core WAAP instance configuration.
 
 Now watch out for more scenarios to come highlighting detailed aspects of the USP Core WAAP protection!
 
