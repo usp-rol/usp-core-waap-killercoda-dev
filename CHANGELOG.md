@@ -12,6 +12,7 @@ Changes to the [USP Killercoda](https://killercoda.com/united-security-providers
 
 ### Added
 
+- Added scenario `USP Core WAAP DevOps`
 - Added scenario `USP Core WAAP Global Policies`
 
 ## [2026-18] - 2026-05-01
