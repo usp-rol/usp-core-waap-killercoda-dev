@@ -10,7 +10,7 @@ SPDX-License-Identifier: GPL-3.0-only
 * Access ArgoCD webUI
 * Wait for application deployment to finish
 
-> &#8987; Wait until the console on the right side shows `*** Scenario ready ***` before accessing the backend (otherwise you'll see an `HTTP 502 Bad Gateway` error)!
+> &#8987; Wait until the console on the right side shows `*** Scenario ready ***` before accessing the backend (otherwise you'll see an `HTTP 502 Bad Gateway` error)! This may take 2-3 minutes until completion...
 
 ### Access Gogs webUI
 

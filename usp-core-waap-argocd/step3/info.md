@@ -32,8 +32,8 @@ As previously seen head over to the ArgoCD webUI and watch changes being applied
 
 * [ArgoCD application]({{TRAFFIC_HOST1_30081}}) (**click to open in new browser tab**)
 
-Feel free to repeat that process by probably generating more rule exceptions (i.e. access the photo wall or try to login using username `' or true;` and any password)...
+Feel free to repeat that process by probably generating more rule exceptions (e.g. access the photo wall)...
 
 Again open up the [proposed changes in Gogs webUI]({{TRAFFIC_HOST1_30080}}/gituser/testrepo/compare/main...autolearn-tool) (comparing `autolearn-tool` branch to `main`) to see new changes being proposed (if there are any).
 
-> &#10071; While this demo is focused on automating configuration changes in a Core WAAP application setup, **never apply changes without reviewing them as you might decrease your security level**! The indicated SQL-injection here being accepted would be a reduction in security level!
+> &#10071; While this demo is focused on automating configuration changes in a Core WAAP application setup, **never apply changes without reviewing them as you might decrease your security level**!
