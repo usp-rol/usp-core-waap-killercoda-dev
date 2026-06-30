@@ -8,6 +8,12 @@ SPDX-License-Identifier: GPL-3.0-only
 
 Changes to the [USP Killercoda](https://killercoda.com/united-security-providers) scenarios using [common-changelog.org](https://common-changelog.org/) format.
 
+## [2026-28] - 2026-06-30
+
+### Changed
+
+- Fixed broken scenario `USP Core WAAP header filtering` as source code repo uses node version 24 now
+
 ## [2026-20] - 2026-05-13
 
 ### Added
