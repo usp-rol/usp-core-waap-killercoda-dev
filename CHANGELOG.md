@@ -13,6 +13,7 @@ Changes to the [USP Killercoda](https://killercoda.com/united-security-providers
 ### Changed
 
 - Fixed broken scenario `USP Core WAAP header filtering` as source code repo uses node version 24 now
+- Replace curl command target of `localhost` with `127.0.0.1` avoiding IPv6 connection timeouts
 
 ## [2026-20] - 2026-05-13
 
