@@ -1,0 +1,208 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2026 United Security Providers AG, Switzerland
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+# Run killercoda scenarios in a local kind cluster.
+#
+# usage: local/kc <command> [scenario] [options]
+#   tools                       download pinned kind binary to local/.bin (if kind is not installed)
+#   up <scenario> [--no-host-ports]
+#                               create kind cluster + runner container and start the scenario intro
+#   shell <scenario>            open the scenario terminal (killercoda-like, see 'kc-help' inside)
+#   logs <scenario>             show background script logs
+#   down <scenario>             delete kind cluster and runner container
+#   test <scenario>             up, replay the user journey (info.md exec blocks + verify.sh), down
+#   list                        list scenarios (see structure.json)
+#
+# env: KC_ENGINE=docker|podman (auto-detected), KEEP=1 (test: keep cluster), KC_STEP_TIMEOUT, KC_VERIFY_TIMEOUT
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+KIND_VERSION="v0.30.0"
+# node-ports used by scenarios (forwarded to 127.0.0.1 inside the runner and optionally on the host)
+FORWARD_PORTS="30022 30070 30080 30081 30090"
+
+die() { echo "ERROR: $*" >&2; exit 1; }
+info() { echo ">>> $*" >&2; }
+
+detect_engine() {
+  if [ -n "${KC_ENGINE:-}" ]; then
+    echo "$KC_ENGINE"
+  elif command -v podman > /dev/null && { ! command -v docker > /dev/null || [[ "$(docker --version 2>&1)" == *podman* ]]; }; then
+    echo podman
+  elif command -v docker > /dev/null; then
+    echo docker
+  else
+    die "neither docker nor podman found"
+  fi
+}
+ENGINE=$(detect_engine)
+[ "$ENGINE" = podman ] && export KIND_EXPERIMENTAL_PROVIDER=podman
+
+kind_bin() {
+  if [ -x "$ROOT/local/.bin/kind" ]; then
+    echo "$ROOT/local/.bin/kind"
+  elif command -v kind > /dev/null; then
+    command -v kind
+  else
+    die "kind not found: install it or run 'local/kc tools'"
+  fi
+}
+
+cmd_tools() {
+  local arch os url
+  arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+  os=$(uname -s | tr '[:upper:]' '[:lower:]')
+  url="https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-${os}-${arch}"
+  mkdir -p "$ROOT/local/.bin"
+  info "downloading kind ${KIND_VERSION} from ${url}"
+  curl -fsSLo "$ROOT/local/.bin/kind" "$url"
+  echo "$(curl -fsSL "${url}.sha256sum" | cut -d' ' -f1)  $ROOT/local/.bin/kind" | sha256sum -c -
+  chmod +x "$ROOT/local/.bin/kind"
+}
+
+# set scenario related names
+use_scenario() {
+  SCENARIO="${1:-}"
+  SCENARIO="${SCENARIO%/}"
+  [ -n "$SCENARIO" ] || die "missing scenario argument (see 'local/kc list')"
+  [ -f "$ROOT/$SCENARIO/index.json" ] || die "$SCENARIO is not a scenario (no index.json)"
+  CLUSTER="kc-${SCENARIO#usp-core-waap-}"
+  RUNNER="${CLUSTER}-runner"
+  STATE="$ROOT/local/.state/${CLUSTER}"
+}
+
+runner_image() {
+  local tag
+  tag=$(sha256sum < "$ROOT/local/runner/Dockerfile" | cut -c1-12)
+  echo "localhost/kc-runner:${tag}"
+}
+
+cluster_config() {
+  local host_ports=$1 nodes=1 i p
+  [ "$(jq -r '.backend.imageid' "$ROOT/$SCENARIO/index.json")" = "kubernetes-kubeadm-2nodes" ] && nodes=2
+  echo "kind: Cluster"
+  echo "apiVersion: kind.x-k8s.io/v1alpha4"
+  echo "nodes:"
+  for ((i = 1; i <= nodes; i++)); do
+    [ $i -eq 1 ] && echo "- role: control-plane" || echo "- role: worker"
+    # share pod logs with the runner (verify scripts grep /var/log/containers like on the killercoda node)
+    echo "  extraMounts:"
+    echo "  - {hostPath: \"$STATE/pods\", containerPath: /var/log/pods}"
+    echo "  - {hostPath: \"$STATE/containers\", containerPath: /var/log/containers}"
+    if [ $i -eq 1 ] && [ "$host_ports" = 1 ]; then
+      echo "  extraPortMappings:"
+      for p in $FORWARD_PORTS; do
+        echo "  - {containerPort: $p, hostPort: $p, listenAddress: 127.0.0.1}"
+      done
+    fi
+  done
+}
+
+# kind_create <name> <config> : rootless podman needs a delegated cgroup scope (https://kind.sigs.k8s.io/docs/user/rootless/)
+kind_create() {
+  local kind
+  kind=$(kind_bin)
+  if [ "$ENGINE" = podman ] && [ "$(id -u)" != 0 ] && command -v systemd-run > /dev/null; then
+    systemd-run --user --scope --quiet -p Delegate=yes "$kind" create cluster --name "$1" --config "$2" --wait 180s
+  else
+    "$kind" create cluster --name "$1" --config "$2" --wait 180s
+  fi
+}
+
+cmd_up() {
+  local host_ports=1 image node_ip
+  [ "${1:-}" = "--no-host-ports" ] && host_ports=0
+  if $ENGINE inspect "$RUNNER" > /dev/null 2>&1; then
+    die "$SCENARIO is already up (use 'local/kc down $SCENARIO' first)"
+  fi
+  mkdir -p "$STATE/pods" "$STATE/containers"
+
+  image=$(runner_image)
+  if ! $ENGINE image inspect "$image" > /dev/null 2>&1; then
+    info "building runner image $image"
+    $ENGINE build -t "$image" "$ROOT/local/runner" || die "failed to build runner image"
+  fi
+
+  info "creating kind cluster $CLUSTER"
+  cluster_config $host_ports > "$STATE/kind.yaml"
+  kind_create "$CLUSTER" "$STATE/kind.yaml" || die "failed to create kind cluster $CLUSTER"
+
+  node_ip=$($ENGINE inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${CLUSTER}-control-plane")
+  [ -n "$node_ip" ] || die "could not determine node ip of ${CLUSTER}-control-plane"
+
+  info "starting runner $RUNNER (node ip $node_ip)"
+  $ENGINE run -d --name "$RUNNER" --network kind --hostname controlplane \
+    -e KC_NODE_IP="$node_ip" -e KC_FORWARD_PORTS="$FORWARD_PORTS" -e TERM=xterm \
+    -v "$ROOT/$SCENARIO:/kc/scenario:ro" \
+    -v "$ROOT/local/runner:/opt/kc:ro" \
+    -v "$STATE/pods:/var/log/pods:ro" \
+    -v "$STATE/containers:/var/log/containers:ro" \
+    "$image" > /dev/null || die "failed to start runner container"
+  "$(kind_bin)" get kubeconfig --internal --name "$CLUSTER" \
+    | $ENGINE exec -i "$RUNNER" sh -c 'mkdir -p /root/.kube && cat > /root/.kube/config' \
+    || die "failed to provide kubeconfig to runner"
+
+  info "starting scenario $SCENARIO (intro background script)"
+  $ENGINE exec "$RUNNER" /opt/kc/emulator.sh start || die "failed to start scenario"
+  info "ready: run 'local/kc shell $SCENARIO'"
+  [ $host_ports = 1 ] && info "browser access to node-ports: http://localhost:<port> ($FORWARD_PORTS)"
+  return 0
+}
+
+cmd_shell() {
+  $ENGINE exec -it "$RUNNER" bash --rcfile /opt/kc/kcrc -i
+}
+
+cmd_logs() {
+  $ENGINE exec "$RUNNER" sh -c 'tail -n +1 /var/log/killercoda/*.log'
+}
+
+cmd_down() {
+  info "removing runner $RUNNER and kind cluster $CLUSTER"
+  $ENGINE rm -f "$RUNNER" > /dev/null 2>&1 || true
+  "$(kind_bin)" delete cluster --name "$CLUSTER" || true
+  # pod logs are written by (container) root, remove them through the engine
+  if [ -d "$STATE" ]; then
+    $ENGINE run --rm -v "$STATE:/state" --entrypoint sh "$(runner_image)" -c 'rm -rf /state/pods /state/containers' > /dev/null 2>&1 || true
+    rm -rf "$STATE" 2> /dev/null || true
+  fi
+}
+
+cmd_test() {
+  local rc=0
+  cmd_up --no-host-ports || rc=$?
+  if [ $rc -eq 0 ]; then
+    python3 "$ROOT/local/test/run_scenario.py" \
+      --engine "$ENGINE" --runner "$RUNNER" --scenario-dir "$ROOT/$SCENARIO" \
+      --out "$ROOT/local/test/out/$SCENARIO" || rc=$?
+  fi
+  if [ "${KEEP:-0}" = 1 ]; then
+    info "KEEP=1: cluster kept, inspect with 'local/kc shell $SCENARIO'"
+  else
+    cmd_down
+  fi
+  return $rc
+}
+
+cmd_list() {
+  jq -r '.items[].path' "$ROOT/structure.json"
+}
+
+case "${1:-}" in
+  tools) cmd_tools ;;
+  list) cmd_list ;;
+  up | shell | logs | down | test)
+    cmd=$1
+    use_scenario "${2:-}"
+    shift 2
+    "cmd_$cmd" "$@"
+    ;;
+  *)
+    sed -n '/^# usage/,/^$/p' "$0" | sed 's/^# \{0,1\}//'
+    exit 2
+    ;;
+esac

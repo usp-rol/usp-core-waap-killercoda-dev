@@ -26,6 +26,9 @@ spec:
         value: http://localhost:8080
       - name: SWAGGER_HOST
         value: http://petstore.petstore.svc:8080
+      # java 8u342 ignores cgroup v2 limits (heap sized by host memory -> OOMKilled on large hosts)
+      - name: JAVA_TOOL_OPTIONS
+        value: -Xmx256m
     ports:
       - name: http
         containerPort: 8080

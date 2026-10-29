@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 United Security Providers AG, Switzerland
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+# source of truth: shared/profiles/core-waap-2.1/operator-helm-template.yaml (copied into scenario assets by tools/sync-shared.sh)
+
+image:
+  pullSecrets:
+    - name: "${PULL_SECRET_NAME}"
+operator:
+  image: "${CONTAINER_REGISTRY}/${CONTAINER_BASE_PATH}/usp-core-waap-operator"
+  imagePullSecretName: "${PULL_SECRET_NAME}"
+  serviceAccount: "usp-core-waap-operator"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+  config:
+    waapSpecDefaults:
+      image: "${CONTAINER_REGISTRY}/${CONTAINER_BASE_PATH}/usp-core-waap-proxy-demo"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi

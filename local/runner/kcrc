@@ -1,0 +1,79 @@
+# shellcheck shell=bash
+
+# SPDX-FileCopyrightText: 2026 United Security Providers AG, Switzerland
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+# rc file of the runner shell: provides killercoda-like navigation commands
+
+[ -f /etc/bash.bashrc ] && source /etc/bash.bashrc
+[ -f /usr/share/bash-completion/bash_completion ] && source /usr/share/bash-completion/bash_completion
+source <(kubectl completion bash)
+PS1='\[\e[1;32m\]kc:\w\$\[\e[0m\] '
+cd ~ || true
+
+KC_EMULATOR="${KC_EMULATOR:-/opt/kc/emulator.sh}"
+
+kc-current() { cat ~/.kc/current-step 2>/dev/null || echo 0; }
+
+# kc-step <n> : enter a step (start its background script, show text unless KC_QUIET=1, run its foreground in this shell)
+kc-step() {
+  local n=$1 fg
+  echo "$n" > ~/.kc/current-step
+  # intro background is started by "emulator.sh start"
+  [ "$n" = 0 ] || "$KC_EMULATOR" bg "$n"
+  if [ -z "${KC_QUIET:-}" ]; then
+    echo "=================================================================="
+    "$KC_EMULATOR" title "$n"
+    echo "=================================================================="
+    "$KC_EMULATOR" text "$n"
+    echo
+  fi
+  fg=$("$KC_EMULATOR" fg "$n")
+  # killercoda types foreground scripts into the terminal, hence sourced
+  # shellcheck disable=SC1090
+  [ -n "$fg" ] && source "$fg"
+  return 0
+}
+
+# kc-verify [n] : run the verify script of a step (default: current step), like killercoda's CHECK button
+kc-verify() {
+  local n=${1:-$(kc-current)}
+  if "$KC_EMULATOR" verify "$n"; then
+    echo ">>> step $n verified"
+  else
+    echo ">>> step $n NOT verified yet" >&2
+    return 1
+  fi
+}
+
+# kc-next : verify the current step and continue with the next one
+kc-next() {
+  local n
+  n=$(kc-current)
+  [ "$n" = 0 ] || kc-verify "$n" || return 1
+  if [ "$n" -ge "$("$KC_EMULATOR" steps)" ]; then
+    "$KC_EMULATOR" text finish
+    return 0
+  fi
+  kc-step $((n + 1))
+}
+
+kc-text() { "$KC_EMULATOR" text "${1:-$(kc-current)}" | less -R; }
+
+kc-help() {
+  cat << 'EOF'
+kc-next      verify the current step (like CHECK) and continue with the next one
+kc-verify N  run the verify script of step N (default: current)
+kc-step N    (re-)enter step N
+kc-text N    show the instructions of step N (default: current)
+logs         /var/log/killercoda/background*_std{out,err}.log
+EOF
+}
+
+if [[ $- == *i* ]] && [ -f ~/.kc/intro-pending ]; then
+  rm ~/.kc/intro-pending
+  kc-step 0
+  echo
+  echo ">>> type 'kc-next' to start step 1 (and 'kc-help' for more)"
+fi

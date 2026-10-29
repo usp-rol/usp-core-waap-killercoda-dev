@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 United Security Providers AG, Switzerland
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+# local kind support: downloaded tools, cluster state and test output
+/local/.bin/
+/local/.state/
+/local/test/out/
+__pycache__/

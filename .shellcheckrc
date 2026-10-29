@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2026 United Security Providers AG, Switzerland
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+# scripts source files from runtime locations (i.e. ~/.scenario_staging) not available to shellcheck
+disable=SC1090,SC1091
