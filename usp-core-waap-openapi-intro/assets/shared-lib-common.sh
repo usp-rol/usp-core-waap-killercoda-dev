@@ -55,14 +55,19 @@ copy_to_home() {
   done
 }
 
-# traffic_url <port> : URL a browser uses to access a node-port (killercoda traffic host or localhost)
-traffic_url() {
+# traffic_host <port> : host a browser uses to access a node-port (killercoda traffic host or localhost)
+traffic_host() {
   if [ -f /etc/killercoda/host ]; then
-    echo "https://$(sed "s/-PORT/-$1/g" /etc/killercoda/host)"
+    sed "s/-PORT/-$1/g" /etc/killercoda/host
   else
-    echo "http://localhost:$1"
+    echo "localhost:$1"
   fi
 }
+
+# scheme matching traffic_host
+TRAFFIC_SCHEME="http"
+[ -f /etc/killercoda/host ] && TRAFFIC_SCHEME="https"
+export TRAFFIC_SCHEME
 
 # install_backend_manifest : apply ${BACKEND_POD}.yaml and wait for the backend to be accessible on node-port 30080
 install_backend_manifest() {

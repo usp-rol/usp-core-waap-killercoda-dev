@@ -249,3 +249,9 @@ At last again [access the Juice Shop]({{TRAFFIC_HOST1_30090}}/#/login) web appli
 > &#10071; The attempt still must fail (if not check the added `coraza.crs.requestRuleExceptions` configuration)!
 
 That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive using the auto-learning cli tool!
+
+<!-- test:exec
+# local test only: browser access (socket.io) and login using SQL-injection
+curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Content-Type: text/plain;charset=UTF-8' -d '40' 'http://127.0.0.1:30090/socket.io/?EIO=4&transport=polling&t=kctest'
+curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://127.0.0.1:30090/rest/user/login
+-->

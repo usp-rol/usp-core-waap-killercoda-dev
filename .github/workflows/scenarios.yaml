@@ -1,0 +1,51 @@
+# SPDX-FileCopyrightText: 2026 United Security Providers AG, Switzerland
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+name: scenarios
+
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # weekly, catches drift of upstream images/charts used by the scenarios
+    - cron: "0 4 * * 1"
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get install -y shellcheck
+      - run: make lint
+      - uses: fsfe/reuse-action@v5
+
+  matrix:
+    runs-on: ubuntu-24.04
+    outputs:
+      scenarios: ${{ steps.list.outputs.scenarios }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: echo "scenarios=$(jq -c '[.items[].path]' structure.json)" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: [lint, matrix]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: ${{ fromJSON(needs.matrix.outputs.scenarios) }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: local/kc tools
+      - run: local/kc test ${{ matrix.scenario }}
+        env:
+          KC_ENGINE: docker
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output-${{ matrix.scenario }}
+          path: local/test/out/${{ matrix.scenario }}
+          if-no-files-found: ignore

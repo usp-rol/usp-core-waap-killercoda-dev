@@ -21,4 +21,10 @@ Then execute an SQL-injection by logging in with username/password shown below:
 
 **Once you've finished close the Juiceshop browser window again.**
 
+<!-- test:exec
+# local test only: browser login using SQL-injection
+curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://127.0.0.1:30080/rest/user/login
+-->
+
+
 At last confirm that you succeeded by pressing `CHECK`{{}}

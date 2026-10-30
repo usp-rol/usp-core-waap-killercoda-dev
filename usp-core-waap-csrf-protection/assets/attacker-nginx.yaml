@@ -73,7 +73,7 @@ data:
             if (url.includes("/")) {
                 url = url.substring(0, url.indexOf("/"));
             }
-            url = "https://" + url + "/profile";
+            url = "${TRAFFIC_SCHEME}://" + url + "/profile";
             attackForm.action=url;
             attackForm.submit();
         }
@@ -152,7 +152,7 @@ data:
             if (url.includes("/")) {
                 url = url.substring(0, url.indexOf("/"));
             }
-            url = "https://" + url + "/profile";
+            url = "${TRAFFIC_SCHEME}://" + url + "/profile";
             attackForm.action=url;
             attackForm.submit();
         }

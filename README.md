@@ -22,6 +22,8 @@ This repository contains the scenarios published via [killercoda](https://killer
 * usp-core-waap-argocd           : scenario to show-case Core WAAP devops integration
 * usp-core-waap-kyverno          : scenario to show-case Core WAAP global policies using Kyverno
 
+All scenarios can also be tried out locally in a kind cluster, see [Run scenarios locally](#run-scenarios-locally-kind).
+
 **Keep in mind when renaming directories the killercoda scenario URL will change!**
 
 The order of the scenarios without a `structure.json` will be according the scenario title alphabetically sorted! Use the following command to identify wrong top-level paths inside your `structure.json` file:
@@ -139,6 +141,79 @@ In order to modify [USP killercoda scenarios](https://killercoda.com/united-secu
 1. Add Github webhook config from your [creator repository](https://killercoda.com/creator/repository) to your github fork (settings => Webhooks)
 
 Test your killercoda profile https://killercoda.com/$your-profile-name and modify your fork repo by pushing to github (start with a markdown modification for example)
+
+## Shared code and Core WAAP profiles
+
+Killercoda only loads files from within a scenario directory, therefore code used by all scenarios lives in `shared/` and is **copied** into every scenario's `assets/` directory (files named `shared-*`, committed to git):
+
+* `shared/common/` : version independent helpers (logging, url/marker waiting, foreground "Installing..." waiter, `shared-init.sh` loading everything)
+* `shared/profiles/<profile>/` : everything that may change with a USP Core WAAP release (helm chart version and values, registry, operator install, waap helpers, auto-learning cli version)
+
+Each scenario selects its profile and declares its specifics in `assets/scenario.env` (i.e. `SHARED_PROFILE="core-waap-2.1"`, `BACKEND_NAMESPACE`, ...). Scenario scripts start with `source ~/.scenario_staging/shared-init.sh` and then use functions like `install_backend_manifest`, `install_operator`, `copy_to_home` and `signal_marker`.
+
+**Never edit `shared-*` files within a scenario**, edit the source in `shared/` and run
+
+```shell
+make sync        # copy shared/ into all scenarios (tools/sync-shared.sh [scenario...])
+make sync-check  # verify (also run by pre-commit and CI)
+```
+
+### Updating a single scenario (i.e. to USP Core WAAP 2.2)
+
+Scenarios can be migrated one by one as versions are pinned per scenario (via its profile):
+
+1. `cp -r shared/profiles/core-waap-2.1 shared/profiles/core-waap-2.2` and adapt the new profile (helm version, values, ...)
+1. set `SHARED_PROFILE="core-waap-2.2"` in `<scenario>/assets/scenario.env` and adapt the scenario's own resources/texts
+1. `make sync && make test SCENARIO=<scenario>` (only that scenario and the new profile change)
+1. once no scenario uses the old profile anymore (`make sync` reports unused profiles) remove it
+
+For a patch release of a single scenario setting `CORE_WAAP_HELM_VERSION="2.1.3"` in its `scenario.env` is sufficient.
+
+## Run scenarios locally (kind)
+
+Every scenario can be run in a local [kind](https://kind.sigs.k8s.io/) cluster mimicking killercoda: a "runner" container acts as the killercoda host (`~/.scenario_staging`, `/var/log/killercoda`, `127.0.0.1:<node-port>` forwarded to the cluster) and executes the scenario's background/foreground/verify scripts as defined in its `index.json`.
+
+Prerequisites: `docker` or `podman` (rootless works), `jq`, `python3` and `kind` (or run `local/kc tools` to download a pinned version to `local/.bin/`).
+
+```shell
+make up SCENARIO=usp-core-waap-intro     # create cluster, start the scenario (intro background script)
+make shell SCENARIO=usp-core-waap-intro  # killercoda-like terminal
+make down SCENARIO=usp-core-waap-intro   # remove cluster and runner
+```
+
+Within the terminal follow the scenario steps (rendered on github or shown in the terminal) and use
+
+* `kc-next` : verify the current step (like `CHECK`) and continue with the next one
+* `kc-verify [n]`, `kc-step n`, `kc-text [n]`, `kc-help`
+
+Node-ports (30022 30070 30080 30081 30090) are also accessible from your browser via `http://localhost:<port>` (instead of the killercoda traffic links). Background script logs are in `/var/log/killercoda/` within the terminal (or `local/kc logs <scenario>`).
+
+## Automated scenario tests
+
+`make test SCENARIO=<scenario>` (or `make test-all`) replays the user journey in a fresh kind cluster and removes it afterwards (`KEEP=1` keeps it for inspection):
+
+* for the intro and every step: start its background script, run its foreground script, execute all `{{exec}}` blocks of its markdown in document order (including the ones within solution sections) in one persistent shell, then poll the step's `verify.sh` like a user pressing `CHECK`
+* failing blocks are retried (a user would retry too) and reported as `RETRIED` in the summary, `{{exec interrupt}}` blocks are stopped after 15s
+* transcript and diagnostics (background logs, pods, events, Core WAAP logs) are written to `local/test/out/<scenario>/`
+
+Browser interactions can't be executed, hence steps relying on them contain hidden blocks (HTML comments are not rendered by killercoda) simulating them:
+
+```markdown
+<!-- test:exec
+# local test only: browser login using SQL-injection
+curl -s ... http://127.0.0.1:30080/rest/user/login
+-->
+```
+
+Further annotations (placed in the line before a code block): `<!-- test:skip -->`, `<!-- test:allow-fail -->`, `<!-- test:retries N -->`, `<!-- test:timeout N -->`. Avoid `--` within hidden blocks (use short options).
+
+`make lint` runs sync-check, shellcheck and the harness unit tests. The github workflow `.github/workflows/scenarios.yaml` runs lint and tests every scenario of `structure.json` in parallel (one runner per scenario) on pull requests, manually and weekly.
+
+### Troubleshooting
+
+* **rootless podman** requires cgroup delegation, `local/kc` therefore runs kind within `systemd-run --user --scope -p Delegate=yes` (see [kind rootless](https://kind.sigs.k8s.io/docs/user/rootless/))
+* **kube-proxy "too many open files"** when running several clusters at once: raise the inotify limits (`sudo sysctl fs.inotify.max_user_instances=512 fs.inotify.max_user_watches=524288`) or run one scenario at a time (`local/kc up` refuses a second cluster otherwise)
+* **"rootless netns: kill network process: permission denied"** on `down` (ubuntu): apparmor denies podman stopping its network helper; harmless (ignored by `local/kc`), to get rid of it add `signal (receive) peer=podman,` to `/etc/apparmor.d/local/usr.bin.pasta` and reload it (`sudo apparmor_parser -r /etc/apparmor.d/usr.bin.pasta`)
 
 ## Release development work
 

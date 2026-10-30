@@ -111,6 +111,12 @@ Try if you still can exploit the vulnerability in the login dialog using the pre
 
 [Open Juice Shop]({{TRAFFIC_HOST1_30090}}/#/login) (**click to open in new browser tab**)
 
+<!-- test:exec
+# local test only: browser login using SQL-injection (blocked)
+curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://127.0.0.1:30090/rest/user/login
+-->
+
+
 > &#10071; Verify you are using the new browser window where the URL looks like "...-30090.spch.r.killercoda.com" (using Core WAAP) and not "...-30080.spch.r.killercoda.com"!
 
 The described exploit is now blocked by the USP Core WAAP. If you open the browser developer tools (hit `F12` on most common browsers), you can see that the login request is answered with the `response status 403` (by USP Core WAAP).

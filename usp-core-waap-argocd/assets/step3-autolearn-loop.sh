@@ -8,50 +8,9 @@
 exec > /var/log/killercoda/background_step3_stdout.log
 exec 2> /var/log/killercoda/background_step3_stderr.log
 
-##################################################
-# Functions
-##################################################
+source ~/.scenario_staging/shared-init.sh
 
-log_info() {
-  echo "****************************************************************"
-  echo "*** $(date) : $1"
-  echo "****************************************************************"
-}
-
-log_error() {
-  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  echo "!!! $(date) : ERROR: $1"
-  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-}
-
-wait_for_url() {
-  local url=$1
-  local max_retries=${2:-30}
-  local retry_interval=5
-
-  for ((i=1; i<=max_retries; i++)); do
-    if curl --fail -s "$url" > /dev/null; then
-      log_info "URL $url is accessible"
-      return 0
-    else
-      log_info "Waiting for URL $url to be accessible (attempt $i/$max_retries)..."
-      sleep $retry_interval
-    fi
-  done
-
-  log_error "URL $url is not accessible after $max_retries attempts"
-  return 1
-}
-
-##################################################
-# Initialization
-##################################################
-log_info "initializing variables..."
 _AUTOLEARN_BRANCH="autolearn-tool"
-_KILLERCODA_NODE_IP="172.30.2.2"
-GOGS_API_PORT=30080
-GOGS_API_PROTO=http
-GOGS_API_SERVER="${_KILLERCODA_NODE_IP}"
 JUICESHOP_NAMESPACE="juiceshop"
 JUICESHOP_REPO_BASEDIR="${HOME}/repodata"
 JUICESHOP_WAAP_CONFIGFILE="${JUICESHOP_NAMESPACE}/waap.yaml"
@@ -65,8 +24,8 @@ WAIT_SECONDS=10
 log_info "initializing autolearn-branch and check for rule exceptions ..."
 
 # test gogs API availability before proceeding
-wait_for_url "${GOGS_API_PROTO}://${GOGS_API_SERVER}:${GOGS_API_PORT}" \
-  || log_error "gogs API is not available at ${GOGS_API_PROTO}://${GOGS_API_SERVER}:${GOGS_API_PORT}"
+wait_for_url "http://${NODE_IP}:${GOGS_API_PORT}" \
+  || log_error "gogs API is not available at http://${NODE_IP}:${GOGS_API_PORT}"
 
 cd "${JUICESHOP_REPO_BASEDIR}" || log_error "failed to change directory to repodata repository"
 

@@ -23,6 +23,12 @@ attempting to change the "Username" value in the user profile.
 
 * Click the "Hack Username" button
 
+<!-- test:exec
+# local test only: attacker page form submit (cross-site request)
+curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" -H 'Origin: http://localhost:30070' -d 'username=hacked' http://127.0.0.1:30080/profile
+-->
+
+
 This will send the "evil" request to the OWASP Juice Shop and change the "Username". You will receive a response
 from the OWASP Juice Shop - the profile page, with the username changed to *"hacked"*.
 

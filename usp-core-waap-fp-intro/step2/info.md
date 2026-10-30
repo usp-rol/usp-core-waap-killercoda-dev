@@ -136,4 +136,10 @@ kubectl logs \
 
 Now [access the Juice Shop]({{TRAFFIC_HOST1_30090}}) again (or reload its browser tab) generating new `/socket.io` requests: no more log lines should appear, as these requests are no longer blocked. Stop following the logs using `Ctrl+C`{{}}.
 
+<!-- test:exec
+# local test only: browser access generating socket.io requests
+curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Content-Type: text/plain;charset=UTF-8' -d '40' 'http://127.0.0.1:30090/socket.io/?EIO=4&transport=polling&t=kctest'
+-->
+
+
 That's it! You have successfully extended the `CoreWaapService` resource configuration to handle a false positive!

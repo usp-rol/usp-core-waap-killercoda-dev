@@ -14,4 +14,10 @@ The OWASP Juice Shop demo web application has been setup behind USP Core WAAP (r
 
 > &#10071; Make sure to [access the Juice Shop]({{TRAFFIC_HOST1_30090}}) otherwise the validation in this step will fail...
 
+<!-- test:exec
+# local test only: browser access generating socket.io requests
+curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Content-Type: text/plain;charset=UTF-8' -d '40' 'http://127.0.0.1:30090/socket.io/?EIO=4&transport=polling&t=kctest'
+-->
+
+
 In the next step we will have a closer look at logs / actions taken by **USP Core WAAP**. After accessing the shop and generating some traffic, press `CHECK`{{}} to continue.

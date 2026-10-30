@@ -7,6 +7,7 @@ FROM docker.io/library/ubuntu:24.04
 
 ARG KUBECTL_VERSION=v1.34.1
 ARG HELM_VERSION=v3.19.0
+ARG YQ_VERSION=v4.47.1
 
 ENV DEBIAN_FRONTEND=noninteractive
 # apt lists are kept on purpose: scenario scripts run "apt install" like on killercoda
@@ -20,7 +21,12 @@ RUN apt-get update \
  && curl -fsSLo /tmp/helm.tgz "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
  && echo "$(curl -fsSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256sum" | cut -d' ' -f1)  /tmp/helm.tgz" | sha256sum -c - \
  && tar -xzf /tmp/helm.tgz -C /usr/local/bin --strip-components=1 linux-amd64/helm \
- && rm /tmp/helm.tgz
+ && rm /tmp/helm.tgz \
+ && YQ_URL="https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}" \
+ && curl -fsSLo /usr/local/bin/yq "${YQ_URL}/yq_linux_amd64" \
+ && SHA_COL=$(curl -fsSL "${YQ_URL}/checksums_hashes_order" | grep -nx 'SHA-256' | cut -d: -f1) \
+ && echo "$(curl -fsSL "${YQ_URL}/checksums" | awk -v c=$((SHA_COL + 1)) '$1 == "yq_linux_amd64" {print $c}')  /usr/local/bin/yq" | sha256sum -c - \
+ && chmod +x /usr/local/bin/yq
 
 WORKDIR /root
 ENTRYPOINT ["/opt/kc/entrypoint.sh"]

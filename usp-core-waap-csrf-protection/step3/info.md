@@ -137,6 +137,14 @@ again with the same credentials as before:
 
 Try again to access the [profile page]({{TRAFFIC_HOST1_30090}}/profile).
 
+<!-- test:exec
+# local test only: browser login, profile page access and username change via USP Core WAAP
+KC_TOKEN=$(curl -s -H 'Content-Type: application/json' -d '{"email":"user@acme.com","password":"123456"}' http://127.0.0.1:30090/rest/user/login | jq -r '.authentication.token')
+curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" http://127.0.0.1:30090/profile
+curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" -d 'username=DemoUser' http://127.0.0.1:30090/profile
+-->
+
+
 > &#128270; The **traffic** to the [OWASP Juice Shop]({{TRAFFIC_HOST1_30090}}) is now **routed via USP Core WAAP** (using node-port 30090 instead of 30080).
 
 > &#10071; Verify you are using the new browser window where the URL looks like "...-30090.spch.r.killercoda.com" (using Core WAAP) and not "...-30080.spch.r.killercoda.com"!

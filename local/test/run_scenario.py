@@ -132,7 +132,8 @@ class Shell:
         else:
             cmd = f"source {path} < /dev/null"
         marker = f"__KC_RC_{token}__"
-        self.proc.stdin.write(f"{cmd}; echo \"{marker} $?\"\n")
+        # printf without leading newline: output not ending with a newline gets the marker appended
+        self.proc.stdin.write(f"{cmd}; printf '%s %s\\n' {marker} $?\n")
         self.proc.stdin.flush()
         output = []
         deadline = time.time() + timeout
@@ -143,8 +144,14 @@ class Shell:
                 return None, "".join(output)
             if line is None:
                 return None, "".join(output) + "\n[runner shell terminated]\n"
-            if line.startswith(marker):
-                return int(line.split()[1]), "".join(output)
+            if marker in line:
+                rest, rc = line.split(marker, 1)
+                if rest:
+                    output.append(rest + "\n")
+                    self.log.write(rest + "\n")
+                    if echo:
+                        sys.stdout.write("    " + rest + "\n")
+                return int(rc.split()[0]), "".join(output)
             output.append(line)
             self.log.write(line)
             if echo:
@@ -168,6 +175,7 @@ class ScenarioTest:
         os.makedirs(args.out, exist_ok=True)
         self.log = open(os.path.join(args.out, "transcript.log"), "w", buffering=1)
         self.results = []
+        self.retried = []
 
     def say(self, msg):
         print(msg, flush=True)
@@ -205,6 +213,8 @@ class ScenarioTest:
                 self.say(f"  ! timeout after {timeout}s at {where}")
                 return False
             if rc == 0 or block.opts.get("allow-fail"):
+                if attempt > 1:
+                    self.retried.append(f"{where}: passed on attempt {attempt}")
                 return True
             self.say(f"  ! exit code {rc} at {where}")
             if attempt <= retries:
@@ -269,6 +279,8 @@ class ScenarioTest:
         self.say("=== summary " + os.path.basename(self.args.scenario_dir))
         for title, ok, duration in self.results:
             self.say(f"  {'PASS' if ok else 'FAIL'}  {duration:6.0f}s  {title}")
+        for r in self.retried:
+            self.say(f"  RETRIED  {r}")
 
 
 def main():

@@ -27,6 +27,15 @@ Log in with the following credentials:
 ### Set custom "Username"
 
 Access the [profile page]({{TRAFFIC_HOST1_30080}}/profile) and fill in `DemoUser` in the empty "Username" field.
+
+<!-- test:exec
+# local test only: browser login, profile page access and username change
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:30080/profile
+KC_TOKEN=$(curl -s -H 'Content-Type: application/json' -d '{"email":"user@acme.com","password":"123456"}' http://127.0.0.1:30080/rest/user/login | jq -r '.authentication.token')
+curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" http://127.0.0.1:30080/profile
+curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" -d 'username=DemoUser' http://127.0.0.1:30080/profile
+-->
+
 Click `Set Username` to save the name.
 
 If you reload the page, you should still see this value as the username.

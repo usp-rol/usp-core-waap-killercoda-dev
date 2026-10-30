@@ -15,6 +15,12 @@ The [OWASP Juice Shop]({{TRAFFIC_HOST1_30080}}) (**click to open in new browser 
 > &#128270; Initially the backend will be accessed unprotected (not using USP Core WAAP)
 
 Try to access the [profile page]({{TRAFFIC_HOST1_30080}}/profile) which seems to have an issue...
+
+<!-- test:exec
+# local test only: browser access of profile page
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:30080/profile
+-->
+
 (caused by the fact you are not logged in yet)
 
 > &#10071; Make sure to have accessed the profile page (while not being logged in) otherwise the validation in this step will fail...

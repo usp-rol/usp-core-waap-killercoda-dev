@@ -4,4 +4,4 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
-FILE=~/.scenario_staging/step1-foreground.sh; while ! test -f ${FILE}; do clear; sleep 0.1; done; bash ${FILE}
+FILE=~/.scenario_staging/shared-foreground.sh; while ! test -f ${FILE}; do clear; sleep 0.1; done; bash ${FILE} "Installing prometheus backend...:/tmp/.backend_installed"

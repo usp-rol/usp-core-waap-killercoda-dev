@@ -15,3 +15,16 @@ repos:
     rev: v5.0.2
     hooks:
       - id: reuse
+  - repo: local
+    hooks:
+      - id: sync-shared
+        name: scenario assets in sync with shared/
+        entry: tools/sync-shared.sh --check
+        language: system
+        pass_filenames: false
+        files: ^(shared/|usp-core-waap-[^/]+/assets/)
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        files: ^(shared|tools|local)/.*\.sh$|^local/(kc|runner/kcrc)$

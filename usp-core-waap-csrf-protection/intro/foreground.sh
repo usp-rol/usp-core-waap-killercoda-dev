@@ -4,4 +4,4 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
-FILE=~/.scenario_staging/intro-foreground.sh; while ! test -f ${FILE}; do clear; sleep 0.1; done; bash ${FILE}
+FILE=~/.scenario_staging/shared-foreground.sh; while ! test -f ${FILE}; do clear; sleep 0.1; done; bash ${FILE} "Installing Juice Shop backend and attacker website...:/tmp/.backend_installed,/tmp/.attacker_installed"

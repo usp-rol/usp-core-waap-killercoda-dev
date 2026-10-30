@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2026 United Security Providers AG, Switzerland
+# SPDX-FileCopyrightText: 2025 United Security Providers AG, Switzerland
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
-FILE=~/.scenario_staging/step1-foreground.sh; while ! test -f ${FILE}; do clear; sleep 0.1; done; bash ${FILE}
+FILE=~/.scenario_staging/shared-foreground.sh; while ! test -f ${FILE}; do clear; sleep 0.1; done; bash ${FILE} "Installing Kyverno...:/tmp/.backend_kyverno_installed"

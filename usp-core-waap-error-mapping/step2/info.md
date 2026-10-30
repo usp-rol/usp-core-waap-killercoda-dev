@@ -187,6 +187,12 @@ kubectl wait pods \
 
 Try again to access the [profile page]({{TRAFFIC_HOST1_30090}}/profile) (**click to open in new browser tab**). The improper error handling should now be hidden as you access the backend via the configured USP Core WAAP instance now (if not re-check configuration or consider looking at the solution below).
 
+<!-- test:exec
+# local test only: browser access of profile page
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:30090/profile
+-->
+
+
 > &#128270; The **traffic** to the [OWASP Juice Shop]({{TRAFFIC_HOST1_30090}}) is now **routed via USP Core WAAP** (using node-port 30090 instead of 30080).
 
 > &#10071; Verify you are using the new browser window where the URL looks like "...-30090.spch.r.killercoda.com" (using Core WAAP) and not "...-30080.spch.r.killercoda.com"!

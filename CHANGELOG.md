@@ -8,6 +8,19 @@ SPDX-License-Identifier: GPL-3.0-only
 
 Changes to the [USP Killercoda](https://killercoda.com/united-security-providers) scenarios using [common-changelog.org](https://common-changelog.org/) format.
 
+## [Unreleased]
+
+### Changed
+
+- Scenario scripts use shared code synced from `shared/` (per scenario Core WAAP profile, i.e. `core-waap-2.1`) instead of per scenario copies
+- Scenario `USP Core WAAP OpenAPI validation`: limit swagger petstore java heap (avoids OOM kills on hosts with large memory)
+- Scenario `USP Core WAAP Cross-Site Request Forgery Protection`: attacker page uses the scheme of the traffic host (http locally)
+
+### Added
+
+- Run scenarios locally in a kind cluster (`local/kc`, `make up|shell|down SCENARIO=...`)
+- Automated scenario tests replaying the user journey (`make test SCENARIO=...`, github workflow)
+
 ## [2026-44] - 2026-10-29
 
 ### Changed

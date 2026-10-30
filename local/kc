@@ -8,6 +8,7 @@
 #
 # usage: local/kc <command> [scenario] [options]
 #   tools                       download pinned kind binary to local/.bin (if kind is not installed)
+#   build                       build the runner image (done automatically by 'up' if missing)
 #   up <scenario> [--no-host-ports]
 #                               create kind cluster + runner container and start the scenario intro
 #   shell <scenario>            open the scenario terminal (killercoda-like, see 'kc-help' inside)
@@ -102,15 +103,18 @@ cluster_config() {
   done
 }
 
-# kind_create <name> <config> : rootless podman needs a delegated cgroup scope (https://kind.sigs.k8s.io/docs/user/rootless/)
-kind_create() {
-  local kind
-  kind=$(kind_bin)
+# kind_run <args...> : rootless podman needs a delegated cgroup scope (https://kind.sigs.k8s.io/docs/user/rootless/)
+kind_run() {
   if [ "$ENGINE" = podman ] && [ "$(id -u)" != 0 ] && command -v systemd-run > /dev/null; then
-    systemd-run --user --scope --quiet -p Delegate=yes "$kind" create cluster --name "$1" --config "$2" --wait 180s
+    systemd-run --user --scope --quiet -p Delegate=yes "$(kind_bin)" "$@"
   else
-    "$kind" create cluster --name "$1" --config "$2" --wait 180s
+    "$(kind_bin)" "$@"
   fi
+}
+
+cmd_build() {
+  info "building runner image $(runner_image)"
+  $ENGINE build -t "$(runner_image)" "$ROOT/local/runner" || die "failed to build runner image"
 }
 
 cmd_up() {
@@ -119,17 +123,19 @@ cmd_up() {
   if $ENGINE inspect "$RUNNER" > /dev/null 2>&1; then
     die "$SCENARIO is already up (use 'local/kc down $SCENARIO' first)"
   fi
+  # several kind clusters exhaust the default inotify limits (kube-proxy fails with "too many open files")
+  if [ "$(sysctl -n fs.inotify.max_user_instances 2> /dev/null || echo 512)" -lt 512 ] \
+    && [[ $'\n'"$(kind_run get clusters 2> /dev/null)" == *$'\n'kc-* ]]; then
+    die "another kc-* cluster is running and fs.inotify.max_user_instances < 512; run one scenario at a time or raise the limits (see README troubleshooting)"
+  fi
   mkdir -p "$STATE/pods" "$STATE/containers"
 
   image=$(runner_image)
-  if ! $ENGINE image inspect "$image" > /dev/null 2>&1; then
-    info "building runner image $image"
-    $ENGINE build -t "$image" "$ROOT/local/runner" || die "failed to build runner image"
-  fi
+  $ENGINE image inspect "$image" > /dev/null 2>&1 || cmd_build
 
   info "creating kind cluster $CLUSTER"
   cluster_config $host_ports > "$STATE/kind.yaml"
-  kind_create "$CLUSTER" "$STATE/kind.yaml" || die "failed to create kind cluster $CLUSTER"
+  kind_run create cluster --name "$CLUSTER" --config "$STATE/kind.yaml" --wait 180s || die "failed to create kind cluster $CLUSTER"
 
   node_ip=$($ENGINE inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${CLUSTER}-control-plane")
   [ -n "$node_ip" ] || die "could not determine node ip of ${CLUSTER}-control-plane"
@@ -163,8 +169,16 @@ cmd_logs() {
 
 cmd_down() {
   info "removing runner $RUNNER and kind cluster $CLUSTER"
+  mkdir -p "$(dirname "$STATE")"
   $ENGINE rm -f "$RUNNER" > /dev/null 2>&1 || true
-  "$(kind_bin)" delete cluster --name "$CLUSTER" || true
+  if ! kind_run delete cluster --name "$CLUSTER" 2> "$STATE.delete.log"; then
+    # ubuntu apparmor may deny podman stopping its rootless network helper (cosmetic, see README troubleshooting)
+    if [ -z "$($ENGINE ps -aq --filter "label=io.x-k8s.kind.cluster=$CLUSTER" 2> /dev/null)" ]; then
+      info "cluster $CLUSTER removed (ignored podman network cleanup warning, details: $STATE.delete.log)"
+    else
+      cat "$STATE.delete.log" >&2
+    fi
+  fi
   # pod logs are written by (container) root, remove them through the engine
   if [ -d "$STATE" ]; then
     $ENGINE run --rm -v "$STATE:/state" --entrypoint sh "$(runner_image)" -c 'rm -rf /state/pods /state/containers' > /dev/null 2>&1 || true
@@ -194,6 +208,7 @@ cmd_list() {
 
 case "${1:-}" in
   tools) cmd_tools ;;
+  build) cmd_build ;;
   list) cmd_list ;;
   up | shell | logs | down | test)
     cmd=$1
