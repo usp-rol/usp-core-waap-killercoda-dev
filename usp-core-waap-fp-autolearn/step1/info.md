@@ -23,8 +23,8 @@ The [OWASP Juice Shop]({{TRAFFIC_HOST1_30090}}) demo web application has been se
 
 <!-- test:exec
 # local test only: browser access (socket.io) and login using SQL-injection
-curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Content-Type: text/plain;charset=UTF-8' -d '40' 'http://127.0.0.1:30090/socket.io/?EIO=4&transport=polling&t=kctest'
-curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://127.0.0.1:30090/rest/user/login
+curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Content-Type: text/plain;charset=UTF-8' -H 'Origin: http://localhost:30090' -d '40' 'http://localhost:30090/socket.io/?EIO=4&transport=polling&t=kctest'
+curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -H 'Origin: http://localhost:30090' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://localhost:30090/rest/user/login
 -->
 
 

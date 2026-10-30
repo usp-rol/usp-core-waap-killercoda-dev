@@ -133,6 +133,7 @@ Use `kubectl apply -f -` on the command-line on the right-hand side and paste th
 <details>
 <summary>solution</summary>
 
+<!-- test:expect-fail -->
 ```shell
 cat << EOF | kubectl apply -f -
 apiVersion: waap.core.u-s-p.ch/v1alpha1

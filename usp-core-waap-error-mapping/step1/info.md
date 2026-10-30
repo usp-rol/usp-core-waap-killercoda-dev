@@ -18,7 +18,7 @@ Try to access the [profile page]({{TRAFFIC_HOST1_30080}}/profile) which seems to
 
 <!-- test:exec
 # local test only: browser access of profile page
-curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:30080/profile
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:30080/profile
 -->
 
 (caused by the fact you are not logged in yet)

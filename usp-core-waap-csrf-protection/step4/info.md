@@ -22,7 +22,7 @@ Open the [Attacker Website]({{TRAFFIC_HOST1_30070}}/waap.html) again.
 
 <!-- test:exec
 # local test only: attacker page form submit (cross-site request, blocked)
-curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" -H 'Origin: http://localhost:30070' -d 'username=hacked' http://127.0.0.1:30090/profile
+curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" -H 'Origin: http://localhost:30070' -d 'username=hacked' http://localhost:30090/profile
 -->
 
 This time, you will receive an error response from Core WAAP with the message "Invalid origin".

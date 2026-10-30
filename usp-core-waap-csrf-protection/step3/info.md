@@ -139,9 +139,9 @@ Try again to access the [profile page]({{TRAFFIC_HOST1_30090}}/profile).
 
 <!-- test:exec
 # local test only: browser login, profile page access and username change via USP Core WAAP
-KC_TOKEN=$(curl -s -H 'Content-Type: application/json' -d '{"email":"user@acme.com","password":"123456"}' http://127.0.0.1:30090/rest/user/login | jq -r '.authentication.token')
-curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" http://127.0.0.1:30090/profile
-curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" -d 'username=DemoUser' http://127.0.0.1:30090/profile
+KC_TOKEN=$(curl -s -H 'Content-Type: application/json' -H 'Origin: http://localhost:30090' -d '{"email":"user@acme.com","password":"123456"}' http://localhost:30090/rest/user/login | jq -r '.authentication.token')
+curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" http://localhost:30090/profile
+curl -s -o /dev/null -w '%{http_code}\n' -b "token=$KC_TOKEN" -H 'Origin: http://localhost:30090' -d 'username=DemoUser' http://localhost:30090/profile
 -->
 
 

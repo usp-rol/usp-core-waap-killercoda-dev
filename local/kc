@@ -90,10 +90,13 @@ cluster_config() {
   echo "nodes:"
   for ((i = 1; i <= nodes; i++)); do
     [ $i -eq 1 ] && echo "- role: control-plane" || echo "- role: worker"
-    # share pod logs with the runner (verify scripts grep /var/log/containers like on the killercoda node)
-    echo "  extraMounts:"
-    echo "  - {hostPath: \"$STATE/pods\", containerPath: /var/log/pods}"
-    echo "  - {hostPath: \"$STATE/containers\", containerPath: /var/log/containers}"
+    # share control-plane pod logs with the runner (verify scripts grep /var/log/containers like on the killercoda
+    # controlplane host); never share them between nodes, a kubelet removes log dirs of pods it doesn't run
+    if [ $i -eq 1 ]; then
+      echo "  extraMounts:"
+      echo "  - {hostPath: \"$STATE/pods\", containerPath: /var/log/pods}"
+      echo "  - {hostPath: \"$STATE/containers\", containerPath: /var/log/containers}"
+    fi
     if [ $i -eq 1 ] && [ "$host_ports" = 1 ]; then
       echo "  extraPortMappings:"
       for p in $FORWARD_PORTS; do
@@ -127,6 +130,10 @@ cmd_up() {
   if [ "$(sysctl -n fs.inotify.max_user_instances 2> /dev/null || echo 512)" -lt 512 ] \
     && [[ $'\n'"$(kind_run get clusters 2> /dev/null)" == *$'\n'kc-* ]]; then
     die "another kc-* cluster is running and fs.inotify.max_user_instances < 512; run one scenario at a time or raise the limits (see README troubleshooting)"
+  fi
+  if [ "$(sysctl -n fs.inotify.max_user_instances 2> /dev/null || echo 512)" -lt 512 ] \
+    && [ "$(jq -r '.backend.imageid' "$ROOT/$SCENARIO/index.json")" = "kubernetes-kubeadm-2nodes" ]; then
+    info "WARNING: fs.inotify.max_user_instances < 512, 2-node scenarios may fail (pods crashing with inotify errors, see README troubleshooting)"
   fi
   mkdir -p "$STATE/pods" "$STATE/containers"
 

@@ -58,6 +58,8 @@ install_operator() {
     || log_error "failed to install operator using chart ${CORE_WAAP_HELM_CHART} version ${CORE_WAAP_HELM_VERSION}"
   kubectl wait crd/corewaapservices.waap.core.u-s-p.ch --for=condition=Established --timeout=120s \
     || log_error "core waap CRD not established after waiting for 120s"
+  kubectl wait deployment --all -n "${CORE_WAAP_OPERATOR_NAMESPACE}" --for=condition=Available --timeout=300s \
+    || log_error "core waap operator not available after waiting for 300s"
   log_info "core waap operator setup finished"
 }
 

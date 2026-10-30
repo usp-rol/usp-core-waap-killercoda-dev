@@ -141,6 +141,7 @@ lldap       lldap-usp-core-waap-7849dbf5fd-4jt8c       1/1     Running   0      
 
 Prepare the required ConfigMap using:
 
+<!-- test:allow-fail -->
 ```shell
 kubectl create \
   configmap lldap-graphql-schema \

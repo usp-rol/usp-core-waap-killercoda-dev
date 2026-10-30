@@ -205,14 +205,14 @@ curl -s ... http://127.0.0.1:30080/rest/user/login
 -->
 ```
 
-Further annotations (placed in the line before a code block): `<!-- test:skip -->`, `<!-- test:allow-fail -->`, `<!-- test:retries N -->`, `<!-- test:timeout N -->`. Avoid `--` within hidden blocks (use short options).
+Further annotations (placed in the line before a code block): `<!-- test:skip -->`, `<!-- test:allow-fail -->`, `<!-- test:expect-fail -->`, `<!-- test:retries N -->`, `<!-- test:timeout N -->`. Avoid `--` within hidden blocks (use short options).
 
 `make lint` runs sync-check, shellcheck and the harness unit tests. The github workflow `.github/workflows/scenarios.yaml` runs lint and tests every scenario of `structure.json` in parallel (one runner per scenario) on pull requests, manually and weekly.
 
 ### Troubleshooting
 
 * **rootless podman** requires cgroup delegation, `local/kc` therefore runs kind within `systemd-run --user --scope -p Delegate=yes` (see [kind rootless](https://kind.sigs.k8s.io/docs/user/rootless/))
-* **kube-proxy "too many open files"** when running several clusters at once: raise the inotify limits (`sudo sysctl fs.inotify.max_user_instances=512 fs.inotify.max_user_watches=524288`) or run one scenario at a time (`local/kc up` refuses a second cluster otherwise)
+* **inotify limits**: kube-proxy failing with "too many open files" (several clusters at once) or pods of 2-node scenarios crashing with inotify errors (i.e. envoy `inotify_fd_ >= 0`): raise the limits (`sudo sysctl fs.inotify.max_user_instances=512 fs.inotify.max_user_watches=524288`, persist in `/etc/sysctl.d/`), with the default limits run one single-node scenario at a time (`local/kc up` refuses a second cluster)
 * **"rootless netns: kill network process: permission denied"** on `down` (ubuntu): apparmor denies podman stopping its network helper; harmless (ignored by `local/kc`), to get rid of it add `signal (receive) peer=podman,` to `/etc/apparmor.d/local/usr.bin.pasta` and reload it (`sudo apparmor_parser -r /etc/apparmor.d/usr.bin.pasta`)
 
 ## Release development work

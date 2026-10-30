@@ -39,6 +39,8 @@ jobs:
         scenario: ${{ fromJSON(needs.matrix.outputs.scenarios) }}
     steps:
       - uses: actions/checkout@v4
+      # kind recommendation (several nodes/many pods exhaust the default inotify limits)
+      - run: sudo sysctl -w fs.inotify.max_user_instances=512 fs.inotify.max_user_watches=524288
       - run: local/kc tools
       - run: local/kc test ${{ matrix.scenario }}
         env:

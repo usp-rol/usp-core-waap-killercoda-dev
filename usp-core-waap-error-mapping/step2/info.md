@@ -189,7 +189,7 @@ Try again to access the [profile page]({{TRAFFIC_HOST1_30090}}/profile) (**click
 
 <!-- test:exec
 # local test only: browser access of profile page
-curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:30090/profile
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:30090/profile
 -->
 
 

@@ -13,7 +13,8 @@ persistent shell, then poll the step's verify script like a user pressing CHECK.
 Markdown annotations (HTML comments, not rendered by killercoda), applying to the next code block:
   <!-- test:skip -->            do not execute the block
   <!-- test:allow-fail -->      a non-zero exit code is fine
-  <!-- test:retries N -->       retry a failing block N times (default 10)
+  <!-- test:expect-fail -->     the block must fail (i.e. a request denied by a policy), not retried
+  <!-- test:retries N -->       retry a failing block N times (default 20)
   <!-- test:timeout N -->       per-attempt timeout in seconds (exec interrupt blocks: run duration)
 and hidden blocks executed in place (i.e. to simulate browser interactions):
   <!-- test:exec
@@ -37,8 +38,13 @@ FENCE_RE = re.compile(r"^\s*```")
 FENCE_END_RE = re.compile(r"^\s*```(\{\{(?P<kind>[^}]*)\}\})?\s*$")
 ANNOTATION_RE = re.compile(r"^\s*<!--\s*test:(?P<key>[a-z-]+)(\s+(?P<value>\S+))?\s*-->\s*$")
 HIDDEN_START_RE = re.compile(r"^\s*<!--\s*test:exec\s*$")
+# commands a user stops with ctrl-c (i.e. log follow), run for a limited time only
+LONG_RUNNING_RE = re.compile(
+    r"kubectl\s+logs\b[^|\n]*\s(-f|--follow)\b|kubectl\s+get\b[^|\n]*\s(-w|--watch)\b|\btail\s+(-\w*f|--follow)\b|^\s*watch\s",
+    re.MULTILINE,
+)
 
-DEFAULT_RETRIES = 10
+DEFAULT_RETRIES = 20
 RETRY_DELAY = int(os.environ.get("KC_RETRY_DELAY", 6))
 DEFAULT_BLOCK_TIMEOUT = 300
 INTERRUPT_DURATION = 15
@@ -50,6 +56,10 @@ class Block:
     kind: str  # exec | interrupt | hidden
     line: int
     opts: dict = field(default_factory=dict)
+
+
+def is_long_running(code):
+    return bool(LONG_RUNNING_RE.search(code.replace("\\\n", " ")))
 
 
 def parse_blocks(text):
@@ -126,14 +136,17 @@ class Shell:
         token = uuid.uuid4().hex
         path = f"/tmp/kc-cmd-{token}.sh"
         self._write_file(path, code + "\n")
+        # pipefail: a failing command within a pipe (i.e. "curl | jq") shows its error to the user, who would retry
         if interrupt_after:
             # long-running command (i.e. log follow) the user interrupts with ctrl-c
-            cmd = f"timeout -k 5 {interrupt_after}s bash {path} < /dev/null"
+            cmd = f"timeout -k 5 {interrupt_after}s bash -o pipefail {path} < /dev/null; __kc_rc=$?"
         else:
-            cmd = f"source {path} < /dev/null"
+            cmd = f"set -o pipefail; source {path} < /dev/null; __kc_rc=$?; set +o pipefail"
+        # 141 (SIGPIPE): left side of a pipe terminated by an early exiting reader (i.e. "grep -q")
+        cmd += "; [ $__kc_rc -eq 141 ] && __kc_rc=0"
         marker = f"__KC_RC_{token}__"
         # printf without leading newline: output not ending with a newline gets the marker appended
-        self.proc.stdin.write(f"{cmd}; printf '%s %s\\n' {marker} $?\n")
+        self.proc.stdin.write(f"{cmd}; printf '%s %s\\n' {marker} $__kc_rc\n")
         self.proc.stdin.flush()
         output = []
         deadline = time.time() + timeout
@@ -202,7 +215,7 @@ class ScenarioTest:
         timeout = int(block.opts.get("timeout", DEFAULT_BLOCK_TIMEOUT))
         for attempt in range(1, retries + 2):
             self.say(f"  $ [{where}, attempt {attempt}]\n" + "\n".join("    > " + l for l in block.code.splitlines()))
-            if block.kind == "interrupt":
+            if block.kind == "interrupt" or is_long_running(block.code):
                 duration = int(block.opts.get("timeout", INTERRUPT_DURATION))
                 rc, _ = shell.run(block.code, duration + 30, interrupt_after=duration)
                 if rc == 124:
@@ -211,6 +224,11 @@ class ScenarioTest:
                 rc, _ = shell.run(block.code, timeout)
             if rc is None:
                 self.say(f"  ! timeout after {timeout}s at {where}")
+                return False
+            if block.opts.get("expect-fail"):
+                if rc != 0:
+                    return True
+                self.say(f"  ! expected failure, but exit code 0 at {where}")
                 return False
             if rc == 0 or block.opts.get("allow-fail"):
                 if attempt > 1:
@@ -267,7 +285,9 @@ class ScenarioTest:
             "events.txt": "kubectl get events -A --sort-by=.lastTimestamp",
             "corewaap.txt": "kubectl get corewaapservices -A -o yaml",
             "operator-logs.txt": "kubectl logs -n usp-core-waap-operator --all-containers --tail=500 -l app.kubernetes.io/name=usp-core-waap-operator",
-            "waap-logs.txt": "kubectl logs -A --all-containers --tail=500 -l app.kubernetes.io/name=usp-core-waap-proxy --prefix",
+            "waap-logs.txt": "kubectl get pods -A -l app.kubernetes.io/name=usp-core-waap-proxy --no-headers"
+                             " | while read -r ns pod _; do kubectl logs -n $ns $pod --all-containers --prefix --tail=2000; done",
+            "juiceshop-logs.txt": "kubectl logs -n juiceshop juiceshop --tail=500",
         }
         for name, cmd in cmds.items():
             r = self.runner_exec("bash", "-c", cmd)

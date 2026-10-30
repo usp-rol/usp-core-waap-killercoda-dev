@@ -138,7 +138,7 @@ Now [access the Juice Shop]({{TRAFFIC_HOST1_30090}}) again (or reload its browse
 
 <!-- test:exec
 # local test only: browser access generating socket.io requests
-curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Content-Type: text/plain;charset=UTF-8' -d '40' 'http://127.0.0.1:30090/socket.io/?EIO=4&transport=polling&t=kctest'
+curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Content-Type: text/plain;charset=UTF-8' -H 'Origin: http://localhost:30090' -d '40' 'http://localhost:30090/socket.io/?EIO=4&transport=polling&t=kctest'
 -->
 
 

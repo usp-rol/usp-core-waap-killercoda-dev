@@ -159,6 +159,22 @@ kubectl logs \
 
 Now switch back to the [LLDAP user interface]({{TRAFFIC_HOST1_30090}}) browser tab and explore the application (make sure to click at least the user and group schema tabs) then return here to run the Auto-Learning tool using writing an updated `waap.yaml` Resource config:
 
+<!-- test:exec
+# local test only: browser exploring user and group details incl. schema tabs (queries as sent by the LLDAP user interface)
+# fails (and is retried) as long as the DETECT config reload has not happened yet (requests blocked)
+KC_RC=0
+ATTRS='attributes { name attributeType isList isVisible isEditable isHardcoded isReadonly }'
+for body in \
+  "$(jq -nc --arg q "query GetUserDetails(\$id: String!) { user(userId: \$id) { id email avatar displayName creationDate uuid groups { id displayName } attributes { name value } } schema { userSchema { $ATTRS } } }" '{operationName: "GetUserDetails", query: $q, variables: {id: "admin"}}')" \
+  "$(jq -nc --arg q "query GetGroupDetails(\$id: Int!) { group(groupId: \$id) { id displayName creationDate uuid users { id displayName } attributes { name value } } schema { groupSchema { $ATTRS } } }" '{operationName: "GetGroupDetails", query: $q, variables: {id: 1}}')"; do
+  for i in 1 2 3; do
+    echo "$body" | curl -sf -o /dev/null -w '%{http_code}\n' -H 'Content-Type: application/json' -H 'Origin: http://localhost:30090' -b "token=$LLDAP_TOKEN" -d @- http://localhost:30090/api/graphql || KC_RC=1
+  done
+done
+test $KC_RC -eq 0
+-->
+
+
 ```shell
 java -jar ~/waap-lib-autolearn-cli.jar \
  -n lldap \
